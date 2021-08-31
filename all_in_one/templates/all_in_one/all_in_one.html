@@ -1,0 +1,215 @@
+{% extends "layout/index.html" %}
+{% load static %}
+
+
+
+
+
+{% block title %}
+All in one integration
+{% endblock title %}
+
+
+{% block url_level %}
+All_in_one
+{% endblock url_level %}
+
+
+
+{% block content %}
+
+
+<!-- <div class="col-lg-6"> -->
+<div class="card" style="height: 100%; min-height: 80%;">
+    <div class="card-body">
+        <div class="row">
+            <!-- Display -->
+            <div class="col-9">
+
+
+                <ul class="nav nav-tabs" id="myTab" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="billing-tab" data-bs-toggle="tab" data-bs-target="#billing"
+                            type="button" role="tab" aria-controls="billing" aria-selected="true"> Billing Information
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="in-tab" data-bs-toggle="tab" data-bs-target="#in" type="button"
+                            role="tab" aria-controls="in" aria-selected="false"> IN Information
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="sahal-tab" data-bs-toggle="tab" data-bs-target="#sahal"
+                            type="button" role="tab" aria-controls="sahal" aria-selected="false"> Sahal Information
+                        </button>
+                    </li>
+
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="xaliye-tab" data-bs-toggle="tab" data-bs-target="#xaliye"
+                            type="button" role="tab" aria-controls="xaliye" aria-selected="false"> Xaliye Information
+                        </button>
+                    </li>
+                </ul>
+
+                <div class="tab-content" id="myTabContent"
+                    style=" box-shadow: 1px 2px 89px 3px silver; border-radius: 15px;">
+                    <!-- Billing information tab begins here -->
+                    {% include 'all_in_one/billing_tab.html' %}
+                    <!-- billing information tab ends here -->
+                    <!-- IN information tab beings here -->
+
+                    {% include 'all_in_one/in_tab.html' %}
+
+                    <!-- IN information tab ends here -->
+
+                    <!-- Sahal information tab begins here -->
+
+                    {% include 'all_in_one/sahal_tab.html' %}
+
+                    <!-- Sahal information tab ends here -->
+
+                    <!-- Xaliye information tab begins here -->
+                    {% include 'all_in_one/xaliye_tab.html' %}
+                    <!-- xaliye information tab ends here -->
+                </div>
+
+
+            </div>
+            <!-- Display -->
+            <div class="col-3" style="background-color: silver">
+                <form action=" {% url 'all_in_one' %} " method="POST">
+                    {% csrf_token %}
+                <div class="col">
+                    <input type="text" class="form-control" placeholder="Search by callsub or iccd" name="callsub">
+                </div>
+                <div class="col">
+                    <button class="btn btn-primary" type="submit">Search</button>
+                </div>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+<!-- </div> -->
+
+
+
+
+<!-- Xaliye blacklist model begins here -->
+
+{% include 'all_in_one/blacklist_xaliye_model.html' %}
+
+
+<!-- Xaliye blacklist model ends here -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+{% endblock content %}
+
+
+
+{% block url_level_title %}
+
+All in one
+
+{% endblock url_level_title %}
+
+
+
+{% block script %}
+
+
+<script src=" {% static 'assets/js/xaliye.js' %} "></script>
+<script src=" {% static 'assets/js/in.js' %} "></script>
+
+
+
+<script>
+    $("document").ready(function () {
+
+        function trigger_blacklist_xaliye_model() {
+            $("#callsub").removeClass("is-invalid");
+            $("#callsub").removeClass("is-valid");
+            $("#errorforcallsub").text("")
+
+            $("#description").removeClass("is-invalid");
+            $("#description").removeClass("is-valid");
+            $("#errorfordescription").text("");
+
+            $("#blacklist_xaliye_model").modal("show")
+
+        }
+
+
+        $("#xaliye_blacklist").on("change", function (e) {
+            let blacklist;
+            if ($(this).prop('checked')) {
+                blacklist = 1;
+
+
+                trigger_blacklist_xaliye_model()
+
+                $.fn.modal.Constructor.prototype.enforceFocus = function () { };
+
+                $("#xaliye_status").select2(
+                    {
+                        dropdownParent: $('#blacklist_xaliye_model'),
+                        theme: "bootstrap",
+                    }
+                );
+
+                console.log(blacklist);
+
+                e.stopPropagation()
+
+
+            } else {
+                blacklist = 0;
+
+                console.log(blacklist);
+
+                trigger_blacklist_xaliye_model()
+                $.fn.modal.Constructor.prototype.enforceFocus = function () { };
+
+                $("#xaliye_status").select2(
+                    {
+                        dropdownParent: $('#blacklist_xaliye_model'),
+                        theme: "bootstrap",
+                    }
+                );
+            }
+        })
+
+
+    });
+
+    $('#blacklist_xaliye_model').on('show', function () {
+
+        alert("you bout to close me")
+    });
+
+
+
+
+
+
+
+
+
+
+
+</script>
+
+{% endblock script %}

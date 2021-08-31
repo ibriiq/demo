@@ -1,0 +1,80 @@
+{% block xaliye_tab %}
+
+<!-- Xaliye info from Xaliye file -->
+
+<div class="tab-pane fade" id="xaliye" role="tabpanel" aria-labelledby="xaliye-tab">
+    <div style="width: 80%; margin: 10px auto;" style="background-color: red;">
+        <div class="table-responsive">
+            <table class="table table-hover" width="100%" id="xaliye_information">
+                <caption style="caption-side:top;text-align:center">Xaliye information</caption>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Callsub</th>
+                        <th>Xalliye Service </th>
+                        <th>Blacklist</th>
+                        <th>Transaction</th>
+                        <th>Last Access Date </th>
+                        <th>Acc Type</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for getCaawiyeInformation in getCaawiyeInformation.responseBody %}
+                    <tr>
+                        <td>
+                            {{ getCaawiyeInformation.Name }}
+                        </td>
+
+                        <td>
+                            {{ getCaawiyeInformation.Callsub }}
+                        </td>
+
+                        <td>
+                            {{ getCaawiyeInformation.CaawiyeService }}
+                        </td>
+
+                        <td>
+
+
+                            {% if getCaawiyeInformation.Blacklist  == "True" %}
+                            <input class="form-check form-switch" type="checkbox" id="xaliye_blacklist" switch="bool"
+                                checked>
+                            <label class="form-label" for="xaliye_blacklist" data-on-label="True"
+                                data-off-label="False"></label>
+
+                            {% else %}
+                            <input class="form-check form-switch" type="checkbox" id="xaliye_blacklist" switch="bool">
+                            <label class="form-label" for="xaliye_blacklist" data-on-label="True"
+                                data-off-label="False"></label>
+                            {% endif %}
+
+                            {{ getCaawiyeInformation.Blacklist }}
+
+
+
+
+
+
+                        </td>
+
+                        <td>
+                            {{ getCaawiyeInformation.Transaction }}
+                        </td>
+
+                        <td>
+                            {{ getCaawiyeInformation.LastAccessDate }}
+                        </td>
+
+                        <td>
+                            {{ getCaawiyeInformation.AccType }}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+
+{% endblock xaliye_tab %}
