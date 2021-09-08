@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 
 //
 // Table editable
@@ -16,4 +17,24 @@
       border-color: $input-focus-border-color;
     }
   }
+=======
+
+//
+// Table editable
+//
+
+.table-edits{
+  input, select{
+    height: $input-height-sm;
+    padding: $input-padding-y-sm $input-padding-x-sm;
+    border: 1px solid $input-border-color;
+    background-color: $input-bg;
+    color: $input-color;
+    border-radius: $input-border-radius;
+    &:focus{
+      outline: none;
+      border-color: $input-focus-border-color;
+    }
+  }
+>>>>>>> b72c5ea86bf6885e302b926b7202718cf917849d
 }

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 
 //
 // Bootstrap touchspin
@@ -22,4 +23,30 @@
         }
       }
     }
+=======
+
+//
+// Bootstrap touchspin
+//
+
+
+.bootstrap-touchspin{
+    &.input-group{
+      &>.input-group-prepend{
+        &>.btn, &>.input-group-text{
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
+        }
+      }
+    }
+  
+    &.input-group{
+      &>.input-group-append{
+        &>.btn, &>.input-group-text{
+          border-top-left-radius: 0;
+          border-bottom-left-radius: 0;
+        }
+      }
+    }
+>>>>>>> b72c5ea86bf6885e302b926b7202718cf917849d
   }

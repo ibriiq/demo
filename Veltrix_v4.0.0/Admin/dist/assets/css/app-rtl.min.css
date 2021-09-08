@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 /*
 Template Name: Veltrix - Admin & Dashboard Template
 Author: Themesbrand
@@ -5,6 +6,15 @@ Version: 4.0.0
 Website: https://themesbrand.com/
 Contact: themesbrand@gmail.com
 File: Main Css File
+=======
+/*
+Template Name: Veltrix - Admin & Dashboard Template
+Author: Themesbrand
+Version: 4.0.0
+Website: https://themesbrand.com/
+Contact: themesbrand@gmail.com
+File: Main Css File
+>>>>>>> b72c5ea86bf6885e302b926b7202718cf917849d
 */
 @import url("https://fonts.googleapis.com/css?family=Roboto:400,500|Sarabun:400,600,700&display=swap");
 #page-topbar {
@@ -913,12 +923,21 @@ body[data-layout="horizontal"][data-layout-size="boxed"] #layout-wrapper {
 body[data-layout="horizontal"][data-layout-size="boxed"] .container-fluid, body[data-layout="horizontal"][data-layout-size="boxed"] .navbar-header {
   max-width: 1300px; }
 
+<<<<<<< HEAD
 /*!
  * Waves v0.7.6
  * http://fian.my.id/Waves 
  * 
  * Copyright 2014-2018 Alfiana E. Sibuea and other contributors 
  * Released under the MIT license 
+=======
+/*!
+ * Waves v0.7.6
+ * http://fian.my.id/Waves 
+ * 
+ * Copyright 2014-2018 Alfiana E. Sibuea and other contributors 
+ * Released under the MIT license 
+>>>>>>> b72c5ea86bf6885e302b926b7202718cf917849d
  * https://github.com/fians/Waves/blob/master/LICENSE */
 .waves-effect {
   position: relative;
@@ -1568,8 +1587,13 @@ body[data-layout="horizontal"][data-layout-size="boxed"] .container-fluid, body[
 .custom-scroll {
   height: 100%; }
 
+<<<<<<< HEAD
 /* ==============
   Calendar
+=======
+/* ==============
+  Calendar
+>>>>>>> b72c5ea86bf6885e302b926b7202718cf917849d
 ===================*/
 .fc .fc-toolbar h2 {
   font-size: 16px;
@@ -2630,8 +2654,13 @@ div.table-responsive > div.dataTables_wrapper > div.row > div[class^="col-"]:las
   max-width: 600px;
   margin: 0px auto; }
 
+<<<<<<< HEAD
 /* ==============
   Email
+=======
+/* ==============
+  Email
+>>>>>>> b72c5ea86bf6885e302b926b7202718cf917849d
 ===================*/
 .email-leftbar {
   width: 236px;

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 @keyframes slideInUp {
   from {
     transform: translate3d(0, 100%, 0);
@@ -12,3 +13,19 @@
 .slideInUp {
   animation-name: slideInUp;
 }
+=======
+@keyframes slideInUp {
+  from {
+    transform: translate3d(0, 100%, 0);
+    visibility: visible;
+  }
+
+  to {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+.slideInUp {
+  animation-name: slideInUp;
+}
+>>>>>>> b72c5ea86bf6885e302b926b7202718cf917849d

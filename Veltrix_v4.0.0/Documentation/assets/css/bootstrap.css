@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 /*
 Template Name: Skote - Responsive Bootstrap 4 Admin Dashboard
 Author: Themesbrand
@@ -5,6 +6,15 @@ Version: 1.1.0
 Website: https://themesbrand.com/
 Contact: themesbrand@gmail.com
 File: Custom Bootstrap Css File
+=======
+/*
+Template Name: Skote - Responsive Bootstrap 4 Admin Dashboard
+Author: Themesbrand
+Version: 1.1.0
+Website: https://themesbrand.com/
+Contact: themesbrand@gmail.com
+File: Custom Bootstrap Css File
+>>>>>>> b72c5ea86bf6885e302b926b7202718cf917849d
 */
 /*!
  * Bootstrap v4.5.0 (https://getbootstrap.com/)
@@ -8364,8 +8374,13 @@ a.text-pink:hover, a.text-pink:focus {
     color: inherit;
     border-color: #eff2f7; } }
 
+<<<<<<< HEAD
 /* =============
    General
+=======
+/* =============
+   General
+>>>>>>> b72c5ea86bf6885e302b926b7202718cf917849d
 ============= */
 html {
   position: relative;

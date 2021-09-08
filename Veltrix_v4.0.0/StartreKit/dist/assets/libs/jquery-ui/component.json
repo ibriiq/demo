@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 {
   "name": "jquery-ui",
   "repo": "components/jqueryui",
@@ -11,3 +12,18 @@
     "components/jquery": "*"
   }
 }
+=======
+{
+  "name": "jquery-ui",
+  "repo": "components/jqueryui",
+  "version": "1.11.4",
+  "license": "MIT",
+  "scripts": [
+    "jquery-ui.js"
+  ],
+  "main": "jquery-ui.js",
+  "dependencies": {
+    "components/jquery": "*"
+  }
+}
+>>>>>>> b72c5ea86bf6885e302b926b7202718cf917849d

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 /*!
  * jQuery UI Draggable 1.11.4
  * http://jqueryui.com
@@ -10,3 +11,17 @@
 	-ms-touch-action: none;
 	touch-action: none;
 }
+=======
+/*!
+ * jQuery UI Draggable 1.11.4
+ * http://jqueryui.com
+ *
+ * Copyright jQuery Foundation and other contributors
+ * Released under the MIT license.
+ * http://jquery.org/license
+ */
+.ui-draggable-handle {
+	-ms-touch-action: none;
+	touch-action: none;
+}
+>>>>>>> b72c5ea86bf6885e302b926b7202718cf917849d

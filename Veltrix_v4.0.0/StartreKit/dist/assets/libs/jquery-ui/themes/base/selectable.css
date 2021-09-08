@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 /*!
  * jQuery UI Selectable 1.11.4
  * http://jqueryui.com
@@ -15,3 +16,22 @@
 	z-index: 100;
 	border: 1px dotted black;
 }
+=======
+/*!
+ * jQuery UI Selectable 1.11.4
+ * http://jqueryui.com
+ *
+ * Copyright jQuery Foundation and other contributors
+ * Released under the MIT license.
+ * http://jquery.org/license
+ */
+.ui-selectable {
+	-ms-touch-action: none;
+	touch-action: none;
+}
+.ui-selectable-helper {
+	position: absolute;
+	z-index: 100;
+	border: 1px dotted black;
+}
+>>>>>>> b72c5ea86bf6885e302b926b7202718cf917849d

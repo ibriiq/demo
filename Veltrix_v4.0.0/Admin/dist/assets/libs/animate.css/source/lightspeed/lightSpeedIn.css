@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 @keyframes lightSpeedIn {
   from {
     transform: translate3d(100%, 0, 0) skewX(-30deg);
@@ -22,3 +23,29 @@
   animation-name: lightSpeedIn;
   animation-timing-function: ease-out;
 }
+=======
+@keyframes lightSpeedIn {
+  from {
+    transform: translate3d(100%, 0, 0) skewX(-30deg);
+    opacity: 0;
+  }
+
+  60% {
+    transform: skewX(20deg);
+    opacity: 1;
+  }
+
+  80% {
+    transform: skewX(-5deg);
+  }
+
+  to {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+.lightSpeedIn {
+  animation-name: lightSpeedIn;
+  animation-timing-function: ease-out;
+}
+>>>>>>> b72c5ea86bf6885e302b926b7202718cf917849d

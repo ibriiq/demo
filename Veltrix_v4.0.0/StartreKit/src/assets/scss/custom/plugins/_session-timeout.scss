@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 //
 // session-timeout.scss
 //
@@ -17,4 +18,25 @@
         color: $danger;
         box-shadow: none;
     }
+=======
+//
+// session-timeout.scss
+//
+
+#session-timeout-dialog {
+    .close {
+        display: none;
+    }
+
+    .countdown-holder {
+        color: $danger;
+        font-weight: $font-weight-medium;
+    }
+
+    .btn-default {
+        background-color: $white;
+        color: $danger;
+        box-shadow: none;
+    }
+>>>>>>> b72c5ea86bf6885e302b926b7202718cf917849d
 }

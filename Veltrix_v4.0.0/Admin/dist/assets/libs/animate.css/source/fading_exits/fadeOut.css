@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 @keyframes fadeOut {
   from {
     opacity: 1;
@@ -11,3 +12,18 @@
 .fadeOut {
   animation-name: fadeOut;
 }
+=======
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
+  }
+}
+
+.fadeOut {
+  animation-name: fadeOut;
+}
+>>>>>>> b72c5ea86bf6885e302b926b7202718cf917849d

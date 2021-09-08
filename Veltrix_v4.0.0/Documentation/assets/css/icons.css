@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 /*
 Template Name: Skote - Responsive Bootstrap 4 Admin Dashboard
 Author: Themesbrand
@@ -5,6 +6,15 @@ Version: 1.1.0
 Website: https://themesbrand.com/
 Contact: themesbrand@gmail.com
 File: Icons Css File
+=======
+/*
+Template Name: Skote - Responsive Bootstrap 4 Admin Dashboard
+Author: Themesbrand
+Version: 1.1.0
+Website: https://themesbrand.com/
+Contact: themesbrand@gmail.com
+File: Icons Css File
+>>>>>>> b72c5ea86bf6885e302b926b7202718cf917849d
 */
 /* MaterialDesignIcons.com */
 @font-face {
@@ -15188,6 +15198,7 @@ File: Icons Css File
   color: rgba(255, 255, 255, 0.3); }
 
 .mdi-rotate-45 {
+<<<<<<< HEAD
   /*
         // Not included in production
         &.mdi-flip-h:before {
@@ -15203,6 +15214,23 @@ File: Icons Css File
             filter: FlipV;
             -ms-filter: "FlipV";
         }
+=======
+  /*
+        // Not included in production
+        &.mdi-flip-h:before {
+            -webkit-transform: scaleX(-1) rotate(45deg);
+            transform: scaleX(-1) rotate(45deg);
+            filter: FlipH;
+            -ms-filter: "FlipH";
+        }
+        &.mdi-flip-v:before {
+            -webkit-transform: scaleY(-1) rotate(45deg);
+            -ms-transform: rotate(45deg);
+            transform: scaleY(-1) rotate(45deg);
+            filter: FlipV;
+            -ms-filter: "FlipV";
+        }
+>>>>>>> b72c5ea86bf6885e302b926b7202718cf917849d
         */ }
 
 .mdi-rotate-45:before {
@@ -15210,6 +15238,7 @@ File: Icons Css File
   transform: rotate(45deg); }
 
 .mdi-rotate-90 {
+<<<<<<< HEAD
   /*
         // Not included in production
         &.mdi-flip-h:before {
@@ -15225,6 +15254,23 @@ File: Icons Css File
             filter: FlipV;
             -ms-filter: "FlipV";
         }
+=======
+  /*
+        // Not included in production
+        &.mdi-flip-h:before {
+            -webkit-transform: scaleX(-1) rotate(90deg);
+            transform: scaleX(-1) rotate(90deg);
+            filter: FlipH;
+            -ms-filter: "FlipH";
+        }
+        &.mdi-flip-v:before {
+            -webkit-transform: scaleY(-1) rotate(90deg);
+            -ms-transform: rotate(90deg);
+            transform: scaleY(-1) rotate(90deg);
+            filter: FlipV;
+            -ms-filter: "FlipV";
+        }
+>>>>>>> b72c5ea86bf6885e302b926b7202718cf917849d
         */ }
 
 .mdi-rotate-90:before {
@@ -15232,6 +15278,7 @@ File: Icons Css File
   transform: rotate(90deg); }
 
 .mdi-rotate-135 {
+<<<<<<< HEAD
   /*
         // Not included in production
         &.mdi-flip-h:before {
@@ -15247,6 +15294,23 @@ File: Icons Css File
             filter: FlipV;
             -ms-filter: "FlipV";
         }
+=======
+  /*
+        // Not included in production
+        &.mdi-flip-h:before {
+            -webkit-transform: scaleX(-1) rotate(135deg);
+            transform: scaleX(-1) rotate(135deg);
+            filter: FlipH;
+            -ms-filter: "FlipH";
+        }
+        &.mdi-flip-v:before {
+            -webkit-transform: scaleY(-1) rotate(135deg);
+            -ms-transform: rotate(135deg);
+            transform: scaleY(-1) rotate(135deg);
+            filter: FlipV;
+            -ms-filter: "FlipV";
+        }
+>>>>>>> b72c5ea86bf6885e302b926b7202718cf917849d
         */ }
 
 .mdi-rotate-135:before {
@@ -15254,6 +15318,7 @@ File: Icons Css File
   transform: rotate(135deg); }
 
 .mdi-rotate-180 {
+<<<<<<< HEAD
   /*
         // Not included in production
         &.mdi-flip-h:before {
@@ -15269,6 +15334,23 @@ File: Icons Css File
             filter: FlipV;
             -ms-filter: "FlipV";
         }
+=======
+  /*
+        // Not included in production
+        &.mdi-flip-h:before {
+            -webkit-transform: scaleX(-1) rotate(180deg);
+            transform: scaleX(-1) rotate(180deg);
+            filter: FlipH;
+            -ms-filter: "FlipH";
+        }
+        &.mdi-flip-v:before {
+            -webkit-transform: scaleY(-1) rotate(180deg);
+            -ms-transform: rotate(180deg);
+            transform: scaleY(-1) rotate(180deg);
+            filter: FlipV;
+            -ms-filter: "FlipV";
+        }
+>>>>>>> b72c5ea86bf6885e302b926b7202718cf917849d
         */ }
 
 .mdi-rotate-180:before {
@@ -15276,6 +15358,7 @@ File: Icons Css File
   transform: rotate(180deg); }
 
 .mdi-rotate-225 {
+<<<<<<< HEAD
   /*
         // Not included in production
         &.mdi-flip-h:before {
@@ -15291,6 +15374,23 @@ File: Icons Css File
             filter: FlipV;
             -ms-filter: "FlipV";
         }
+=======
+  /*
+        // Not included in production
+        &.mdi-flip-h:before {
+            -webkit-transform: scaleX(-1) rotate(225deg);
+            transform: scaleX(-1) rotate(225deg);
+            filter: FlipH;
+            -ms-filter: "FlipH";
+        }
+        &.mdi-flip-v:before {
+            -webkit-transform: scaleY(-1) rotate(225deg);
+            -ms-transform: rotate(225deg);
+            transform: scaleY(-1) rotate(225deg);
+            filter: FlipV;
+            -ms-filter: "FlipV";
+        }
+>>>>>>> b72c5ea86bf6885e302b926b7202718cf917849d
         */ }
 
 .mdi-rotate-225:before {
@@ -15298,6 +15398,7 @@ File: Icons Css File
   transform: rotate(225deg); }
 
 .mdi-rotate-270 {
+<<<<<<< HEAD
   /*
         // Not included in production
         &.mdi-flip-h:before {
@@ -15313,6 +15414,23 @@ File: Icons Css File
             filter: FlipV;
             -ms-filter: "FlipV";
         }
+=======
+  /*
+        // Not included in production
+        &.mdi-flip-h:before {
+            -webkit-transform: scaleX(-1) rotate(270deg);
+            transform: scaleX(-1) rotate(270deg);
+            filter: FlipH;
+            -ms-filter: "FlipH";
+        }
+        &.mdi-flip-v:before {
+            -webkit-transform: scaleY(-1) rotate(270deg);
+            -ms-transform: rotate(270deg);
+            transform: scaleY(-1) rotate(270deg);
+            filter: FlipV;
+            -ms-filter: "FlipV";
+        }
+>>>>>>> b72c5ea86bf6885e302b926b7202718cf917849d
         */ }
 
 .mdi-rotate-270:before {
@@ -15320,6 +15438,7 @@ File: Icons Css File
   transform: rotate(270deg); }
 
 .mdi-rotate-315 {
+<<<<<<< HEAD
   /*
         // Not included in production
         &.mdi-flip-h:before {
@@ -15335,6 +15454,23 @@ File: Icons Css File
             filter: FlipV;
             -ms-filter: "FlipV";
         }
+=======
+  /*
+        // Not included in production
+        &.mdi-flip-h:before {
+            -webkit-transform: scaleX(-1) rotate(315deg);
+            transform: scaleX(-1) rotate(315deg);
+            filter: FlipH;
+            -ms-filter: "FlipH";
+        }
+        &.mdi-flip-v:before {
+            -webkit-transform: scaleY(-1) rotate(315deg);
+            -ms-transform: rotate(315deg);
+            transform: scaleY(-1) rotate(315deg);
+            filter: FlipV;
+            -ms-filter: "FlipV";
+        }
+>>>>>>> b72c5ea86bf6885e302b926b7202718cf917849d
         */ }
 
 .mdi-rotate-315:before {
