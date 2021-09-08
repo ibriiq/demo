@@ -1,11 +1,11 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "e9fe5bb3fb78cf378407757198d45b92381d839d47091528a55bc05070da9f57"
+            "sha256": "64e8d6a0e29621b1508fd69ee8c7a6428663994b6b6e29b54373496ac71a95ec"
         },
         "pipfile-spec": 6,
         "requires": {
-            "python_version": "3.9"
+            "python_version": "3.7.6"
         },
         "sources": [
             {
@@ -41,7 +41,6 @@
         },
         "django": {
             "hashes": [
-<<<<<<< HEAD
                 "sha256:95b318319d6997bac3595517101ad9cc83fe5672ac498ba48d1a410f47afecd2",
                 "sha256:e93c93565005b37ddebf2396b4dc4b6913c1838baa82efdfb79acedd5816c240"
             ],
@@ -54,13 +53,6 @@
             ],
             "index": "pypi",
             "version": "==0.22"
-=======
-                "sha256:7f92413529aa0e291f3be78ab19be31aefb1e1c9a52cd59e130f505f27a51f13",
-                "sha256:f27f8544c9d4c383bbe007c57e3235918e258364577373d4920e9162837be022"
-            ],
-            "index": "pypi",
-            "version": "==3.2.6"
->>>>>>> b72c5ea86bf6885e302b926b7202718cf917849d
         },
         "idna": {
             "hashes": [
@@ -70,18 +62,13 @@
             "markers": "python_version >= '3'",
             "version": "==3.2"
         },
-        "mysqlclient": {
+        "mod-wsgi": {
             "hashes": [
-                "sha256:0ac0dd759c4ca02c35a9fedc24bc982cf75171651e8187c2495ec957a87dfff7",
-                "sha256:3381ca1a4f37ff1155fcfde20836b46416d66531add8843f6aa6d968982731c3",
-                "sha256:71c4b330cf2313bbda0307fc858cc9055e64493ba9bf28454d25cf8b3ee8d7f5",
-                "sha256:f6ebea7c008f155baeefe16c56cd3ee6239f7a5a9ae42396c2f1860f08a7c432",
-                "sha256:fc575093cf81b6605bed84653e48b277318b880dc9becf42dd47fa11ffd3e2b6"
+                "sha256:1f1a22511e7700c7d4d26b14768937c919ae5f53e80f5352226a218d866156ec"
             ],
             "index": "pypi",
-            "version": "==2.0.3"
+            "version": "==4.9.0"
         },
-<<<<<<< HEAD
         "pymysql": {
             "hashes": [
                 "sha256:41fc3a0c5013d5f039639442321185532e3e2c8924687abe6537de157d403641",
@@ -90,8 +77,6 @@
             "index": "pypi",
             "version": "==1.0.2"
         },
-=======
->>>>>>> b72c5ea86bf6885e302b926b7202718cf917849d
         "pytz": {
             "hashes": [
                 "sha256:83a4a90894bf38e243cf052c8b58f381bfe9a7a483f6a9cab140bc7f702ac4da",
@@ -114,6 +99,15 @@
             ],
             "markers": "python_version >= '3.5'",
             "version": "==0.4.1"
+        },
+        "typing-extensions": {
+            "hashes": [
+                "sha256:49f75d16ff11f1cd258e1b988ccff82a3ca5570217d7ad8c5f48205dd99a677e",
+                "sha256:d8226d10bc02a29bcc81df19a26e56a9647f8b0a6d4a83924139f4a8b01f17b7",
+                "sha256:f1d25edafde516b146ecd0613dabcc61409817af4766fbbcfb8d1ad4ec441a34"
+            ],
+            "markers": "python_version < '3.8'",
+            "version": "==3.10.0.2"
         },
         "urllib3": {
             "hashes": [

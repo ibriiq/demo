@@ -6,11 +6,11 @@ name = "pypi"
 [packages]
 django = "3.2.6"
 requests = "*"
-mysqlclient = "*"
 pymysql = "*"
 django-sslserver = "*"
+mod-wsgi = "*"
 
 [dev-packages]
 
 [requires]
-python_version = "3.9"
+python_version = "3.7.6"
