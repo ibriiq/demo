@@ -1,0 +1,219 @@
+{% load static %}
+
+<!doctype html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <title>Login | CCare</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta content="Premium Multipurpose Admin & Dashboard Template" name="description">
+    <meta content="Themesbrand" name="author">
+    <!-- App favicon -->
+    <link rel="shortcut icon" href="{% static 'assets/images/golis_favicon.png' %} ">
+
+    <!-- Bootstrap Css -->
+    <link href=" {% static 'assets/css/bootstrap.min.css' %} " id="bootstrap-style" rel="stylesheet" type="text/css">
+    <!-- Icons Css -->
+    <link href=" {% static 'assets/css/icons.min.css' %} " rel="stylesheet" type="text/css">
+    <!-- App Css-->
+    <link href=" {% static 'assets/css/app.min.css' %}" id="app-style" rel="stylesheet" type="text/css">
+
+    <!-- IZItoast css -->
+    <link href=" {% static 'assets/css/iziToast.css' %}" id="app-style" rel="stylesheet" type="text/css">
+
+
+
+
+
+</head>
+
+<body>
+
+    <div class="account-pages my-5 pt-5">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-md-8 col-lg-6 col-xl-4">
+                    <div class="card overflow-hidden">
+                        <div class="bg-primary">
+                            <div class="text-primary text-center p-4">
+                                <h5 class="text-white font-size-20">Welcome Back !</h5>
+                                <p class="text-white-50">Sign in to continue to CCare.</p>
+                                <a href="index.html" class="logo logo-admin">
+                                    <img src="{% static 'assets/images/golis_logo.png' %} " height="16" alt="logo">
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="card-body p-4">
+                            <div class="p-3">
+                                <form class="mt-4" action="/login" method="post" id="login_form">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="next" id="next" value={{ next }}>
+                                    <div class="mb-3">
+                                        <label class="form-label" for="username">Username</label>
+                                        <input type="text" class="form-control" id="username" name="username"
+                                            placeholder="Enter username">
+                                        <small id='errorforusername' class="invalid-feedback"></small>
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="form-label" for="password">Password</label>
+                                        <input type="password" class="form-control" id="password" name="password"
+                                            placeholder="Enter password">
+                                        <small id='errorforpassword' class="invalid-feedback"></small>
+                                    </div>
+
+                                    <div class="mb-3 row">
+                                        <div class="col-sm-6">
+
+                                        </div>
+                                        <div class="col-sm-6 text-end">
+                                            <button class="btn btn-primary w-md waves-effect waves-light" id="login_btn"
+                                                type="submit">Log In
+                                            </button>
+
+                                        </div>
+                                    </div>
+
+
+                                </form>
+
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="mt-5 text-center">
+
+                        <p class="mb-0">©
+                            <script>document.write(new Date().getFullYear())</script> Golis. by Data and development
+                            department
+                        </p>
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT -->
+    <script src="{% static 'assets/libs/jquery/jquery.min.js' %} "></script>
+    <script src="{% static 'assets/libs/bootstrap/js/bootstrap.bundle.min.js' %} "></script>
+    <script src="{% static 'assets/libs/metismenu/metisMenu.min.js' %} "></script>
+    <script src="{% static 'assets/libs/simplebar/simplebar.min.js' %} "></script>
+    <script src="{% static 'assets/libs/node-waves/waves.min.js' %} "></script>
+
+    <script src="{% static 'assets/js/app.js' %} "></script>
+    <!-- sweet alert -->
+    <script src="{{ STATIC_URL }}  static/assets/js/sweetalert.min.js"></script>
+
+    <!-- IZtoast -->
+    <script src="{{ STATIC_URL }}  static/assets/js/iziToast.min.js"></script>
+
+
+
+
+
+    {% block script %}
+
+    <script>
+
+        $("document").ready(function () {
+
+            $.ajaxSetup({
+                headers: {
+                    "X-CSRFToken": '{{csrf_token}}'
+                }
+            });
+
+
+
+            $("#login_form").on("submit", function (e) {
+                e.preventDefault();
+
+                //Validation for username begins here
+                if ($("#username").val() == "") {
+                    $("#username").addClass("is-invalid");
+                    $("#errorforusername").text("Please enter your username");
+                    e.stopPropagation()
+                    return false
+                }
+                else {
+                    $("#username").removeClass("is-invalid");
+                    $("#username").addClass("is-valid");
+                    $("#errorforusername").text("");
+                }//Validation for username ends here
+
+                //Validation for password begins here
+                if ($("#password").val() == "") {
+                    $("#password").addClass("is-invalid");
+                    $("#errorforpassword").text("Please enter your password");
+                    e.stopPropagation()
+                    return false
+                }
+                else {
+                    $("#password").removeClass("is-invalid");
+                    $("#password").addClass("is-valid");
+                    $("#errorforpassword").text("");
+                }
+                //Validation for password ends here
+
+                $("#login_btn").attr("disabled", true);
+                $("#login_btn").html(`<span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span>`);
+
+
+                $.ajax({
+                    url: $(this).attr("action"),
+                    method: $(this).attr("method"),
+                    data: new FormData(this),
+                    dataType: "json",
+                    processData: false,
+                    contentType: false,
+                    success: function (resp) {
+                        console.log(resp);
+                        if (resp.success) {
+                            if (resp.next) {
+                                location.replace(resp.redirect + "?next=" + resp.next)
+                            }
+                            else {
+
+                                location.replace(resp.redirect)
+                            }
+
+                        } else {
+                            iziToast.error({
+                                title: 'Login failed',
+                                message: 'Incorrect credentials',
+                                position: 'topRight',
+                            });
+
+                            $("#login_btn").attr("disabled", false);
+                            $("#login_btn").html(`Log In`);
+                        }
+                    }
+                });
+
+
+
+
+
+
+
+
+
+
+            })
+
+        });
+
+    </script>
+
+    {% endblock script %}
+
+
+</body>
+
+</html>

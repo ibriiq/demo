@@ -1,0 +1,56 @@
+{% block resetbin_xaliye_model %}
+
+
+<div class="modal fade" id="resetbin_xaliye_model" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+    aria-labelledby="resetbin_xaliye_modelLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="resetbin_xaliye_modelLabel">Reset xaliye status
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+
+
+
+
+
+
+                <form action="{% url 'UpdateXallyeresetbin' %}" method="post" id="UpdateXallyeresetbin">
+                    {% csrf_token %}
+                    <div class="col-md-12">
+                        <label for="callsub_resetbin" class="form-label">Callsub</label>
+                        <input type="number" class="form-control" id="callsub_resetbin"
+                            value='{{ getCaawiyeInformation.responseBody.0.Callsub }}' name="callsub" readonly>
+                        <small id="errorforcallsub_resetbin"> </small>
+                    </div>
+
+                    <div class="col-md-12">
+                        <label for="resetbin" class="form-label">resetbin</label>
+                        <input type="number" class="form-control" id="resetbin" name="resetbin" >
+                        <small id="errorforresetbin"> </small>
+                    </div>
+
+                    <div class="col-md-12">
+                        <label for="description_resetbin" class="form-label">Description</label>
+                        <textarea class="form-control" name="description" id="description_resetbin"
+                            placeholder="Tell us why..............?" cols="30" rows="10"></textarea>
+
+                        <small id="errorfordescription_resetbin"> </small>
+                    </div>
+                    <br>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button class="btn btn-primary" type="submit">Resetbin</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+
+{% endblock resetbin_xaliye_model %}

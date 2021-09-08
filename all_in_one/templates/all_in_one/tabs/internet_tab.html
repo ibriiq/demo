@@ -1,0 +1,127 @@
+{% block internet_tab %}
+
+<!-- internet info from internet file -->
+
+
+
+<div class="tab-pane fade" id="internet" role="tabpanel" aria-labelledby="internet-tab">
+    <div style="width: 90%; margin: 10px auto;" style="background-color: red;">
+        <div class="table-responsive">
+            <table class="table table-hover" width="100%" id="internet_information">
+                <caption style="caption-side:top;text-align:center">Internet information</caption>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>inet_id</th>
+                        <th>center</th>
+                        <th>tel </th>
+                        <th>rate</th>
+                        <th>Type</th>
+                        <th>Service </th>
+                        <th>RegDate </th>
+                        <th>Status</th>
+                        <th>Balance</th>
+                        <th> </th>
+                    </tr>
+                </thead>
+                <tbody>
+
+
+
+                    {% if DisplayINTERNETINFO and DisplayINTERNETINFO.responseBody and not DisplayINTERNETINFO.Message %}
+
+                    
+
+
+                    {% for DisplayINTERNETINFO in DisplayINTERNETINFO.responseBody %}
+                    <tr>
+                        <td>
+                            {{ DisplayINTERNETINFO.name }}
+                        </td>
+
+
+                        <td>
+                            {{ DisplayINTERNETINFO.inet_id }}
+                        </td>
+
+
+
+
+                        <td>
+                            {{ DisplayINTERNETINFO.center }}
+                        </td>
+
+                        <td>
+                            {{ DisplayINTERNETINFO.tel }}
+                        </td>
+
+                        <td>
+                            {{ DisplayINTERNETINFO.rate }}
+                        </td>
+
+                        <td>
+                            {{ DisplayINTERNETINFO.Type }}
+                        </td>
+
+                        <td>
+                            {{ DisplayINTERNETINFO.Service }}
+                        </td>
+
+                        <td>
+                            {{ DisplayINTERNETINFO.RegDate }}
+                        </td>
+
+                        <td>
+
+                            {% if DisplayINTERNETINFO.Status == "Active" %}
+
+                            <div class="alert alert-success"> Active </div>
+
+                            {% else %}
+                            <div class="alert alert-danger"> Inactive </div>
+
+                            {% endif %}
+
+
+
+
+                        </td>
+
+                        <td>
+                            {{ DisplayINTERNETINFO.Balance }}
+                        </td>
+
+                    </tr>
+                    {% endfor %}
+
+                    {% elif  DisplayINTERNETINFO.Message %}
+
+                    <tr>
+                        <td colspan="10">
+                            <div class="alert alert-danger" style="width: 50%; margin: 0 auto; text-align: center;">
+                                <i class="fas fa-exclamation-circle"></i> {{ DisplayINTERNETINFO.Message }}
+                            </div>
+                        </td>
+                    </tr>
+
+                    {% elif DisplayINTERNETINFO %}
+
+                    <tr>
+                        <td colspan="10">
+                            <div class="alert alert-info" style="width: 50%; margin: 0 auto; text-align: center;">
+                                <i class="fas fa-exclamation-circle"></i> RECORD NOT FOUND
+                            </div>
+                        </td>
+                    </tr>
+
+                    
+
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+
+{% endblock internet_tab %}

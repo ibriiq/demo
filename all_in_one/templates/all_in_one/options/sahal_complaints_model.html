@@ -1,0 +1,99 @@
+{% block sahal_complaints_model %}
+
+
+<div class="modal fade" id="sahal_complaints_model" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="sahal_complaints_modelLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="sahal_complaints_modelLabel">Sahal complaints
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+
+
+
+                <form action="{% url 'SaveSahalComp' %}" method="post" id="SaveSahalComp">
+                    {% csrf_token %}
+                    <div class="col-md-12">
+                        <label for="callsub_sahal_comp" class="form-label">Callsub</label>
+                        <input type="number" class="form-control" id="callsub_sahal_comp" name="callsub" autofocus>
+                        <small id="errorforcallsub_sahal_comp" class="invalid-feedback"> </small>
+                    </div>
+                    <div class="col-md-12">
+                        <label for="Custname_sahal_comp" class="form-label">Customer name</label>
+
+                        <input type="text" class="form-control" id="Custname_sahal_comp" name="Custname" readonly style="cursor: not-allowed;">
+
+                        <small id="errorforCustname_sahal_comp" class="invalid-feedback"> </small>
+                    </div>
+
+
+                    <div class="col-md-12">
+                        <label for="comptype" class="form-label">Complaints type </label>
+
+                        <select class="form-control" name="comptype" id="comptype" style="width: 100%;">
+                            <option value="">Select Complaints type</option>
+
+                            {% for CompType in CompType %}
+                                <option value="{{ CompType.name }}"> {{ CompType.name }} </option>
+                            {% endfor %}
+
+                        </select>
+                        <small id="errorforcomptype" class="invalid-feedback"> </small>
+                    </div>
+
+
+
+                    <div class="col-md-12">
+                        <label for="Center" class="form-label">Center </label>
+
+                        <select class="form-control" name="Center" id="Center" style="width: 100%;">
+                            <option value="">Select center</option>
+
+
+                            {% for center in Getcenters %}
+                            {{ center }}
+
+                            <option value="{{ center.Centre }}"> {{ center.name }} </option>
+                            {% endfor %}
+                        </select>
+                        <small id="errorforCenter" class="invalid-feedback"> </small>
+                    </div>
+
+
+                    <div class="col-md-12">
+                        <label for="reciever" class="form-label">Reciever</label>
+
+                        <input type="number" class="form-control" id="reciever" name="reciever">
+
+                        <small id="errorforreciever" class="invalid-feedback"> </small>
+                    </div>
+
+
+                    <div class="col-md-12">
+                        <label for="amount" class="form-label">amount</label>
+
+                        <input type="numver" class="form-control" id="amount" name="amount">
+
+                        <small id="errorforamount" class="invalid-feedback"> </small>
+                    </div>
+
+
+                    <br>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button class="btn btn-primary" type="submit" id='SaveSahalComp_btn'>Save</button>
+                    </div>
+                </form>
+
+
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+
+{% endblock sahal_complaints_model %}

@@ -1,0 +1,219 @@
+{% block in_tab %}
+<div class="tab-pane fade" id="in" role="tabpanel" aria-labelledby="in-tab">
+    <div style="width: 95%; margin: 10px auto;" style="background-color: red;">
+
+
+
+        <div class="table-responsive">
+
+            <table class="table table-hover table-striped" width="100%">
+                <caption style="caption-side:top;text-align:center">IN information
+                </caption>
+                <thead>
+                    <tr>
+                        <th>Balance(PrePaid)</th>
+                        <th>Free GPRS</th>
+                        <th>Language</th>
+                        <th>AccState</th>
+                        <th>CLAIMMISSING</th>
+                        <th>BLACKLIST</th>
+                        <th>Activation Date</th>
+                        <th>LastActivationDate</th>
+                        <th>LifeCycleState</th>
+                        <th>SuspendExpirationDate</th>
+                    </tr>
+                </thead>
+
+
+                <!-- responseBody -->
+
+                {% if GetiCBSsubscriberInfo and GetiCBSsubscriberInfo.responseBody and not GetiCBSsubscriberInfo.Message %}
+
+
+                <input type="hidden" name="callsub" id='callsub' value="{{ callsub }}">
+
+                <tbody>
+                    <tr>
+                        <td>
+                            {{ GetiCBSsubscriberInfo.responseBody.0.balanceField }}
+                        </td>
+                        <td> {{ GetiCBSsubscriberInfo.responseBody.0.pRMVOLUMEField }} </td>
+                        <td> {{ GetiCBSsubscriberInfo.responseBody.0.lANGUAGETYPEField }} </td>
+                        <td> {{ GetiCBSsubscriberInfo.responseBody.0.aCCOUNTSTATEField }} </td>
+                        <td>
+
+
+                           
+
+
+                            {% if GetiCBSsubscriberInfo.responseBody.0.cLAIMMISSINGField == "Yes" %}
+                            <button type="button" class="btn btn-outline-danger" id='in_claim_missing'>
+                                {{ GetiCBSsubscriberInfo.responseBody.0.cLAIMMISSINGField }} </button>
+
+                            {% else %}
+                            <button type="button" class="btn btn-outline-success" id='in_claim_missing' style = "pointer-events: none;" >
+                                {{ GetiCBSsubscriberInfo.responseBody.0.cLAIMMISSINGField }} </button>
+                            {% endif %}
+
+
+
+
+
+
+
+                        </td>
+                        <td> 
+                           
+
+                            {% if GetiCBSsubscriberInfo.responseBody.0.bLACKLISTField == "Yes" %}
+                            <button type="button" class="btn btn-outline-danger" id='in_blacklist'>
+                                {{ GetiCBSsubscriberInfo.responseBody.0.bLACKLISTField }} </button>
+
+                            {% else %}
+                            <button type="button" class="btn btn-outline-success" id='in_blacklist' style = "pointer-events: none;" >
+                                {{ GetiCBSsubscriberInfo.responseBody.0.bLACKLISTField }} </button>
+                            {% endif %}
+                            
+                            
+                        
+                        
+                        </td>
+
+
+
+
+                        <td width="450"> {{ GetiCBSsubscriberInfo.responseBody.0.activationDateField }} </td>
+                        <td> {{ GetiCBSsubscriberInfo.responseBody.0.lastActivationDateField }} </td>
+                        <td> {{ GetiCBSsubscriberInfo.responseBody.0.lifeCycleStateField }} </td>
+                        <td> {{ GetiCBSsubscriberInfo.responseBody.0.suspendStopField }} </td>
+                    </tr>
+
+
+                    {% for AccBalance in AccBalance %}
+
+
+                    <tr class="table-info">
+                        <td colspan="10" style="text-align: center;"> {{ AccBalance.accountTypeField }} </td>
+                    </tr>
+
+                    <tr>
+                        <td colspan="10">
+
+                            <table class="table mb-0" width="100%">
+                                <thead>
+                                    <tr>
+                                        <th>
+                                            Balance
+                                        </th>
+
+                                        <th>
+                                            Initial balance
+                                        </th>
+
+                                        <th>
+                                            Reserved Balanced
+                                        </th>
+
+                                        <th>
+                                            Account credit
+                                        </th>
+
+                                        <th>
+                                            Applied time
+                                        </th>
+                                        <th>
+                                            Expired time
+                                        </th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                    <tr>
+
+                                        <td>
+
+
+
+
+                                            {{ AccBalance.amountField }}
+
+
+                                        </td>
+
+
+                                        <td>
+                                            {{ AccBalance.initialAmountField }}
+                                        </td>
+
+                                        <td>
+                                            {{ AccBalance.reserveAmountField }}
+                                        </td>
+
+                                        <td>
+                                            {{ AccBalance.accountCreditField }}
+                                        </td>
+
+
+                                        <td>
+                                            {{ AccBalance.applyTimeField }}
+                                        </td>
+
+                                        <td>
+                                            {{ AccBalance.expireTimeField }}
+                                        </td>
+
+                                    </tr>
+                                </tbody>
+
+                            </table>
+
+                        </td>
+                    </tr>
+
+                    {% endfor %}
+
+                    {% elif GetiCBSsubscriberInfo.Message %}
+
+
+                    <tr>
+                        <td colspan="10">
+                            <div class="alert alert-danger" style="width: 50%; margin: 0 auto; text-align: center;">
+                                <i class="fas fa-exclamation-circle"></i> {{ GetiCBSsubscriberInfo.Message }}
+                            </div>
+                        </td>
+                    </tr>
+
+                    {% elif GetiCBSsubscriberInfo %}
+
+                    <tr>
+                        <td colspan="10">
+                            <div class="alert alert-info" style="width: 50%; margin: 0 auto; text-align: center;">
+                                <i class="fas fa-exclamation-circle"></i> RECORD NOT FOUND
+                            </div>
+                        </td>
+                    </tr>
+
+
+                    {% endif %}
+
+
+
+
+
+                </tbody>
+
+            </table>
+
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+{% endblock in_tab %}

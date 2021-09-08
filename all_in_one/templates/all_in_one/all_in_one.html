@@ -1,0 +1,270 @@
+{% extends "layout/index.html" %} {% load static %} {% block title %} All in one integration {% endblock title %} {% block url_level %} All_in_one {% endblock url_level %} {% block css %}
+<!-- all in one  -->
+<link href="{% static 'assets/css/all_in_one.css' %}" rel="stylesheet" type="text/css"> {% endblock css %} {% block content %}
+
+
+<!-- <div class="col-lg-6"> -->
+<div class="card" style="height: 100%; min-height: 80%;">
+    <div class="card-body">
+        <div class="row">
+            <!-- Display -->
+            <div class="col-9">
+
+
+                <ul class="nav nav-tabs" id="myTab" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="billing-tab" data-bs-toggle="tab" data-bs-target="#billing" type="button" role="tab" aria-controls="billing" aria-selected="true"> Billing Information
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="in-tab" data-bs-toggle="tab" data-bs-target="#in" type="button" role="tab" aria-controls="in" aria-selected="false"> IN Information
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="sahal-tab" data-bs-toggle="tab" data-bs-target="#sahal" type="button" role="tab" aria-controls="sahal" aria-selected="false"> Sahal Information
+                        </button>
+                    </li>
+
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="xaliye-tab" data-bs-toggle="tab" data-bs-target="#xaliye" type="button" role="tab" aria-controls="xaliye" aria-selected="false"> Xaliye Information
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="internet-tab" data-bs-toggle="tab" data-bs-target="#internet" type="button" role="tab" aria-controls="internet" aria-selected="false"> ADSL Information
+                        </button>
+                    </li>
+                </ul>
+
+                <div class="tab-content" id="myTabContent" style=" box-shadow: 1px 2px 89px 3px silver; border-radius: 15px;">
+                    <!-- Billing information tab begins here -->
+                    {% include 'all_in_one/tabs/billing_tab.html' %}
+                    <!-- billing information tab ends here -->
+                    <!-- IN information tab beings here -->
+
+                    {% include 'all_in_one/tabs/in_tab.html' %}
+
+                    <!-- IN information tab ends here -->
+
+                    <!-- Sahal information tab begins here -->
+
+                    {% include 'all_in_one/tabs/sahal_tab.html' %}
+
+                    <!-- Sahal information tab ends here -->
+
+                    <!-- Xaliye information tab begins here -->
+                    {% include 'all_in_one/tabs/xaliye_tab.html' %}
+                    <!-- xaliye information tab ends here -->
+
+
+                    <!-- internet information tab begins here -->
+                    {% include 'all_in_one/tabs/internet_tab.html' %}
+                    <!-- internet information tab ends here -->
+                </div>
+
+
+            </div>
+            <!-- Display -->
+            <div class="col-3" style="background-color: snow; border-radius: 5px; box-shadow: 5px 5px 5px 5px #f1eded; ">
+                <form action=" {% url 'all_in_one' %} " method="POST" id="search_all_in_one">
+                    {% csrf_token %}
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" placeholder="Search by callsub or iccd" name="callsub" value='{{ callsub }}' required>
+                        <button class="btn  btn-primary" type="submit" id='search_btn'>Search</button>
+                    </div>
+                </form>
+
+                <!-- <div style="width:10%; margin:0 auto;"> -->
+
+
+                <div class="btn-group-vertical" style="">
+                    <button class="btn  btn-outline-info " style="text-align: left;" id="toggle_customer_change_model">
+                        <i class="fas fa-cash-register"></i> Customer change </button>
+                    <button class="btn  btn-outline-danger "> Customer pasword </button>
+                    <button class="btn  btn-outline-info " id="toggle_sahal_complaints_model"> Sahal complaints
+                    </button>
+                    <button class="btn  btn-outline-info "> Complaints </button>
+                    <button class="btn  btn-outline-info " id="toggle_save_new_user_model"> User registration </button>
+                    <button class="btn  btn-outline-info " id="toggle_phone_directroy_model"> Phone directory </button>
+                    <button class="btn  btn-outline-info " id="toggle_area_code_model"> Area code </button>
+                </div>
+
+
+                <div class="container">
+                    <a href="#" class="button"><span>✓</span>Look I'm a button</a>
+                    <a href="#" class="button orange active"><span>✓</span>Look I'm a Active Button</a>
+                    <a href="#" class="button purple"><span>✓</span>Look I'm a button</a>
+                    <a href="#" class="button turquoise"><span>✓</span>Look I'm a button</a>
+                    <a href="#" class="button red"><span>✓</span>Look I'm a button</a>
+                </div>
+
+            </div>
+            <!-- </div> -->
+        </div>
+    </div>
+</div>
+<!-- </div> -->
+
+
+
+
+<!-- Xaliye blacklist model begins here -->
+
+{% include 'all_in_one/xaliye/blacklist_xaliye_model.html' %} {% include 'all_in_one/xaliye/disable_xaliye_model.html' %} {% include 'all_in_one/xaliye/resetbin_xaliye_model.html' %}
+
+<!-- Xaliye blacklist model ends here -->
+
+
+
+
+
+<!-- in blacklist model begins here -->
+
+{% include 'all_in_one/in/claim_missing_in_model.html' %}
+
+<!-- in blacklist model ends here -->
+
+
+
+<!--  options html begins here -->
+{% include 'all_in_one/options/phone_directory_model.html' %} 
+{% include 'all_in_one/options/area_code_model.html' %} 
+{% include 'all_in_one/options/sahal_complaints_model.html' %} 
+{% include 'all_in_one/options/save_new_user_modal.html' %} 
+{% include 'all_in_one/options/customer_change_model.html' %} 
+
+
+
+<!--  options html ends here -->
+
+
+
+
+<div style="  
+display: none;
+background-color: black; opacity: 0.5;
+height: 100%;
+width: 100%;
+z-index: 9999;
+margin-top: 0px;
+position: absolute;
+top:0;
+right:0;">
+    <span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true" style="position: relative; top: 50%; left: 50%;  width: 100px; height: 100px;  color: white;  "></span>
+</div>
+
+
+
+
+<!--  -->
+
+
+<div class="spin" id="spinner">
+
+
+    <div class="blocks">
+        <div class="block orange"></div>
+        <div class="block blue"></div>
+    </div>
+
+</div>
+
+
+<!--  -->
+
+
+
+
+
+
+
+{% endblock content %} {% block url_level_title %} All in one {% endblock url_level_title %} {% block script %}
+
+
+
+
+
+<!-- Xaliye js  -->
+<script src=" {% static 'assets/js/xaliye.js' %} "></script>
+<script src=" {% static 'assets/js/xaliye/blacklist_xaliye.js' %} "></script>
+<script src=" {% static 'assets/js/xaliye/disable_xaliye.js' %} "></script>
+<script src=" {% static 'assets/js/xaliye/resetbin_xaliye.js' %} "></script>
+
+<!-- xaliye js -->
+
+
+
+<!-- IN js begins here -->
+
+
+
+
+
+<script src=" {% static 'assets/js/in/claim_missing_in.js' %} "></script>
+<script src=" {% static 'assets/js/in/blacklist_in.js' %} "></script>
+<script src=" {% static 'assets/js/in.js' %} "></script>
+
+<!-- IN js ends here -->
+
+
+<!--  options js begins here -->
+
+
+
+<!-- Phone directory js begins here -->
+<script src=" {% static 'assets/js/options/phone_directory.js' %} "></script>
+<!-- Phone directory js ends here -->
+
+
+<!-- Area code js begins here -->
+<script src=" {% static 'assets/js/options/area_code.js' %} "></script>
+<!-- Area code js ends here -->
+
+<!-- Sahal complaints js begins here -->
+<script src=" {% static 'assets/js/options/sahal_complaints.js' %} "></script>
+<!-- Sahal complaints js ends here -->
+
+
+<!-- save new users js begins here -->
+<script src=" {% static 'assets/js/options/save_new_user.js' %} "></script>
+<!-- save new users js ends here -->
+
+
+<!-- change customer js begins here -->
+<script src=" {% static 'assets/js/options/customer_change.js' %} "></script>
+<!-- change customer js ends here -->
+
+<!--  options js begins here -->
+
+
+
+
+<script>
+    $("document").ready(function() {
+
+
+
+        // $('#blacklist_xaliye_model').on('show', function () {
+
+        //     alert("you bout to close me")
+        // });
+
+        $("#search_all_in_one").on("submit", function() {
+            // alert("hi we currently submitting")
+            $("#search_btn").attr("disabled", true);
+            $("#search_btn").html(`<span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span>`);
+
+            $("#spinner").css("display", "flex")
+
+            $("body").css("overflow", "hidden")
+
+
+
+
+            // $('body').html(`<span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span>`)
+
+        })
+
+    });
+</script>
+
+{% endblock script %}
