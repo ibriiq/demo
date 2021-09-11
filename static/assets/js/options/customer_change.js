@@ -1,7 +1,7 @@
 $("document").ready(function() {
     $("#toggle_customer_change_model").on("click", function() {
 
-        $("#customer_change_model").find("input,select").val('')
+        $("#customer_change_model").find(".empty").val('')
         $("#customer_change_model").find("input,select").removeClass("is-valid is-invalid")
 
         $("#UpdateCustChange_btn").attr("disabled", false)

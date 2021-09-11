@@ -17,13 +17,13 @@
                     {% csrf_token %}
                     <div class="col-md-12">
                         <label for="callsub_sahal_comp" class="form-label">Callsub</label>
-                        <input type="number" class="form-control" id="callsub_sahal_comp" name="callsub" autofocus>
+                        <input type="number" class="form-control" id="callsub_sahal_comp" name="callsub" value="{{ callsub }}"  autofocus>
                         <small id="errorforcallsub_sahal_comp" class="invalid-feedback"> </small>
                     </div>
                     <div class="col-md-12">
                         <label for="Custname_sahal_comp" class="form-label">Customer name</label>
 
-                        <input type="text" class="form-control" id="Custname_sahal_comp" name="Custname" readonly style="cursor: not-allowed;">
+                        <input type="text" class="form-control" id="Custname_sahal_comp" name="Custname" class="empty" readonly style="cursor: not-allowed;">
 
                         <small id="errorforCustname_sahal_comp" class="invalid-feedback"> </small>
                     </div>
@@ -32,7 +32,7 @@
                     <div class="col-md-12">
                         <label for="comptype" class="form-label">Complaints type </label>
 
-                        <select class="form-control" name="comptype" id="comptype" style="width: 100%;">
+                        <select class="form-control" name="comptype" id="comptype" style="width: 100%;" class="empty"> 
                             <option value="">Select Complaints type</option>
 
                             {% for CompType in CompType %}
@@ -48,7 +48,7 @@
                     <div class="col-md-12">
                         <label for="Center" class="form-label">Center </label>
 
-                        <select class="form-control" name="Center" id="Center" style="width: 100%;">
+                        <select class="form-control" name="Center" id="Center" style="width: 100%;" class="empty">
                             <option value="">Select center</option>
 
 
@@ -65,7 +65,7 @@
                     <div class="col-md-12">
                         <label for="reciever" class="form-label">Reciever</label>
 
-                        <input type="number" class="form-control" id="reciever" name="reciever">
+                        <input type="number" class="form-control" id="reciever" name="reciever" class="empty">
 
                         <small id="errorforreciever" class="invalid-feedback"> </small>
                     </div>
@@ -74,7 +74,7 @@
                     <div class="col-md-12">
                         <label for="amount" class="form-label">amount</label>
 
-                        <input type="numver" class="form-control" id="amount" name="amount">
+                        <input type="numver" class="form-control" id="amount" name="amount" class="empty" >
 
                         <small id="errorforamount" class="invalid-feedback"> </small>
                     </div>

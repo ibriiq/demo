@@ -4,12 +4,12 @@ from django.urls import path
 from django.urls.conf import include
 from django.conf.urls.static import static
 from django.conf import settings
-from . import views
-from .all_views import xaliye, IN, options
+from . import view
+from .views import xaliye, IN, options
 from users.decorators import login_required
 
 urlpatterns = [
-    path('', login_required(views.all_in_one) , name = "all_in_one"),
+    path('', login_required(view.all_in_one) , name = "all_in_one"),
 
     # xaliye urls begins here
     path('xaliye/UpdateXallyeBlacklist', login_required(xaliye.UpdateXallyeBlacklist) , name = "UpdateXallyeBlacklist"),

@@ -9,6 +9,7 @@ requests = "*"
 pymysql = "*"
 django-sslserver = "*"
 mod-wsgi = "*"
+aiohttp = "*"
 
 [dev-packages]
 

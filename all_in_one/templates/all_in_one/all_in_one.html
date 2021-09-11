@@ -1,4 +1,7 @@
-{% extends "layout/index.html" %} {% load static %} {% block title %} All in one integration {% endblock title %} {% block url_level %} All_in_one {% endblock url_level %} {% block css %}
+{% extends "layout/index.html" %} 
+{% load static %} 
+{% block title %} All in one integration {% endblock title %} 
+{%block url_level %} All_in_one {% endblock url_level %} {% block css %}
 <!-- all in one  -->
 <link href="{% static 'assets/css/all_in_one.css' %}" rel="stylesheet" type="text/css"> {% endblock css %} {% block content %}
 
@@ -13,29 +16,35 @@
 
                 <ul class="nav nav-tabs" id="myTab" role="tablist">
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link active" id="billing-tab" data-bs-toggle="tab" data-bs-target="#billing" type="button" role="tab" aria-controls="billing" aria-selected="true"> Billing Information
+                        <button class="nav-link active" id="billing-tab" data-bs-toggle="tab" data-bs-target="#billing"
+                            type="button" role="tab" aria-controls="billing" aria-selected="true"> Billing Information
                         </button>
                     </li>
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link" id="in-tab" data-bs-toggle="tab" data-bs-target="#in" type="button" role="tab" aria-controls="in" aria-selected="false"> IN Information
+                        <button class="nav-link" id="in-tab" data-bs-toggle="tab" data-bs-target="#in" type="button"
+                            role="tab" aria-controls="in" aria-selected="false"> IN Information
                         </button>
                     </li>
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link" id="sahal-tab" data-bs-toggle="tab" data-bs-target="#sahal" type="button" role="tab" aria-controls="sahal" aria-selected="false"> Sahal Information
+                        <button class="nav-link" id="sahal-tab" data-bs-toggle="tab" data-bs-target="#sahal"
+                            type="button" role="tab" aria-controls="sahal" aria-selected="false"> Sahal Information
                         </button>
                     </li>
 
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link" id="xaliye-tab" data-bs-toggle="tab" data-bs-target="#xaliye" type="button" role="tab" aria-controls="xaliye" aria-selected="false"> Xaliye Information
+                        <button class="nav-link" id="xaliye-tab" data-bs-toggle="tab" data-bs-target="#xaliye"
+                            type="button" role="tab" aria-controls="xaliye" aria-selected="false"> Xaliye Information
                         </button>
                     </li>
                     <li class="nav-item" role="presentation">
-                        <button class="nav-link" id="internet-tab" data-bs-toggle="tab" data-bs-target="#internet" type="button" role="tab" aria-controls="internet" aria-selected="false"> ADSL Information
+                        <button class="nav-link" id="internet-tab" data-bs-toggle="tab" data-bs-target="#internet"
+                            type="button" role="tab" aria-controls="internet" aria-selected="false"> ADSL Information
                         </button>
                     </li>
                 </ul>
 
-                <div class="tab-content" id="myTabContent" style=" box-shadow: 1px 2px 89px 3px silver; border-radius: 15px;">
+                <div class="tab-content" id="myTabContent"
+                    style=" box-shadow: 1px 2px 89px 3px silver; border-radius: 15px;">
                     <!-- Billing information tab begins here -->
                     {% include 'all_in_one/tabs/billing_tab.html' %}
                     <!-- billing information tab ends here -->
@@ -64,11 +73,13 @@
 
             </div>
             <!-- Display -->
-            <div class="col-3" style="background-color: snow; border-radius: 5px; box-shadow: 5px 5px 5px 5px #f1eded; ">
+            <div class="col-3"
+                style="background-color: snow; border-radius: 5px; box-shadow: 5px 5px 5px 5px #f1eded; ">
                 <form action=" {% url 'all_in_one' %} " method="POST" id="search_all_in_one">
                     {% csrf_token %}
                     <div class="input-group mb-3">
-                        <input type="text" class="form-control" placeholder="Search by callsub or iccd" name="callsub" value='{{ callsub }}' required>
+                        <input type="text" class="form-control" placeholder="Search by callsub or iccd" name="callsub"
+                            value='{{ callsub }}' required>
                         <button class="btn  btn-primary" type="submit" id='search_btn'>Search</button>
                     </div>
                 </form>
@@ -77,25 +88,23 @@
 
 
                 <div class="btn-group-vertical" style="">
-                    <button class="btn  btn-outline-info " style="text-align: left;" id="toggle_customer_change_model">
-                        <i class="fas fa-cash-register"></i> Customer change </button>
-                    <button class="btn  btn-outline-danger "> Customer pasword </button>
-                    <button class="btn  btn-outline-info " id="toggle_sahal_complaints_model"> Sahal complaints
-                    </button>
-                    <button class="btn  btn-outline-info "> Complaints </button>
-                    <button class="btn  btn-outline-info " id="toggle_save_new_user_model"> User registration </button>
-                    <button class="btn  btn-outline-info " id="toggle_phone_directroy_model"> Phone directory </button>
-                    <button class="btn  btn-outline-info " id="toggle_area_code_model"> Area code </button>
+
+         
+                    
+                    <div class="box bg-1">
+                        <button class="button button--itzel button--text-thick" id="toggle_customer_change_model"><i class="button__icon fas fa-wrench"></i><span>Customer change</span></button>
+                        <button class="button button--itzel button--text-thick" id="toggle_sahal_complaints_model"><i class="button__icon far fa-edit"></i><span>Sahal complaints</span></button>
+                        <button class="button button--itzel button--text-thick" id="toggle_sahal_complaints_model">  <img class='button__icon'  src=" {% static 'assets/images/girl.png' %} " style="width: 80px;"> <span>Complaints</span></button>
+                        {% if request.session.loggin_user.groupid == "1" %}
+                        <button class="button button--itzel button--text-thick" id="toggle_save_new_user_model"><i class="button__icon fas fa-user-plus"></i><span>User registration</span></button>
+                        {% endif %}
+                        <button class="button button--itzel button--text-thick" id="toggle_phone_directroy_model"><img class='button__icon'  src=" {% static 'assets/images/phonebook.png' %} " style="width: 70px;"><span>Phone directory</span></button>
+                        <button class="button button--itzel button--text-thick" id="toggle_area_code_model"><img class='button__icon'  src=" {% static 'assets/images/area_code.png' %} " style="width: 70px;"></i><span>Area code</span></button>
+                    </div>
+
                 </div>
 
 
-                <div class="container">
-                    <a href="#" class="button"><span>✓</span>Look I'm a button</a>
-                    <a href="#" class="button orange active"><span>✓</span>Look I'm a Active Button</a>
-                    <a href="#" class="button purple"><span>✓</span>Look I'm a button</a>
-                    <a href="#" class="button turquoise"><span>✓</span>Look I'm a button</a>
-                    <a href="#" class="button red"><span>✓</span>Look I'm a button</a>
-                </div>
 
             </div>
             <!-- </div> -->
@@ -109,7 +118,9 @@
 
 <!-- Xaliye blacklist model begins here -->
 
-{% include 'all_in_one/xaliye/blacklist_xaliye_model.html' %} {% include 'all_in_one/xaliye/disable_xaliye_model.html' %} {% include 'all_in_one/xaliye/resetbin_xaliye_model.html' %}
+{% include 'all_in_one/xaliye/blacklist_xaliye_model.html' %} 
+{% include 'all_in_one/xaliye/disable_xaliye_model.html'%} 
+{% include 'all_in_one/xaliye/resetbin_xaliye_model.html' %}
 
 <!-- Xaliye blacklist model ends here -->
 
@@ -126,11 +137,11 @@
 
 
 <!--  options html begins here -->
-{% include 'all_in_one/options/phone_directory_model.html' %} 
-{% include 'all_in_one/options/area_code_model.html' %} 
-{% include 'all_in_one/options/sahal_complaints_model.html' %} 
-{% include 'all_in_one/options/save_new_user_modal.html' %} 
-{% include 'all_in_one/options/customer_change_model.html' %} 
+{% include 'all_in_one/options/phone_directory_model.html' %}
+{% include 'all_in_one/options/area_code_model.html' %}
+{% include 'all_in_one/options/sahal_complaints_model.html' %}
+{% include 'all_in_one/options/save_new_user_modal.html' %}
+{% include 'all_in_one/options/customer_change_model.html' %}
 
 
 
@@ -149,7 +160,8 @@ margin-top: 0px;
 position: absolute;
 top:0;
 right:0;">
-    <span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true" style="position: relative; top: 50%; left: 50%;  width: 100px; height: 100px;  color: white;  "></span>
+    <span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"
+        style="position: relative; top: 50%; left: 50%;  width: 100px; height: 100px;  color: white;  "></span>
 </div>
 
 
@@ -239,7 +251,7 @@ right:0;">
 
 
 <script>
-    $("document").ready(function() {
+    $("document").ready(function () {
 
 
 
@@ -248,7 +260,7 @@ right:0;">
         //     alert("you bout to close me")
         // });
 
-        $("#search_all_in_one").on("submit", function() {
+        $("#search_all_in_one").on("submit", function () {
             // alert("hi we currently submitting")
             $("#search_btn").attr("disabled", true);
             $("#search_btn").html(`<span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span>`);

@@ -11,14 +11,26 @@
         {% endblock title %} </title>
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta content="Premium Multipurpose Admin & Dashboard Template" name="description">
-    <meta content="Themesbrand" name="author">
+    <meta content="Callcenter" name="description">
+    <!-- <meta content="Themesbrand" name="author"> -->
+
+
+
+    <!-- ButtonStylesInspiration Css-->
+
+    <link href="{% static 'assets/ButtonStylesInspiration/css/base.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'assets/ButtonStylesInspiration/css/buttons.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'assets/ButtonStylesInspiration/css/normalize.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'assets/ButtonStylesInspiration/css/vicons-font.css' %}" rel="stylesheet" type="text/css">
+
+    <!-- ButtonStylesInspiration Css-->
 
     <!-- select 2 -->
     <link href="{% static 'assets/libs/select2/css/select2.min.css' %}" rel="stylesheet" type="text/css">
 
     <!-- App favicon -->
-    <link rel="shortcut icon" href=" {% static 'assets/images/favicon.ico' %}">
+    <link rel="shortcut icon" href=" {% static 'assets/images/icons8-call-center-agent-100.png' %}">
+    
 
     <link href="{% static 'assets/libs/chartist/chartist.min.css' %}" rel="stylesheet">
 
@@ -35,103 +47,18 @@
     <link href="{% static 'assets/css/app.min.css' %}" rel="stylesheet" type="text/css">
 
 
+
+
+    
+
+
+
+
+
     {% block css %}
 
     {% endblock css %}
 
-
-
-
-    <!-- <style>
-        .iziToast{
-            min-height: 200px;
-        }
-    </style> -->
-
-    <!-- <style>
-
-body { text-align: center; padding: 40px; background: #F5F5F5; }
-.container { width: 500px; text-align: center; margin: auto;}
-.copyright { margin-top: 50px; font-size: 12px; text-transform: uppercase; }
-.copyright a { text-decoration: none; padding: 5px;background: #c0392b; color: #FFFFFF; }
-.copyright a:hover { background: transparent; color: #c0392b; }
-
-.button {
-  display: inline-block;
-  height: 50px;
-  line-height: 50px;
-  padding-right: 30px;
-  padding-left: 70px;
-  position: relative;
-  background-color:rgb(41,127,184);
-  color:rgb(255,255,255);
-  text-decoration: none;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  margin-bottom: 15px;
-  
-  
-  border-radius: 5px;
-  -moz-border-radius: 5px;
-  -webkit-border-radius: 5px;
-  text-shadow:0px 1px 0px rgba(0,0,0,0.5);
--ms-filter:"progid:DXImageTransform.Microsoft.dropshadow(OffX=0,OffY=1,Color=#ff123852,Positive=true)";zoom:1;
-filter:progid:DXImageTransform.Microsoft.dropshadow(OffX=0,OffY=1,Color=#ff123852,Positive=true);
-
-  -moz-box-shadow:0px 2px 2px rgba(0,0,0,0.2);
-  -webkit-box-shadow:0px 2px 2px rgba(0,0,0,0.2);
-  box-shadow:0px 2px 2px rgba(0,0,0,0.2);
-  -ms-filter:"progid:DXImageTransform.Microsoft.dropshadow(OffX=0,OffY=2,Color=#33000000,Positive=true)";
-filter:progid:DXImageTransform.Microsoft.dropshadow(OffX=0,OffY=2,Color=#33000000,Positive=true);
-}
-
-.button span {
-  position: absolute;
-  left: 0;
-  width: 50px;
-  background-color:rgba(0,0,0,0.5);
-  
-  -webkit-border-top-left-radius: 5px;
--webkit-border-bottom-left-radius: 5px;
--moz-border-radius-topleft: 5px;
--moz-border-radius-bottomleft: 5px;
-border-top-left-radius: 5px;
-border-bottom-left-radius: 5px;
-border-right: 1px solid  rgba(0,0,0,0.15);
-}
-
-.button:hover span, .button.active span {
-  background-color:rgb(0,102,26);
-  border-right: 1px solid  rgba(0,0,0,0.3);
-}
-
-.button:active {
-  margin-top: 2px;
-  margin-bottom: 13px;
-
-  -moz-box-shadow:0px 1px 0px rgba(255,255,255,0.5);
--webkit-box-shadow:0px 1px 0px rgba(255,255,255,0.5);
-box-shadow:0px 1px 0px rgba(255,255,255,0.5);
--ms-filter:"progid:DXImageTransform.Microsoft.dropshadow(OffX=0,OffY=1,Color=#ccffffff,Positive=true)";
-filter:progid:DXImageTransform.Microsoft.dropshadow(OffX=0,OffY=1,Color=#ccffffff,Positive=true);
-}
-
-.button.orange {
-  background: #FF7F00;
-}
-
-.button.purple {
-  background: #8e44ad;
-}
-
-.button.turquoise {
-  background: #1abc9c;
-}
-
-.button.red {
-  background: #e74c3c;
-}
-    </style> -->
 
 
 
@@ -434,23 +361,6 @@ filter:progid:DXImageTransform.Microsoft.dropshadow(OffX=0,OffY=1,Color=#ccfffff
 
                                     </li>
                                 </ol>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="float-end d-none d-md-block">
-                                    <div class="dropdown">
-                                        <button class="btn btn-primary  dropdown-toggle" type="button"
-                                            id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-                                            <i class="mdi mdi-cog me-2"></i> Settings
-                                        </button>
-                                        <div class="dropdown-menu dropdown-menu-end">
-                                            <a class="dropdown-item" href="#">Action</a>
-                                            <a class="dropdown-item" href="#">Another action</a>
-                                            <a class="dropdown-item" href="#">Something else here</a>
-                                            <div class="dropdown-divider"></div>
-                                            <a class="dropdown-item" href="#">Separated link</a>
-                                        </div>
-                                    </div>
-                                </div>
                             </div>
                         </div>
                     </div>

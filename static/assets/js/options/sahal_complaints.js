@@ -1,7 +1,9 @@
 $("document").ready(function() {
     $("#toggle_sahal_complaints_model").on("click", function() {
 
-        $("#sahal_complaints_model").find("input,select").val('')
+        $("#sahal_complaints_model").find(".empty").val('')
+
+
         $("#sahal_complaints_model").find("input,select").removeClass("is-valid is-invalid")
 
         $("#SaveSahalComp_btn").attr("disabled", false)

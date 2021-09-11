@@ -18,13 +18,13 @@
                     {% csrf_token %}
                     <div class="col-md-4">
                         <label for="callsub_customer_change" class="form-label">Callsub</label>
-                        <input type="number" class="form-control" id="callsub_customer_change" name="callsub" autofocus>
+                        <input type="number" class="form-control" id="callsub_customer_change" name="callsub"  value="{{ callsub }}" autofocus>
                         <small id="errorforcallsub_customer_change" class="invalid-feedback"> </small>
                     </div>
                     <div class="col-md-8">
                         <label for="Descrip" class="form-label">Description</label>
 
-                        <input type="text" class="form-control" id="Descrip" name="Descrip">
+                        <input type="text" class="form-control" id="Descrip" name="Descrip" class="empty">
 
                         <small id="errorforDescrip" class="invalid-feedback"> </small>
                     </div>
@@ -33,7 +33,7 @@
                     <div class="col-md-12">
                         <label for="TranType" class="form-label"> Tran type</label>
 
-                        <select class="form-control" name="TranType" id="TranType" style="width: 100%;">
+                        <select class="form-control" name="TranType" id="TranType" style="width: 100%;" class="empty">
                             <option value="">Select Tran type </option>
 
                             <option value="Cash"> Cash </option>
@@ -53,7 +53,7 @@
                     <div class="col-md-12">
                         <label for="CGS" class="form-label"> Gsm features </label>
 
-                        <select class="form-control" name="CGS" id="CGS" style="width: 100%;">
+                        <select class="form-control" name="CGS" id="CGS" style="width: 100%;" class="empty">
                             <option value="">Select Gsm features </option>
 
                             {% for gsmfeatures in gsmfeatures %}

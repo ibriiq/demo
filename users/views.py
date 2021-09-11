@@ -60,11 +60,11 @@ def ccare_login(request):
                     'userid': login["responseBody"][0]["userid"],
                     'FullName': login["responseBody"][0]["FullName"],
                     'UserCenter': login["responseBody"][0]["UserCenter"],
+                    'groupid': login["responseBody"][0]["groupid"],
                     'UserStatus': login["responseBody"][0]["UserStatus"],
                     'BalGroups': login["responseBody"][0]["BalGroups"],
                     'AllowToViewRestrictedBalGrps': login["responseBody"][0]["AllowToViewRestrictedBalGrps"],
                     'EmployeeID': login["responseBody"][0]["EmployeeID"],
-                    'MobileNo': login["responseBody"][0]["MobileNo"],
                     'MobileNo': login["responseBody"][0]["MobileNo"],
                     }
 
