@@ -28,7 +28,6 @@ handler405 = 'layout.views.handle_500'
 urlpatterns = [
     path('', include("users.urls")),
     path('', include("layout.urls")),
-    path('all_in_one/', include("all_in_one.urls")),
     path('admin/', admin.site.urls),
 ]  + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 

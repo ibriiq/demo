@@ -46,8 +46,6 @@ INSTALLED_APPS = [
     # installed apps custom ones
     'users',
     'layout',
-    'all_in_one',
-    "sslserver",
 ]
 
 MIDDLEWARE = [
