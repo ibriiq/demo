@@ -5,10 +5,6 @@ name = "pypi"
 
 [packages]
 django = "3.2.6"
-requests = "*"
-pymysql = "*"
-django-sslserver = "*"
-aiohttp = "*"
 
 [dev-packages]
 

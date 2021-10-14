@@ -12,7 +12,6 @@ from .models import userinfo
 import json
 
 import random
-import requests
 
 
 @Already_authenticated_users_arenot_allowed
