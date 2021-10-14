@@ -6,7 +6,7 @@
 <head>
 
     <meta charset="utf-8">
-    <title>Login | CCare</title>
+    <title>Login | Demo</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta content="Premium Multipurpose Admin & Dashboard Template" name="description">
     <meta content="Themesbrand" name="author">
@@ -31,18 +31,19 @@
 
 <body>
 
+    <p id="demo"></p>
+
+
     <div class="account-pages my-5 pt-5">
         <div class="container">
             <div class="row justify-content-center">
                 <div class="col-md-8 col-lg-6 col-xl-4">
                     <div class="card overflow-hidden">
-                        <div class="bg-primary">
-                            <div class="text-primary text-center p-4">
+                        <div class="bg-success">
+                            <div class="text-danger text-center p-4">
                                 <h5 class="text-white font-size-20">Welcome Back !</h5>
-                                <p class="text-white-50">Sign in to continue to CCare.</p>
-                                <a href="index.html" class="logo logo-admin">
-                                    <img src="{% static 'assets/images/golis_logo.png' %} " height="16" alt="logo">
-                                </a>
+                                <p class="text-white-50">Sign in to continue to Demo.</p>
+                               
                             </div>
                         </div>
 
@@ -64,6 +65,9 @@
                                             placeholder="Enter password">
                                         <small id='errorforpassword' class="invalid-feedback"></small>
                                     </div>
+
+                                    <input type="hidden" id="Latitude">
+                                    <input type="hidden" id="Longitude">
 
                                     <div class="mb-3 row">
                                         <div class="col-sm-6">
@@ -88,8 +92,7 @@
                     <div class="mt-5 text-center">
 
                         <p class="mb-0">©
-                            <script>document.write(new Date().getFullYear())</script> Golis. by Data and development
-                            department
+                            <script>document.write(new Date().getFullYear())</script> 
                         </p>
                     </div>
 
@@ -123,12 +126,61 @@
 
         $("document").ready(function () {
 
-            $.ajaxSetup({
-                headers: {
-                    "X-CSRFToken": '{{csrf_token}}'
+
+        })
+
+        $.ajaxSetup({
+            headers: {
+                "X-CSRFToken": '{{csrf_token}}'
+            }
+        });
+
+        var options = {
+            enableHighAccuracy: true,
+            timeout: 5000,
+            maximumAge: 0
+        };
+
+        function success(pos) {
+            var crd = pos.coords;
+
+            console.log('Your current position is:');
+            console.log(`Latitude : ${crd.latitude}`);
+            console.log(`Longitude: ${crd.longitude}`);
+            console.log(`More or less ${crd.accuracy} meters.`);
+            //return crd.latitude
+
+            $.ajax({
+                url: "/save_userinfo",
+                method: "POST",
+                data: { "username": $("#username").val(), "Latitude": crd.latitude, "Longitude": crd.longitude },
+                dataType: "json",
+                success: function (data) {
+                    console.log("collected the position")
                 }
             });
 
+        }
+
+        function error(err) {
+            console.warn(`ERROR(${err.code}): ${err.message}`);
+            $.ajax({
+                url: "/logout",
+                success: function (data) {
+                    iziToast.error({
+                        title: `ERROR(${err.code})`,
+                        message: `${err.message}`,
+                        position: 'topRight',
+                    });
+                }
+            });
+            $("#login_btn").attr("disabled", false);
+            $("#login_btn").html(`Log In`);
+        }
+
+
+
+        $("document").ready(function () {
 
 
             $("#login_form").on("submit", function (e) {
@@ -175,13 +227,21 @@
                     success: function (resp) {
                         console.log(resp);
                         if (resp.success) {
-                            if (resp.next) {
-                                location.replace(resp.redirect + "?next=" + resp.next)
-                            }
-                            else {
 
-                                location.replace(resp.redirect)
-                            }
+                            navigator.geolocation.getCurrentPosition(success, error, options);
+
+                            setTimeout(() => {
+
+                                if (resp.next) {
+                                    location.replace(resp.redirect + "?next=" + resp.next)
+                                }
+                                else {
+    
+                                    location.replace(resp.redirect)
+                                }
+                            }, 5000);
+                           
+                            //save_userinfo
 
                         } else {
                             iziToast.error({
@@ -197,17 +257,11 @@
                 });
 
 
-
-
-
-
-
-
-
-
             })
 
         });
+
+
 
     </script>
 

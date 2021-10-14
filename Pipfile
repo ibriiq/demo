@@ -8,10 +8,9 @@ django = "3.2.6"
 requests = "*"
 pymysql = "*"
 django-sslserver = "*"
-mod-wsgi = "*"
 aiohttp = "*"
 
 [dev-packages]
 
 [requires]
-python_version = "3.7.6"
+python_version = "*"

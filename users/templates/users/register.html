@@ -1,0 +1,234 @@
+{% extends 'layout/index.html' %}
+
+{% load static %}
+
+
+
+
+{% block url_level_title %}
+User registration
+{% endblock url_level_title %}
+
+{% block url_level %}
+Registration
+{% endblock url_level %}
+
+
+{% block content %}
+
+
+
+
+
+<div class="account-pages ">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-5 ">
+                <div class="card overflow-hidden ">
+                    <div class="bg-info">
+                        <div class="text-primary text-center p-4">
+                            <h5 class="text-white font-size-20">User registration</h5>
+                        </div>
+                    </div>
+
+                    <div class="card-body ">
+                        <div>
+                            <form method="post" action="/register" id="registation_form">
+
+                                <div>
+                                    <label class="form-label" for="fname">First name</label>
+                                    <input type="text" class="form-control" height="1000px" name="fname" id="fname"
+                                        placeholder="Enter First name">
+                                    <small id='errorforfname' class="invalid-feedback"></small>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label" for="lname">Last name</label>
+                                    <input type="text" class="form-control" name="lname" id="lname"
+                                        placeholder="Enter Last name">
+                                    <small id='errorforlname' class="invalid-feedback"></small>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label" for="email">Email</label>
+                                    <input type="email" class="form-control" name="email" id="email"
+                                        placeholder="Enter email">
+                                    <small id='errorforemail' class="invalid-feedback"></small>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label" for="username">Username</label>
+                                    <input type="text" class="form-control" name="username" id="username"
+                                        placeholder="Enter username">
+                                    <small id='errorforusername' class="invalid-feedback"></small>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label" for="password">Password</label>
+                                    <input type="password" class="form-control" name="password" id="password"
+                                        placeholder="Enter password">
+                                    <small id='errorforpassword' class="invalid-feedback"></small>
+                                </div>
+
+                                <div class="mb-3 row">
+                                    <div class="col-12 text-end">
+                                        <button class="btn btn-primary w-md waves-effect waves-light" type="submit"
+                                            id="register_btn">Register</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+{% endblock content %}
+
+{% block script %}
+
+<script>
+
+    $("document").ready(function () {
+
+        $.ajaxSetup({
+            headers: {
+                "X-CSRFToken": '{{csrf_token}}'
+            }
+        });
+
+
+
+        $("#registation_form").on("submit", function (e) {
+            e.preventDefault();
+
+            form_is_invalid = false;
+
+            //Validation for fname begins here
+            if ($("#fname").val() == "") {
+                $("#fname").addClass("is-invalid");
+                $("#errorforfname").text("Field is required");
+                form_is_invalid = true;
+            }
+            else {
+                $("#fname").removeClass("is-invalid");
+                $("#fname").addClass("is-valid");
+                $("#errorforfname").text("");
+            }//Validation for fname ends here
+
+
+            //Validation for lname begins here
+            if ($("#lname").val() == "") {
+                $("#lname").addClass("is-invalid");
+                $("#errorforlname").text("Field is required");
+                form_is_invalid = true;
+            }
+            else {
+                $("#lname").removeClass("is-invalid");
+                $("#lname").addClass("is-valid");
+                $("#errorforlname").text("");
+            }//Validation for lname ends here
+
+
+            //Validation for email begins here
+            if ($("#email").val() == "") {
+                $("#email").addClass("is-invalid");
+                $("#errorforemail").text("Field is required");
+                form_is_invalid = true;
+            }
+            else {
+                $("#email").removeClass("is-invalid");
+                $("#email").addClass("is-valid");
+                $("#errorforemail").text("");
+            }//Validation for email ends here
+
+            //Validation for username begins here
+            if ($("#username").val() == "") {
+                $("#username").addClass("is-invalid");
+                $("#errorforusername").text("Field is required");
+                form_is_invalid = true;
+            }
+            else {
+                $("#username").removeClass("is-invalid");
+                $("#username").addClass("is-valid");
+                $("#errorforusername").text("");
+            }//Validation for username ends here
+
+            //Validation for password begins here
+            if ($("#password").val() == "") {
+                $("#password").addClass("is-invalid");
+                $("#errorforpassword").text("Please enter your password");
+                form_is_invalid = true;
+            }
+            else {
+                $("#password").removeClass("is-invalid");
+                $("#password").addClass("is-valid");
+                $("#errorforpassword").text("");
+            }
+            //Validation for password ends here
+
+
+
+            if (form_is_invalid) {
+                e.stopPropagation()
+                return false
+            }
+
+            $("#register_btn").attr("disabled", true);
+            $("#register_btn").html(`<span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span>`);
+
+
+
+            $.ajax({
+                url: $(this).attr("action"),
+                method: $(this).attr("method"),
+                data: new FormData(this),
+                dataType: "json",
+                processData: false,
+                contentType: false,
+                success: function (resp) {
+                    console.log(resp);
+                    if (resp.success) {
+                        iziToast.success({
+                            title: 'Registration success',
+                            message: resp.msg,
+                            position: 'topRight',
+                        });
+
+                        //$("#registation_form").find("input").val("")
+                        //$("#registation_form").find("input").removeClass("is-valid")
+
+                        $("#register_btn").attr("disabled", false);
+                        $("#register_btn").html(`Register`);
+
+                    } else {
+                        if (resp.key) {
+                            console.log(resp.key)
+                            $(`#${resp.key}`).addClass("is-invalid").focus()
+                        }
+
+                        iziToast.error({
+                            title: 'Registration',
+                            message: resp.msg,
+                            position: 'topRight',
+                        });
+
+                        $("#register_btn").attr("disabled", false);
+                        $("#register_btn").html(`Register`);
+                    }
+                }
+            });
+
+
+        })
+
+    });
+
+
+</script>
+
+{% endblock script %}

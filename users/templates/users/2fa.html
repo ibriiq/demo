@@ -6,7 +6,7 @@
 <head>
 
     <meta charset="utf-8">
-    <title>2FA | CCare</title>
+    <title>2FA | demo</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta content="Premium Multipurpose Admin & Dashboard Template" name="description">
     <meta content="Themesbrand" name="author">
@@ -48,7 +48,7 @@
 
                         <div class="card-body p-4">
                             <div class="p-3">
-                                <form class="mt-4" action="{% url 'ccare_2fa' %}" method="post" id="2fa_form">
+                                <form class="mt-4" action="{% url 'demo_2fa' %}" method="post" id="2fa_form">
                                     {% csrf_token %}
                                     
                                     <input type="hidden" name="next" id="next" value= {{ next }} >

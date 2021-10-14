@@ -1,9 +1,9 @@
-from ccare.settings import DEBUG
+from demo.settings import DEBUG
 from django.contrib import admin
 from django.urls import path
 from django.urls.conf import include
 from . import views
-from users.decorators import login_required
+from django.contrib.auth.decorators import login_required
 
 
 
