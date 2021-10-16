@@ -70,12 +70,25 @@ Registration
                                     <small id='errorforpassword' class="invalid-feedback"></small>
                                 </div>
 
+                                <div class="mb-3">
+                                    <label class="form-label" for="usertype">User type</label>
+                                    <select class="form-control" name="usertype" id="usertype">
+                                        <option value="">Select user type</option>
+                                        <option value="True">Super user</option>
+                                        <option value="False">Basic user</option>
+                                    </select>
+                                    <small id='errorforusertype' class="invalid-feedback"></small>
+                                </div>
+
+
                                 <div class="mb-3 row">
                                     <div class="col-12 text-end">
                                         <button class="btn btn-primary w-md waves-effect waves-light" type="submit"
                                             id="register_btn">Register</button>
                                     </div>
                                 </div>
+
+
                             </form>
                         </div>
                     </div>
@@ -152,6 +165,11 @@ Registration
                 $("#errorforusername").text("Field is required");
                 form_is_invalid = true;
             }
+            else  if ($("#username").val().split(" ").length >= 2) {
+                $("#username").addClass("is-invalid");
+                $("#errorforusername").text("USername shouldn't have space");
+                form_is_invalid = true;
+            }
             else {
                 $("#username").removeClass("is-invalid");
                 $("#username").addClass("is-valid");
@@ -170,6 +188,24 @@ Registration
                 $("#errorforpassword").text("");
             }
             //Validation for password ends here
+
+
+              //Validation for usertype begins here
+              if ($("#usertype").val() == "") {
+                $("#usertype").addClass("is-invalid");
+                $("#errorforusertype").text("Please enter your usertype");
+                form_is_invalid = true;
+            }
+            else {
+                $("#usertype").removeClass("is-invalid");
+                $("#usertype").addClass("is-valid");
+                $("#errorforusertype").text("");
+            }
+            //Validation for usertype ends here
+
+            
+
+
 
 
 

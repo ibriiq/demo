@@ -80,6 +80,7 @@ def register(request):
             user.email = request.POST["email"]
             user.username = request.POST["username"]
             user.set_password(request.POST["password"])
+            user.is_superuser = request.POST["usertype"]
             # user.password = request.POST["password"]
 
             if User.objects.filter(email=request.POST["email"]).exists():
