@@ -32,6 +32,9 @@ memo
 {% endif %}
 
 
+<div style="overflow-y: scroll; height:400px;">
+
+
 {% for memo in memos %}
 <div class="announcement"
     style="padding: 10px 15px 0px; border: 1px solid #e1e1e1;  background-color: #f9f9f9; border-radius: 4px;">
@@ -41,6 +44,8 @@ memo
     <p> {{ memo.memo }} </p>
 </div>
 {% endfor %}
+
+</div>
 
 
 
@@ -110,6 +115,10 @@ memo
 
                         $("#save_memo_btn").attr("disabled", false);
                         $("#save_memo_btn").html(`Save memo`);
+
+                        setTimeout(()=>{
+                            location.reload()
+                        }, 1000)
 
                     } else {
                         if (resp.key) {

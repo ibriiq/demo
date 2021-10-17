@@ -11,6 +11,7 @@ from django.views.decorators.csrf import csrf_exempt
 from .models import userinfo, memos
 import json
 from django.utils import timezone
+from datetime import date
 
 import random
 
@@ -143,9 +144,12 @@ def get_userinfo(request):
 
 
 def get_memos(request):
-    all_memos = memos.objects.all()
+    all_memos = memos.objects.all().order_by("-created_at")
+    count = memos.objects.filter(created_at__date=date.today()).count()
+
     context = {
-        "memos": all_memos
+        "memos": all_memos,
+        "memos_count": count
     }
     return render(request, "users/memos.html", context)
 

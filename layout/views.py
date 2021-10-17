@@ -2,6 +2,8 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.template import RequestContext
 from users.models import userinfo
+from datetime import date
+from users.models import memos
 # Create your views here.
 
 def dashboard(request):
@@ -16,7 +18,11 @@ def dashboard(request):
         users.append({"username": user.username, "ip_Address": user.ip_Address, "Longitude": user.Longitude, "Latitude": user.Latitude, "login_time": user.time, "logout_time": user.logout_time  })
         print(user)
 
-    context ={ "userinfo": users}
+    count = memos.objects.filter(created_at__date=date.today()).count()
+
+    context ={ "userinfo": users, "memos_count": count}
+
+    print("the count is ", count)
 
     return render(request, "layout/index.html", context)
 
