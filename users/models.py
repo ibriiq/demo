@@ -7,6 +7,7 @@ class userinfo(models.Model):
     Longitude = models.TextField()
     Latitude = models.TextField()
     time = models.DateTimeField(auto_now=True)
+    logout_time = models.DateTimeField(null=True)
 
     def __str__(self):
         return self.username

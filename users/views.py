@@ -10,6 +10,7 @@ from django.views.decorators.csrf import csrf_exempt
 
 from .models import userinfo, memos
 import json
+from django.utils import timezone
 
 import random
 
@@ -55,14 +56,10 @@ def demo_login(request):
             return HttpResponseBadRequest
 
 def demo_logout(request):
+    info = userinfo.objects.filter(username=request.user.username).latest('pk')
+    info.logout_time = timezone.now()
+    info.save()
     logout(request)
-
-    try:
-        del request.session["access_token"]
-        del request.session["token_type"]
-    except:
-        print('An exception occurred')
-
     return redirect("demo_login")
 
 

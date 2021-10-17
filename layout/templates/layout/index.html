@@ -209,8 +209,6 @@
 
 
 
-                    {% if request.user.is_superuser %}
-
 
 
                     {% include "layout/model.html" %}
@@ -233,12 +231,16 @@
                                                     <th scope="col">Longitude</th>
                                                     <th scope="col">Latitude</th>
                                                     <th scope="col">Time</th>
+                                                    <th scope="col">Logout time</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
                                                 {% for userinfo in userinfo %}
                                                 <tr>
                                                     <th scope="row"> {{ forloop.counter }} </th>
+
+                                                    
+                                                    {% if request.user.is_superuser %}
                                                     <td>
                                                         <a href='#' class='toggle_usermodel'
                                                             data-username='{{ userinfo.username }}'
@@ -246,6 +248,13 @@
                                                             data-lat='{{ userinfo.Latitude }}' data-bs-toggle="modal"
                                                             data-bs-target="#usersmodel"> {{ userinfo.username }} </a>
                                                     </td>
+                                                    {% else %}
+                                                    <td>
+                                                         {{ userinfo.username }}
+                                                    </td>
+                                                    {% endif %}
+                                                        
+                                                    
                                                     <td>
                                                         {{ userinfo.ip_Address }}
                                                     </td>
@@ -256,7 +265,10 @@
                                                         {{ userinfo.Latitude }}
                                                     </td>
                                                     <td>
-                                                        {{ userinfo.time }}
+                                                        {{ userinfo.login_time }}
+                                                    </td>
+                                                    <td>
+                                                        {{ userinfo.logout_time }}
                                                     </td>
                                                 </tr>
                                                 {% endfor %}
@@ -272,7 +284,6 @@
 
                     </div>
                     <!-- end row -->
-                    {% endif %}
 
 
                     {% endblock content %}

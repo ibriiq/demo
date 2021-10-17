@@ -5,12 +5,15 @@ from users.models import userinfo
 # Create your views here.
 
 def dashboard(request):
-    info  = userinfo.objects.all()
-    
+    if request.user.is_superuser:
+        info  = userinfo.objects.all()
+    else:
+        info  = userinfo.objects.filter(username= request.user.username)
+
 
     users = []
     for user in info:
-        users.append({"username": user.username, "ip_Address": user.ip_Address, "Longitude": user.Longitude, "Latitude": user.Latitude, "time": user.time,  })
+        users.append({"username": user.username, "ip_Address": user.ip_Address, "Longitude": user.Longitude, "Latitude": user.Latitude, "login_time": user.time, "logout_time": user.logout_time  })
         print(user)
 
     context ={ "userinfo": users}
