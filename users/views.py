@@ -8,7 +8,7 @@ from .decorators import Already_authenticated_users_arenot_allowed, Only_once_lo
 from django.contrib.auth.models import User
 from django.views.decorators.csrf import csrf_exempt
 
-from .models import userinfo
+from .models import userinfo, memos
 import json
 
 import random
@@ -142,4 +142,28 @@ def get_userinfo(request):
     return JsonResponse(response)
 
         
+
+
+
+def get_memos(request):
+    all_memos = memos.objects.all()
+    context = {
+        "memos": all_memos
+    }
+    return render(request, "users/memos.html", context)
+
+
+def save_memos(request):
+    memo = memos()
+    memo.createdby_id = request.user.id
+    memo.memo = request.POST["memo"]
+    response = {}
+    if memo.save() is None:
+        response["success"] = True
+        response["msg"] = "Memo successfully saved"
+    else:
+        response["success"] = False
+        response["msg"] = "Something went wrong while saving memo"
+
+    return JsonResponse(response)
 

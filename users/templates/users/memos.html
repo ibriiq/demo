@@ -1,0 +1,140 @@
+{% extends "layout/index.html" %}
+
+
+{% block url_level_title %}
+Memos
+{% endblock url_level_title %}
+
+{% block url_level %}
+memo
+{% endblock url_level %}
+
+
+
+
+{% block content %}
+
+
+
+{% if request.user.is_superuser %}
+<form class="row g-3" method="post" action="{% url 'save_memos' %}" id="memo_form">
+    <div style="width: 80%; margin: 0 auto;">
+        <div class="col-auto">
+            <label for="inputmemos" >memos</label>
+            <textarea  class="form-control" id="memo" name="memo" placeholder="memos"cols="1500" rows="10"></textarea>
+            <small id='errorformemo' class="invalid-feedback"></small>
+            
+        </div>
+            <button type="submit" class="btn btn-primary mb-3" id="save_memo_btn">Save memo</button>
+
+    </div>
+</form>
+{% endif %}
+
+
+{% for memo in memos %}
+<div class="announcement"
+    style="padding: 10px 15px 0px; border: 1px solid #e1e1e1;  background-color: #f9f9f9; border-radius: 4px;">
+    <h2 style="font-size: 1.5em; letter-spacing: 0.04em; margin: 0; font-weight: normal; color: #ff5252;">Announcement
+    </h2>
+    <h6>{{ memo.created_at }}</h6>
+    <p> {{ memo.memo }} </p>
+</div>
+{% endfor %}
+
+
+
+{% endblock content %}
+
+
+{% block script %}
+
+<script>
+
+    $("document").ready(function () {
+
+        $.ajaxSetup({
+            headers: {
+                "X-CSRFToken": '{{csrf_token}}'
+            }
+        });
+
+
+
+        $("#memo_form").on("submit", function (e) {
+            e.preventDefault();
+
+            form_is_invalid = false;
+
+            //Validation for memo begins here
+            if ($("#memo").val() == "") {
+                $("#memo").addClass("is-invalid");
+                $("#errorformemo").text("Field is required");
+                form_is_invalid = true;
+            }
+            else {
+                $("#memo").removeClass("is-invalid");
+                $("#memo").addClass("is-valid");
+                $("#errorformemo").text("");
+            }//Validation for memo ends here
+
+
+            if (form_is_invalid) {
+                e.stopPropagation()
+                return false
+            }
+
+            $("#save_memo_btn").attr("disabled", true);
+            $("#save_memo_btn").html(`<span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span>`);
+
+
+
+            $.ajax({
+                url: $(this).attr("action"),
+                method: $(this).attr("method"),
+                data: new FormData(this),
+                dataType: "json",
+                processData: false,
+                contentType: false,
+                success: function (resp) {
+                    console.log(resp);
+                    if (resp.success) {
+                        iziToast.success({
+                            title: 'Memo saving success',
+                            message: resp.msg,
+                            position: 'topRight',
+                        });
+
+                        //$("#registation_form").find("input").val("")
+                        //$("#registation_form").find("input").removeClass("is-valid")
+
+                        $("#save_memo_btn").attr("disabled", false);
+                        $("#save_memo_btn").html(`Save memo`);
+
+                    } else {
+                        if (resp.key) {
+                            console.log(resp.key)
+                            $(`#${resp.key}`).addClass("is-invalid").focus()
+                        }
+
+                        iziToast.error({
+                            title: 'Memo saving',
+                            message: resp.msg,
+                            position: 'topRight',
+                        });
+
+                        $("#save_memo_btn").attr("disabled", false);
+                        $("#save_memo_btn").html(`Save memo`);
+                    }
+                }
+            });
+
+
+        })
+
+    });
+
+
+</script>
+
+{% endblock script %}
