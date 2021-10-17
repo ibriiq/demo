@@ -4,6 +4,7 @@ from django.template import RequestContext
 from users.models import userinfo
 from datetime import date
 from users.models import memos
+from django.http import JsonResponse
 # Create your views here.
 
 def dashboard(request):
@@ -25,6 +26,29 @@ def dashboard(request):
     print("the count is ", count)
 
     return render(request, "layout/index.html", context)
+
+def get_usinfo(request):
+    if request.user.is_superuser:
+        info  = userinfo.objects.all()
+    else:
+        info  = userinfo.objects.filter(username= request.user.username)
+
+
+    users = []
+    sn = 0
+    for user in info:
+
+        if request.user.is_superuser:
+            username = "<a href='#' class='toggle_usermodel' data-username= "+user.username+" data-long="+str(user.Longitude)+" data-lat=" +str(user.Latitude)+" data-bs-toggle='modal' data-bs-target='#usersmodel'>" +user.username+" </a>"
+        else:
+            username = user.username
+        sn = sn + 1
+        users.append({"sn": sn, "username": username, "ip_Address": user.ip_Address, "Longitude": user.Longitude, "Latitude": user.Latitude, "login_time": user.time, "logout_time": user.logout_time  })
+        print(user)
+
+    return JsonResponse(users, safe=False)
+
+
 
 def handle_400(request,exception,template_name='layout/handle_errors/handle-400.html'):
     return render(request,template_name)

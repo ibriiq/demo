@@ -10,5 +10,8 @@ from django.contrib.auth.decorators import login_required
 
 urlpatterns = [
     path('', login_required(views.dashboard), name='dashboard'),
+    path('get_usinfo', login_required(views.get_usinfo), name='get_usinfo'),
+
+    
 ] 
 
