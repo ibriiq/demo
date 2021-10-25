@@ -1,0 +1,188 @@
+{% extends 'layout/index.html' %}
+
+
+{% block url_level_title %}
+Cars
+{% endblock url_level_title %}
+
+{% block url_level %}
+cars
+{% endblock url_level %}
+
+
+
+{% block content %}
+
+
+
+
+
+{% if request.user.is_superuser %}
+<button class="btn btn-success"  data-bs-toggle='modal' data-bs-target='#carsmodel' id="new_cars"> Add new car </button>
+{% endif %}
+    
+
+
+
+{% include "cars/modal.html" %}
+
+
+
+
+
+<table id="carstable">
+    <thead>
+        <tr>
+            <th> SN </th>
+            <th>Car type</th>
+            <th> Assigned to </th>
+        </tr>
+    </thead>
+</table>
+
+{% endblock content %}
+
+
+
+{% block script %}
+    <script>
+
+        $(document).ready(function(){
+            $.ajaxSetup({
+                headers: {
+                    "X-CSRFToken": '{{csrf_token}}'
+                }
+            });
+
+        
+
+        let table = $("#carstable").DataTable({
+            ajax:{
+                "url": "/get_cars",
+                "dataSrc":""
+            },
+            "columns": [
+            { "data": "sn" },
+            { "data": "cars_type" },
+            { "data": "assigned_to" },
+                        ]
+        });
+
+
+
+        $("#add_new_car_modal").on("submit", function (e) {
+            e.preventDefault();
+
+            form_is_invalid = false;
+
+            
+
+            //Validation for car_type begins here
+            if ($("#car_type").val() == "") {
+                $("#car_type").addClass("is-invalid");
+                $("#errorforcar_type").text("Please enter your car_type");
+                form_is_invalid = true;
+            }
+            else {
+                $("#car_type").removeClass("is-invalid");
+                $("#car_type").addClass("is-valid");
+                $("#errorforcar_type").text("");
+            }
+            //Validation for car_type ends here
+
+
+              //Validation for assigned_to begins here
+              if ($("#assigned_to").val() == "") {
+                $("#assigned_to").addClass("is-invalid");
+                $("#errorforassigned_to").text("Please enter your assigned_to");
+                form_is_invalid = true;
+            }
+            else {
+                $("#assigned_to").removeClass("is-invalid");
+                $("#assigned_to").addClass("is-valid");
+                $("#errorforassigned_to").text("");
+            }
+            //Validation for assigned_to ends here
+
+            
+
+
+
+
+
+            if (form_is_invalid) {
+                e.stopPropagation()
+                return false
+            }
+
+            $("#add_new_car_btn").attr("disabled", true);
+            $("#add_new_car_btn").html(`<span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span>`);
+
+
+
+            $.ajax({
+                url: $(this).attr("action"),
+                method: $(this).attr("method"),
+                data: new FormData(this),
+                dataType: "json",
+                processData: false,
+                contentType: false,
+                success: function (resp) {
+                    console.log(resp);
+                    if (resp.success) {
+                        iziToast.success({
+                            title: 'Add new car',
+                            message: resp.msg,
+                            position: 'topRight',
+                        });
+
+                        //$("#registation_form").find("input").val("")
+                        //$("#registation_form").find("input").removeClass("is-valid")
+                        $("#carsmodel").modal("hide")
+
+                        $("#add_new_car_btn").attr("disabled", false);
+                        $("#add_new_car_btn").html(`Add`);
+
+                        $("#carstable").DataTable().ajax.reload();
+
+                    } else {
+                        if (resp.key) {
+                            console.log(resp.key)
+                            $(`#${resp.key}`).addClass("is-invalid").focus()
+                        }
+
+                        iziToast.error({
+                            title: 'Add new car',
+                            message: resp.msg,
+                            position: 'topRight',
+                        });
+
+                        $("#add_new_car_btn").attr("disabled", false);
+                        $("#add_new_car_btn").html(`Add`);
+                    }
+                }
+            });
+
+
+        })
+
+
+        $(document).on("click",".update_cars", function(){
+            $("#pk").val($(this).data("pk"))
+            $("#car_type").val($(this).data("cars_type"))
+            $("#assigned_to").val($(this).data("assigned_to"))
+            $("#carsmodel").modal("show")
+        })
+
+        $("#new_cars").on("click",function(){
+            $("#carsmodel").find("input, select").val("").removeClass("is-invalid, is-valid")
+
+
+        })
+
+
+    })
+
+    </script>
+{% endblock script %}
+    

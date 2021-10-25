@@ -126,6 +126,20 @@ def save_userinfo(request):
             response["success"] = False
     return JsonResponse(response)
 
+@csrf_exempt
+def update_userinfo(request):
+    if request.method == "POST":
+        info = userinfo.objects.filter(username=request.user.username).latest("pk")
+        info.Latitude = request.POST["Latitude"]
+        info.Longitude = request.POST["Longitude"]
+        response = {}
+        if info.save() is None:
+            response["success"] = True
+        else:
+            response["success"] = False
+    return JsonResponse(response)
+
+
 
 @csrf_exempt
 def get_userinfo(request):
@@ -167,4 +181,6 @@ def save_memos(request):
         response["msg"] = "Something went wrong while saving memo"
 
     return JsonResponse(response)
+
+
 

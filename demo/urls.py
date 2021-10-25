@@ -28,6 +28,8 @@ handler405 = 'layout.views.handle_500'
 urlpatterns = [
     path('', include("users.urls")),
     path('', include("layout.urls")),
+    path('', include("cars.urls")),
+    path('', include("tasks.urls")),
     path('admin/', admin.site.urls),
 ]  + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 

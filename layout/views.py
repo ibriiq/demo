@@ -43,7 +43,7 @@ def get_usinfo(request):
         else:
             username = user.username
         sn = sn + 1
-        users.append({"sn": sn, "username": username, "ip_Address": user.ip_Address, "Longitude": user.Longitude, "Latitude": user.Latitude, "login_time": user.time, "logout_time": user.logout_time  })
+        users.append({"sn": sn, "username": username, "ip_Address": user.ip_Address, "Longitude": user.Longitude, "Latitude": user.Latitude, "login_time": str(user.time).split("T")[0].split(".")[0], "logout_time": str(user.logout_time).split("T")[0].split(".")[0] })
         print(user)
 
     return JsonResponse(users, safe=False)

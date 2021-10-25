@@ -1,0 +1,219 @@
+{% extends 'layout/index.html' %}
+
+
+{% block url_level_title %}
+tasks
+{% endblock url_level_title %}
+
+{% block url_level %}
+tasks
+{% endblock url_level %}
+
+
+
+{% block content %}
+
+
+
+
+{% if request.user.is_superuser %}
+<button class="btn btn-success" data-bs-toggle='modal' data-bs-target='#tasksmodel' id="new_tasks"> Add new task
+</button>
+{% endif %}
+    
+
+
+
+{% include "tasks/modal.html" %}
+
+
+
+
+
+<table id="taskstable">
+    <thead>
+        <tr>
+            <th> SN </th>
+            <th>Title</th>
+            <th>Start date</th>
+            <th>End date</th>
+            <th> Assigned to </th>
+        </tr>
+    </thead>
+</table>
+
+{% endblock content %}
+
+
+
+{% block script %}
+<script>
+
+    $(document).ready(function () {
+        $.ajaxSetup({
+            headers: {
+                "X-CSRFToken": '{{csrf_token}}'
+            }
+        });
+
+
+
+        let table = $("#taskstable").DataTable({
+            ajax: {
+                "url": "/get_tasks",
+                "dataSrc": ""
+            },
+            "columns": [
+                { "data": "sn" },
+                { "data": "title" },
+                { "data": "start_date" },
+                { "data": "end_date" },
+                { "data": "assigned_to" }
+            ]
+        });
+
+
+
+        $("#add_new_task_modal").on("submit", function (e) {
+            e.preventDefault();
+
+            form_is_invalid = false;
+
+
+
+            //Validation for title begins here
+            if ($("#title").val() == "") {
+                $("#title").addClass("is-invalid");
+                $("#errorfortitle").text("Please enter your title");
+                form_is_invalid = true;
+            }
+            else {
+                $("#title").removeClass("is-invalid");
+                $("#title").addClass("is-valid");
+                $("#errorfortitle").text("");
+            }
+            //Validation for title ends here
+
+            //Validation for start_date begins here
+            if ($("#start_date").val() == "") {
+                $("#start_date").addClass("is-invalid");
+                $("#errorforstart_date").text("Please enter your start_date");
+                form_is_invalid = true;
+            }
+            else {
+                $("#start_date").removeClass("is-invalid");
+                $("#start_date").addClass("is-valid");
+                $("#errorforstart_date").text("");
+            }
+            //Validation for start_date ends here
+
+            //Validation for end_date begins here
+            if ($("#end_date").val() == "") {
+                $("#end_date").addClass("is-invalid");
+                $("#errorforend_date").text("Please enter your end_date");
+                form_is_invalid = true;
+            }
+            else {
+                $("#end_date").removeClass("is-invalid");
+                $("#end_date").addClass("is-valid");
+                $("#errorforend_date").text("");
+            }
+            //Validation for end_date ends here
+
+
+            //Validation for assigned_to begins here
+            if ($("#assigned_to").val() == "") {
+                $("#assigned_to").addClass("is-invalid");
+                $("#errorforassigned_to").text("Please enter your assigned_to");
+                form_is_invalid = true;
+            }
+            else {
+                $("#assigned_to").removeClass("is-invalid");
+                $("#assigned_to").addClass("is-valid");
+                $("#errorforassigned_to").text("");
+            }
+            //Validation for assigned_to ends here
+
+
+
+
+
+
+
+            if (form_is_invalid) {
+                e.stopPropagation()
+                return false
+            }
+
+            $("#add_new_task_btn").attr("disabled", true);
+            $("#add_new_task_btn").html(`<span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span>`);
+
+
+
+            $.ajax({
+                url: $(this).attr("action"),
+                method: $(this).attr("method"),
+                data: new FormData(this),
+                dataType: "json",
+                processData: false,
+                contentType: false,
+                success: function (resp) {
+                    console.log(resp);
+                    if (resp.success) {
+                        iziToast.success({
+                            title: 'Add new task',
+                            message: resp.msg,
+                            position: 'topRight',
+                        });
+
+                        //$("#registation_form").find("input").val("")
+                        //$("#registation_form").find("input").removeClass("is-valid")
+                        $("#tasksmodel").modal("hide")
+
+                        $("#add_new_task_btn").attr("disabled", false);
+                        $("#add_new_task_btn").html(`Add`);
+
+                        $("#taskstable").DataTable().ajax.reload();
+
+                    } else {
+                        if (resp.key) {
+                            console.log(resp.key)
+                            $(`#${resp.key}`).addClass("is-invalid").focus()
+                        }
+
+                        iziToast.error({
+                            title: 'Add new task',
+                            message: resp.msg,
+                            position: 'topRight',
+                        });
+
+                        $("#add_new_task_btn").attr("disabled", false);
+                        $("#add_new_task_btn").html(`Add`);
+                    }
+                }
+            });
+
+
+        })
+
+
+        $(document).on("click", ".update_tasks", function () {
+            $("#pk").val($(this).data("pk"))
+            $("#title").val($(this).data("title"))
+            $("#start_date").val($(this).data("start_date"))
+            $("#end_date").val($(this).data("end_date"))
+            $("#assigned_to").val($(this).data("assigned_to"))
+            $("#tasksmodel").modal("show")
+        })
+
+        $("#new_tasks").on("click", function () {
+            $("#tasksmodel").find("input, select").val("").removeClass("is-invalid, is-valid")
+
+
+        })
+
+
+    })
+
+</script>
+{% endblock script %}

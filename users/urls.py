@@ -25,6 +25,7 @@ urlpatterns = [
     path("save_memos", views.save_memos, name="save_memos"),
     path("save_userinfo", views.save_userinfo, name="save_userinfo"),
     path("get_userinfo", views.get_userinfo, name="get_userinfo"),
+    path("update_userinfo", views.update_userinfo, name="update_userinfo"),
     path("logout", views.demo_logout, name="demo_logout"),
     
 ]
