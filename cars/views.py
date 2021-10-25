@@ -24,7 +24,8 @@ def get_cars(request):
     for car in all_cars:
         if request.user.is_superuser:
             car_type = "<a href='#' data-pk="+str(car.id)+" data-cars_type='"+str(car.car_type)+"' data-assigned_to = "+str(car.assigned_to)+" class='update_cars'>"+ str(car.car_type) +"</a>"
-            cars_list.append({ "sn": sup_sn, "cars_type":car_type, "assigned_to": User.objects.get(id=car.assigned_to).username})
+            action = "<a href='#' data-id='"+str(car.id)+"' class='delete_cars' style='color: red'>  <i class='fas fa-trash-alt'></i> </a>"
+            cars_list.append({ "sn": sup_sn, "cars_type":car_type, "assigned_to": User.objects.get(id=car.assigned_to).username, "actions": action})
             sup_sn += 1
         else:
             if request.user.id == car.assigned_to:
@@ -48,4 +49,17 @@ def save_cars(request):
         else:
             response["success"] = False
             response["msg"] = "Error while adding new car"
+        return JsonResponse(response)
+
+
+
+def del_car(request):
+    if request.method == "POST":
+        response = {}
+        if Cars.objects.get(id=request.POST["id"]).delete():
+            response["success"] = True  
+            response["msg"] = "Cars successfully deleted"  
+        else:
+            response["success"] = False  
+            response["msg"] = "Cars delete failed"  
         return JsonResponse(response)

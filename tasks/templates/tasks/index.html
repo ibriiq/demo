@@ -20,7 +20,10 @@ tasks
 <button class="btn btn-success" data-bs-toggle='modal' data-bs-target='#tasksmodel' id="new_tasks"> Add new task
 </button>
 {% endif %}
-    
+
+
+
+
 
 
 
@@ -38,6 +41,12 @@ tasks
             <th>Start date</th>
             <th>End date</th>
             <th> Assigned to </th>
+
+            {% if request.user.is_superuser %}
+            <th> Action </th>
+
+            {% endif %}
+
         </tr>
     </thead>
 </table>
@@ -57,20 +66,70 @@ tasks
         });
 
 
+        is_superuser = "{{ request.user.is_superuser }}"
 
-        let table = $("#taskstable").DataTable({
-            ajax: {
-                "url": "/get_tasks",
-                "dataSrc": ""
-            },
-            "columns": [
-                { "data": "sn" },
-                { "data": "title" },
-                { "data": "start_date" },
-                { "data": "end_date" },
-                { "data": "assigned_to" }
-            ]
-        });
+        if (is_superuser == "True") {
+            
+            let table = $("#taskstable").DataTable({
+                ajax: {
+                    "url": "/get_tasks",
+                    "dataSrc": ""
+                },
+                "columns": [
+                    { "data": "sn" },
+                    { "data": "title" },
+                    { "data": "start_date" },
+                    { "data": "end_date" },
+                    { "data": "assigned_to" },
+                    
+                    { "data": "actions" },
+                ]
+            });
+
+        } else {
+            let table = $("#taskstable").DataTable({
+                ajax: {
+                    "url": "/get_tasks",
+                    "dataSrc": ""
+                },
+                "columns": [
+                    { "data": "sn" },
+                    { "data": "title" },
+                    { "data": "start_date" },
+                    { "data": "end_date" },
+                    { "data": "assigned_to" },
+                ]
+            });
+        }
+
+
+        $(document).on("click", ".delete_tasks", function () {
+            swal({
+                title: "Are you sure?",
+                text: "Once deleted, you will not be able to recover this task!",
+                icon: "warning",
+                buttons: true,
+                dangerMode: true,
+            })
+                .then((willDelete) => {
+                    if (willDelete) {
+                        $.ajax({
+                            url: '/del_task',
+                            method: "POST",
+                            data: { "id": $(this).data("id") },
+                            dataType: "json",
+                            success: function (resp) {
+                                swal(resp.msg, {
+                                    icon: "success",
+                                });
+                                $("#taskstable").DataTable().ajax.reload();
+                            }
+                        })
+                    } else {
+                        swal("This task is safe!");
+                    }
+                });
+        })
 
 
 

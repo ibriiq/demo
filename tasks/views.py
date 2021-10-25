@@ -29,7 +29,8 @@ def get_tasks(request):
     for task in all_tasks:
         if request.user.is_superuser:
             task_title = "<a href='#' data-pk="+str(task.id)+" data-title='"+str(task.title)+"' data-start_date= '"+ str(task.start_date) +"' data-end_date= '"+ str(task.end_date) +"' data-assigned_to = "+str(task.assigned_to)+" class='update_tasks'>"+ str(task.title) +"</a>"
-            tasks_list.append({ "sn": sup_sn, "title":task_title, "start_date" : task.start_date, "end_date": task.end_date, "assigned_to": User.objects.get(id=task.assigned_to).username})
+            action = "<a href='#' data-id='"+str(task.id)+"' class='delete_tasks' style='color: red'>  <i class='fas fa-trash-alt'></i> </a>"
+            tasks_list.append({ "sn": sup_sn, "title":task_title, "start_date" : task.start_date, "end_date": task.end_date, "assigned_to": User.objects.get(id=task.assigned_to).username, "actions": action})
             sup_sn += 1
         else:
             task_title = task.title
@@ -55,4 +56,15 @@ def save_tasks(request):
         else:
             response["success"] = False
             response["msg"] = "Error while adding new task"
+        return JsonResponse(response)
+
+def del_task(request):
+    if request.method == "POST":
+        response = {}
+        if Tasks.objects.get(id=request.POST["id"]).delete():
+            response["success"] = True  
+            response["msg"] = "Task successfully deleted"  
+        else:
+            response["success"] = False  
+            response["msg"] = "Task delete failed"  
         return JsonResponse(response)

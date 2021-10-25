@@ -10,7 +10,6 @@ urlpatterns = [
     path('tasks', login_required(views.tasks), name='tasks'),
     path('get_tasks', login_required(views.get_tasks), name='get_tasks'),
     path('save_tasks', login_required(views.save_tasks), name='save_tasks'),
-    
-    # path('get_usinfo', login_required(views.get_usinfo), name='get_usinfo'),
+    path('del_task', login_required(views.del_task), name='del_task'),
 ] 
 

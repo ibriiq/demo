@@ -36,6 +36,11 @@ cars
             <th> SN </th>
             <th>Car type</th>
             <th> Assigned to </th>
+            
+            {% if request.user.is_superuser %}
+            <th> Actions </th>
+            {% endif %}
+                
         </tr>
     </thead>
 </table>
@@ -54,19 +59,70 @@ cars
                 }
             });
 
-        
 
-        let table = $("#carstable").DataTable({
-            ajax:{
-                "url": "/get_cars",
-                "dataSrc":""
-            },
-            "columns": [
-            { "data": "sn" },
-            { "data": "cars_type" },
-            { "data": "assigned_to" },
-                        ]
-        });
+
+        
+    is_superuser = "{{ request.user.is_superuser }}"
+
+
+            if(is_superuser == "True")
+            {
+                let table = $("#carstable").DataTable({
+                    ajax:{
+                        "url": "/get_cars",
+                        "dataSrc":""
+                    },
+                    "columns": [
+                    { "data": "sn" },
+                    { "data": "cars_type" },
+                    { "data": "assigned_to" },
+                    { "data": "actions" },
+                                ]
+                });
+            }
+            else{
+                let table = $("#carstable").DataTable({
+                    ajax:{
+                        "url": "/get_cars",
+                        "dataSrc":""
+                    },
+                    "columns": [
+                    { "data": "sn" },
+                    { "data": "cars_type" },
+                    { "data": "assigned_to" },
+                                ]
+                });
+            }
+
+       
+
+        $(document).on("click", ".delete_cars", function () {
+            swal({
+                title: "Are you sure?",
+                text: "Once deleted, you will not be able to recover this car!",
+                icon: "warning",
+                buttons: true,
+                dangerMode: true,
+            })
+                .then((willDelete) => {
+                    if (willDelete) {
+                        $.ajax({
+                            url: '/del_car',
+                            method: "POST",
+                            data: { "id": $(this).data("id") },
+                            dataType: "json",
+                            success: function (resp) {
+                                swal(resp.msg, {
+                                    icon: "success",
+                                });
+                                $("#carstable").DataTable().ajax.reload();
+                            }
+                        })
+                    } else {
+                        swal("This car is safe!");
+                    }
+                });
+        })
 
 
 
