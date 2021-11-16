@@ -85,8 +85,88 @@
 
                 </div>
 
+                <div class="dropdown d-inline-block">
+                    <button type="button" class="btn header-item noti-icon waves-effect"
+                        id="page-header-notifications-dropdown" data-bs-toggle="dropdown" aria-haspopup="true"
+                        aria-expanded="false">
+                        <i class="mdi mdi-bell-outline"></i>
+                        
+                        
+                        {% if notification_count > 0  %}
+                        
+                        <span class="badge bg-danger rounded-pill" id="notification_count">  {{ notification_count }}  </span>
+                        {% endif %}
+                            
+
+                    </button>
+                    <div class="dropdown-menu dropdown-menu-lg dropdown-menu-end p-0"
+                        aria-labelledby="page-header-notifications-dropdown">
+                        <div class="p-3">
+                            <div class="row align-items-center">
+                                <div class="col">
+                                    <h5 class="m-0 font-size-16"> Notifications {{ notification_count }} </h5>
+                                </div>
+                            </div>
+                        </div>
+                        <div data-simplebar style="max-height: 230px;" id="notify">
+                            {% for notification in notifications %}
+                            <!-- aliceblue -->
+                            
+                            {% if notification.status == "New" %}
+                            <div class="text-reset notification-item"  style="">
+                                <div class="d-flex">
+                                    <div class="flex-shrink-0 me-3">
+                                        <div class="avatar-xs">
+                                            <span class="avatar-title bg-success rounded-circle font-size-16">
+                                                <i class="mdi mdi-cart-outline"></i>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="flex-grow-1">
+                                        <h6 class="mb-1">You are assigned new task</h6>
+                                        <div class="font-size-12 text-muted">
+                                            <!-- <p class="mb-1"> {{ notification.notification }} </p> -->
+                                            {{ notification.notification  | safe }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% else %}
+                            <div class="text-reset notification-item"  style="background: #ddd0d0">
+                                <div class="d-flex">
+                                    <div class="flex-shrink-0 me-3">
+                                        <div class="avatar-xs">
+                                            <span class="avatar-title bg-success rounded-circle font-size-16">
+                                                <i class="mdi mdi-cart-outline"></i>
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="flex-grow-1">
+                                        <h6 class="mb-1">You are assigned new task</h6>
+                                        <div class="font-size-12 text-muted">
+                                            <!-- <p class="mb-1"> {{ notification.notification }} </p> -->
+                                            {{ notification.notification  | safe }}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endif %}
+
+                            {% endfor %}
+                        </div>
+                        <!-- <div class="p-2 border-top">
+                            <div class="d-grid">
+                                <a class="btn btn-sm btn-link font-size-14 text-center" href="javascript:void(0)">
+                                    View all
+                                </a>
+                            </div>
+                        </div> -->
+                    </div>
+                </div>
+
                 <div class="d-flex">
 
+                    {{ notifications.notification }}
 
 
                     <div class="dropdown d-inline-block">
@@ -143,21 +223,21 @@
                         </li>
                         <li>
                             <a href=" {% url 'get_memos' %} " class="waves-effect">
-                                <i class="ti-home">  </i> 
+                                <i class="ti-home"> </i>
                                 <span>Memos <span class="badge bg-primary"> {{ memos_count }} </span> </span>
                             </a>
                         </li>
 
                         <li>
                             <a href=" {% url 'cars' %} " class="waves-effect">
-                                <i class="ti-home">  </i> 
+                                <i class="ti-home"> </i>
                                 <span>Cars</span>
                             </a>
                         </li>
 
                         <li>
                             <a href=" {% url 'tasks' %} " class="waves-effect">
-                                <i class="ti-home">  </i> 
+                                <i class="ti-home"> </i>
                                 <span>Tasks</span>
                             </a>
                         </li>
@@ -207,6 +287,7 @@
                         </div>
                     </div>
                     <!-- end page title -->
+                    {% include "tasks/modal.html" %}
 
                     {% block content %}
 
@@ -257,6 +338,7 @@
                     </div>
                     <!-- end row -->
 
+                    <div id="map_all_employees" style="height: 400px; width: 100%;"></div>
 
                     {% endblock content %}
 
@@ -288,56 +370,6 @@
     </div>
     <!-- END layout-wrapper -->
 
-    <!-- Right Sidebar -->
-    <div class="right-bar">
-        <div data-simplebar class="h-100">
-            <div class="rightbar-title px-3 py-4">
-                <a href="javascript:void(0);" class="right-bar-toggle float-end">
-                    <i class="mdi mdi-close noti-icon"></i>
-                </a>
-                <h5 class="m-0">Settings</h5>
-            </div>
-
-            <!-- Settings -->
-            <hr class="mt-0" />
-            <h6 class="text-center">Choose Layouts</h6>
-
-            <div class="p-4">
-                <div class="mb-2">
-                    <img src="{% static 'assets/images/layouts/layout-1.jpg' %}" class="img-fluid img-thumbnail" alt="">
-                </div>
-                <div class="form-check form-switch mb-3">
-                    <input type="checkbox" class="form-check-input theme-choice" id="light-mode-switch" checked />
-                    <label class="form-check-label" for="light-mode-switch">Light Mode</label>
-                </div>
-
-                <div class="mb-2">
-                    <img src="{% static 'assets/images/layouts/layout-2.jpg' %}" class="img-fluid img-thumbnail" alt="">
-                </div>
-                <div class="form-check form-switch mb-3">
-                    <input type="checkbox" class="form-check-input theme-choice" id="dark-mode-switch"
-                        data-bsStyle="{% static 'assets/css/bootstrap-dark.min.css' %}"
-                        data-appStyle="{% static 'assets/css/app-dark.min.css' %}" />
-                    <label class="form-check-label" for="dark-mode-switch">Dark Mode</label>
-                </div>
-
-                <div class="mb-2">
-                    <img src="{% static 'assets/images/layouts/layout-3.jpg' %}" class="img-fluid img-thumbnail" alt="">
-                </div>
-                <div class="form-check form-switch mb-5">
-                    <input type="checkbox" class="form-check-input theme-choice" id="rtl-mode-switch"
-                        data-appStyle="{% static 'assets/css/app-rtl.min.css' %}" />
-                    <label class="form-check-label" for="rtl-mode-switch">RTL Mode</label>
-                </div>
-                <div class="d-grid">
-                    <a href="https://1.envato.market/grNDB" class="btn btn-primary mt-3" target="_blank"><i
-                            class="mdi mdi-cart me-1"></i> Purchase Now</a>
-                </div>
-            </div>
-
-        </div> <!-- end slimscroll-menu-->
-    </div>
-    <!-- /Right-bar -->
 
     <!-- Right bar overlay-->
     <div class="rightbar-overlay"></div>
@@ -370,9 +402,85 @@
     <script src="{% static 'assets/js/app.js' %}"></script>
     <script src="{% static 'assets/js/jquery.dataTables.min.js' %}"></script>
 
-    <script
-        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB6dCtBUz9eXILTvh_VbFcwABIKRKYhIGg"
-        async></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB6dCtBUz9eXILTvh_VbFcwABIKRKYhIGg" ></script>
+
+<!-- 
+    <script src="//js.pusher.com/2.2/pusher.min.js"></script> -->
+    <script src="https://js.pusher.com/7.0.3/pusher.min.js"></script>
+
+<script>
+    //var pusher = new Pusher('{{ settings.PUSHER_KEY }}');
+
+    var pusher = new Pusher("61de2249dc4b0a22ea49", {
+        cluster: "ap2",
+    });
+    //var channel = pusher.subscribe('one_marchant');
+    var channel = pusher.subscribe("my-channel");
+
+    channel.bind("my-event_{{ request.user.id }}", (data) => {
+        // Method to be dispatched on trigger.
+        console.log("my data ",data.count)
+        $("#notification_count").text(data.count)
+
+        let notification = `
+        <div class="text-reset notification-item"  style="">
+            <div class="d-flex">
+                <div class="flex-shrink-0 me-3">
+                    <div class="avatar-xs">
+                        <span class="avatar-title bg-success rounded-circle font-size-16">
+                            <i class="mdi mdi-cart-outline"></i>
+                        </span>
+                    </div>
+                </div>
+                <div class="flex-grow-1">
+                    <h6 class="mb-1">You are assigned new task</h6>
+                    <div class="font-size-12 text-muted">
+                        <!-- <p class="mb-1"> {{ notification.notification }} </p> -->
+                        ${ data.notification }
+                    </div>
+                </div>
+            </div>
+        </div>
+        `
+
+        
+
+
+
+        $("#notify").appendTo(notification)
+
+        if (!data.count){
+            iziToast.info({
+                title: 'TasK status',
+                message: data.notification,
+                position: 'topRight',
+                timeout: false
+            });
+        }
+
+
+    //alert(data.user + " has begun updating this object");
+
+    });
+
+    /*channel.bind('updates', function(data) {
+    alert(data.user + " has begun updating this object");
+    });*/
+
+
+    channel.bind("task_{{ request.user.id }}", (data) => {
+        console.log(data)
+        iziToast.info({
+            title: 'TasK status',
+            message: data.msg,
+            position: 'topRight',
+            timeout: false
+        });
+    })
+    
+
+</script>
+
 
 
     <script>
@@ -384,49 +492,88 @@
             });
 
             let table = $("#userstable").DataTable({
-                ajax:{
+                ajax: {
                     "url": "/get_usinfo",
-                    "dataSrc":""
+                    "dataSrc": ""
                 },
                 "columns": [
-                { "data": "sn" },
-                { "data": "username" },
-                { "data": "ip_Address" },
-                { "data": "Longitude" },
-                { "data": "Latitude" },
-                { "data": "login_time" },
-                { "data": "logout_time" },
-                            ]
+                    { "data": "sn" },
+                    { "data": "username" },
+                    { "data": "ip_Address" },
+                    { "data": "Longitude" },
+                    { "data": "Latitude" },
+                    { "data": "login_time" },
+                    { "data": "logout_time" },
+                ]
             });
 
-            $(document).on("mousemove", function(){
+            $(document).on("mousemove", function () {
 
                 $(".toggle_usermodel").off("click")
-            $(".toggle_usermodel").on("click", function () {
-                username = $(this).data("username");
-                long = $(this).data("long");
-                lat = $(this).data("lat");
+                $(".toggle_usermodel").on("click", function () {
+                    username = $(this).data("username");
+                    long = $(this).data("long");
+                    lat = $(this).data("lat");
 
 
-                $("#username").text(username)
-                console.log("yes we can", lat, long)
+                    $("#username").text(username)
+                    console.log("yes we can", lat, long)
 
-                // The location of Uluru
-                const uluru = { lat: lat, lng: long };
-                // The map, centered at Uluru
-                const map = new google.maps.Map(document.getElementById("map"), {
-                    zoom: 4,
-                    center: uluru,
-                });
-                // The marker, positioned at Uluru
-                const marker = new google.maps.Marker({
-                    position: uluru,
-                    map: map,
-                });
+                    // The location of Uluru
+                    const uluru = { lat: lat, lng: long };
+                    // The map, centered at Uluru
+                    const map = new google.maps.Map(document.getElementById("map"), {
+                        zoom: 4,
+                        center: uluru,
+                    });
+                    // The marker, positioned at Uluru
+                    const marker = new google.maps.Marker({
+                        position: uluru,
+                        map: map,
+                    });
 
+                })
             })
+
         })
 
+        
+
+
+        const coardinates = [{ lat: 11.2322, lng: 47.3343 }, { lat: 11.2322, lng: 49.3343 }, { lat: 11.2322, lng: 48.3393 }];
+
+        // The map, centered at Uluru
+        const map = new google.maps.Map(document.getElementById("map_all_employees"), {
+            zoom: 4,
+            center: { lat: 11.2322, lng: 49.3343 },
+        });
+        // The marker, positioned at Uluru
+       
+
+        coardinates.forEach(el=>{
+            console.log(el)
+            new google.maps.Marker({
+                position: el,
+                map: map,
+            });
+        })
+        
+        $.ajax({
+            url: '/get_usinfo',
+            method: "POST",
+            headers: {
+                "X-CSRFToken": '{{csrf_token}}'
+            },
+            dataType: "json",
+            success: function (resp) {
+                resp.forEach(el=>{
+                    new google.maps.Marker({
+                        position: {lat: parseFloat(el.Latitude), lng: parseFloat(el.Longitude)},
+                        map: map,
+                        title: el.name
+                    });
+                })
+            }
         })
 
 
@@ -437,22 +584,22 @@
         function success(pos) {
             var crd = pos.coords;
 
-            
-           // navigator.geolocation.clearWatch(id);
 
-           /* console.log('Your current position is:');
-            console.log(`Latitude : ${crd.latitude}`);
-            console.log(`Longitude: ${crd.longitude}`);
-            console.log(`More or less ${crd.accuracy} meters.`);*/
+            // navigator.geolocation.clearWatch(id);
+
+            /* console.log('Your current position is:');
+             console.log(`Latitude : ${crd.latitude}`);
+             console.log(`Longitude: ${crd.longitude}`);
+             console.log(`More or less ${crd.accuracy} meters.`);*/
 
             $.ajax({
                 url: "/update_userinfo",
                 method: "POST",
-                data: {"Latitude": crd.latitude, "Longitude": crd.longitude },
+                data: { "Latitude": crd.latitude, "Longitude": crd.longitude },
                 dataType: "json",
                 success: function (data) {
-                    console.log(data)
-                    console.log("updated")
+                    //console.log(data)
+                    //console.log("updated")
                     $("#userstable").DataTable().ajax.reload()
                 }
             });
@@ -471,9 +618,69 @@
             maximumAge: 0
         };
 
-       id = navigator.geolocation.watchPosition(success, error, options);
+        id = navigator.geolocation.watchPosition(success, error, options);
 
 
+        $(document).on("click", ".update_tasks", function(){
+            $("#pk").val($(this).data("pk"))
+            $("#title").val($(this).data("title"))
+            $("#start_date").val($(this).data("start_date"))
+            $("#end_date").val($(this).data("end_date"))
+            $("#assigned_to").val($(this).data("assigned_to"))
+            $("#task_status").val($(this).data("status_id"))
+           // $("#start_task").css("display", "block")
+            $("#myModalLabel").text($(this).data("title"))
+            console.log($(this).data("task_time"))
+            $("#time").val($(this).data("task_time"))
+
+            console.log($(this).data("notification"))
+            
+
+            pk = $(this).data("pk") 
+            $.ajax({
+                url: '/get_tasks_status',
+                method: "POST",
+                data : {"task_id": $(this).data("pk")},
+                headers: {
+                    "X-CSRFToken": '{{csrf_token}}'
+                },
+                dataType: "json",
+                success: function (resp) {
+                    if(!resp.started){
+                        $.ajax({
+                            url: '/start_timer',
+                            method: "POST",
+                            data : {"task_id": pk},
+                            headers: {
+                                "X-CSRFToken": '{{csrf_token}}'
+                            },
+                            dataType: "json",
+                            success: function (resp) {
+                                console.log(resp)
+                                $("#timer").css("display", "block")
+                            }
+                        })
+                    }else{
+                        $("#timer").css("display", "none")
+                    }
+                }
+            })
+
+            
+            if($(this).data("task_start_timer") != "None" && $(this).data("task_end_timer") == "None"){
+                $("#tasksmodel").find(".timer_diplayer").css("display", "block")
+                console.log("the task is currently running")
+
+                //$(".timer").css("display", "block")
+            }
+            else{
+                console.log("the task finished it is execution")
+                $("#timer").css("display", "none")
+            }
+            $("#tasksmodel").modal("show")
+        })
+
+        
     </script>
 
 

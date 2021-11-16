@@ -17,7 +17,7 @@ tasks
 
 
 {% if request.user.is_superuser %}
-<button class="btn btn-success" data-bs-toggle='modal' data-bs-target='#tasksmodel' id="new_tasks"> Add new task
+<button class="btn btn-success"  id="new_tasks"> Add new task
 </button>
 {% endif %}
 
@@ -26,8 +26,6 @@ tasks
 
 
 
-
-{% include "tasks/modal.html" %}
 
 
 
@@ -41,6 +39,8 @@ tasks
             <th>Start date</th>
             <th>End date</th>
             <th> Assigned to </th>
+            <th> Status </th>
+            <th> Time </th>
 
             {% if request.user.is_superuser %}
             <th> Action </th>
@@ -69,7 +69,7 @@ tasks
         is_superuser = "{{ request.user.is_superuser }}"
 
         if (is_superuser == "True") {
-            
+
             let table = $("#taskstable").DataTable({
                 ajax: {
                     "url": "/get_tasks",
@@ -81,7 +81,8 @@ tasks
                     { "data": "start_date" },
                     { "data": "end_date" },
                     { "data": "assigned_to" },
-                    
+                    { "data": "status" },
+                    { "data": "time" },
                     { "data": "actions" },
                 ]
             });
@@ -98,6 +99,9 @@ tasks
                     { "data": "start_date" },
                     { "data": "end_date" },
                     { "data": "assigned_to" },
+                    { "data": "status" },
+                    { "data": "time" },
+
                 ]
             });
         }
@@ -129,6 +133,61 @@ tasks
                         swal("This task is safe!");
                     }
                 });
+        })
+
+        $(document).on("click", ".update_tasks", function(){
+            $("#pk").val($(this).data("pk"))
+            $("#title").val($(this).data("title"))
+            $("#start_date").val($(this).data("start_date"))
+            $("#end_date").val($(this).data("end_date"))
+            $("#assigned_to").val($(this).data("assigned_to"))
+            $("#task_status").val($(this).data("status_id"))
+           // $("#start_task").css("display", "block")
+            $("#myModalLabel").text($(this).data("title"))
+            console.log($(this).data("task_time"))
+            $("#time").val($(this).data("task_time"))
+            pk = $(this).data("pk") 
+            $.ajax({
+                url: '/get_tasks_status',
+                method: "POST",
+                data : {"task_id": $(this).data("pk")},
+                headers: {
+                    "X-CSRFToken": '{{csrf_token}}'
+                },
+                dataType: "json",
+                success: function (resp) {
+                    if(!resp.started){
+                        $.ajax({
+                            url: '/start_timer',
+                            method: "POST",
+                            data : {"task_id": pk},
+                            headers: {
+                                "X-CSRFToken": '{{csrf_token}}'
+                            },
+                            dataType: "json",
+                            success: function (resp) {
+                                console.log(resp)
+                                $("#timer").css("display", "block")
+                            }
+                        })
+                    }else{
+                        $("#timer").css("display", "none")
+                    }
+                }
+            })
+
+            
+            if($(this).data("task_start_timer") != "None" && $(this).data("task_end_timer") == "None"){
+                $("#tasksmodel").find(".timer_diplayer").css("display", "block")
+                console.log("the task is currently running")
+
+                //$(".timer").css("display", "block")
+            }
+            else{
+                console.log("the task finished it is execution")
+                $("#timer").css("display", "none")
+            }
+            $("#tasksmodel").modal("show")
         })
 
 
@@ -256,19 +315,13 @@ tasks
         })
 
 
-        $(document).on("click", ".update_tasks", function () {
-            $("#pk").val($(this).data("pk"))
-            $("#title").val($(this).data("title"))
-            $("#start_date").val($(this).data("start_date"))
-            $("#end_date").val($(this).data("end_date"))
-            $("#assigned_to").val($(this).data("assigned_to"))
-            $("#tasksmodel").modal("show")
-        })
+        
 
         $("#new_tasks").on("click", function () {
             $("#tasksmodel").find("input, select").val("").removeClass("is-invalid, is-valid")
-
-
+            $("#myModalLabel").text("Add new task")
+           // $("#start_task").css("display", "none")
+            $("#tasksmodel").modal("show")
         })
 
 

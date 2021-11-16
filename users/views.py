@@ -14,6 +14,8 @@ from django.utils import timezone
 from datetime import date
 
 import random
+from notifications.views import *
+from layout.views import get_all_drivers
 
 
 @Already_authenticated_users_arenot_allowed
@@ -69,7 +71,7 @@ def register(request):
         if request.method == "GET":
             print(get_client_ip(request))
 
-            return render(request, "users/register.html")
+            return render(request, "users/register.html", { "users": get_all_drivers() ,"notifications":get_all_notifications(request.user.id),"notification_count": get_count(request.user.id)})
         else:
             response = {}
             user = User()
@@ -162,8 +164,11 @@ def get_memos(request):
     count = memos.objects.filter(created_at__date=date.today()).count()
 
     context = {
+        "users": get_all_drivers(),
         "memos": all_memos,
-        "memos_count": count
+        "memos_count": count,
+        "notifications":get_all_notifications(request.user.id),
+        "notification_count": get_count(request.user.id)
     }
     return render(request, "users/memos.html", context)
 

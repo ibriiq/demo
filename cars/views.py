@@ -4,6 +4,8 @@ from django.http import JsonResponse
 from django.contrib.auth.models import User
 from users.models import memos
 from datetime import date
+from notifications.views import *
+from layout.views import get_all_drivers
 
 # Create your views here.
 
@@ -11,7 +13,7 @@ from datetime import date
 def cars(request):
     count = memos.objects.filter(created_at__date=date.today()).count()
     user = User.objects.all()
-    context = {"users": user, "memos_count": count}
+    context = {"users": get_all_drivers(), "all_users": user, "memos_count": count, "notifications":get_all_notifications(request.user.id),"notification_count": get_count(request.user.id)}
     return render(request,"cars/index.html", context)
 
 def get_cars(request):

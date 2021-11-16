@@ -22,7 +22,7 @@
                         <label class="form-label" for="assigned_to">Assigned to </label>
                         <select name="assigned_to" id="assigned_to" class="form-control">
                             <option value=''>Select employee</option>
-                            {% for user in users %}
+                            {% for user in all_users %}
                                 <option value={{ user.id }}>{{ user }}</option>
                             {% endfor %}
                         </select>

@@ -7,6 +7,10 @@ class Tasks(models.Model):
     start_date = models.DateField()
     end_date = models.DateField()
     assigned_to = models.IntegerField()
+    status = models.IntegerField(default=0)
+    time = models.TimeField(blank=True, null=True)
+    start_timer = models.TimeField(blank=True, null=True)
+    end_timer = models.TimeField(blank=True, null=True)
 
     def __str__(self):
         return self.title

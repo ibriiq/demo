@@ -47,7 +47,9 @@ INSTALLED_APPS = [
     'users',
     'layout',
     'cars',
-    'tasks'
+    'tasks',
+    'notifications',
+    'background_task'
 ]
 
 MIDDLEWARE = [

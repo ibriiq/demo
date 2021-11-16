@@ -141,6 +141,67 @@ memo
 
         })
 
+        $(document).on("click", ".update_tasks", function(){
+            $("#pk").val($(this).data("pk"))
+            $("#title").val($(this).data("title"))
+            $("#start_date").val($(this).data("start_date"))
+            $("#end_date").val($(this).data("end_date"))
+            $("#assigned_to").val($(this).data("assigned_to"))
+            $("#task_status").val($(this).data("status_id"))
+           // $("#start_task").css("display", "block")
+            $("#myModalLabel").text($(this).data("title"))
+            console.log($(this).data("task_time"))
+            $("#time").val($(this).data("task_time"))
+
+            console.log($(this).data("notification"))
+            
+
+            pk = $(this).data("pk") 
+            $.ajax({
+                url: '/get_tasks_status',
+                method: "POST",
+                data : {"task_id": $(this).data("pk")},
+                headers: {
+                    "X-CSRFToken": '{{csrf_token}}'
+                },
+                dataType: "json",
+                success: function (resp) {
+                    console.log(resp)
+                    if(!resp.started){
+                        $.ajax({
+                            url: '/start_timer',
+                            method: "POST",
+                            data : {"task_id": pk},
+                            headers: {
+                                "X-CSRFToken": '{{csrf_token}}'
+                            },
+                            dataType: "json",
+                            success: function (resp) {
+                                console.log(resp)
+                                $("#timer").css("display", "block")
+                            }
+                        })
+                    }else{
+                        $("#timer").css("display", "none")
+                    }
+                }
+            })
+
+            
+            if($(this).data("task_start_timer") != "None" && $(this).data("task_end_timer") == "None"){
+                $("#tasksmodel").find(".timer_diplayer").css("display", "block")
+                console.log("the task is currently running")
+
+                //$(".timer").css("display", "block")
+            }
+            else{
+                console.log("the task finished it is execution")
+                $("#timer").css("display", "none")
+            }
+            $("#tasksmodel").modal("show")
+        })
+
+
     });
 
 
