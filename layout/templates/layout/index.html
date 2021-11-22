@@ -90,30 +90,36 @@
                         id="page-header-notifications-dropdown" data-bs-toggle="dropdown" aria-haspopup="true"
                         aria-expanded="false">
                         <i class="mdi mdi-bell-outline"></i>
-                        
-                        
-                        {% if notification_count > 0  %}
-                        
-                        <span class="badge bg-danger rounded-pill" id="notification_count">  {{ notification_count }}  </span>
-                        {% endif %}
+
+                        <div class="badge bg-danger rounded-pill notification_counter">
+
                             
+                            {% if notification_count > 0  %}
+                            {{ notification_count }}
+                                
+                            {% endif %}
+                                
+                            
+                        </div>
 
                     </button>
+
                     <div class="dropdown-menu dropdown-menu-lg dropdown-menu-end p-0"
                         aria-labelledby="page-header-notifications-dropdown">
                         <div class="p-3">
                             <div class="row align-items-center">
                                 <div class="col">
-                                    <h5 class="m-0 font-size-16"> Notifications {{ notification_count }} </h5>
+                                    <h5 class="m-0 font-size-16"  id="notification_count_inside" > Notifications {{ notification_count }} </h5>
                                 </div>
                             </div>
                         </div>
-                        <div data-simplebar style="max-height: 230px;" id="notify">
+                        <div data-simplebar style="max-height: 230px;" >
+                            <div id="notify"></div>
                             {% for notification in notifications %}
                             <!-- aliceblue -->
-                            
+
                             {% if notification.status == "New" %}
-                            <div class="text-reset notification-item"  style="">
+                            <div class="text-reset notification-item" style="">
                                 <div class="d-flex">
                                     <div class="flex-shrink-0 me-3">
                                         <div class="avatar-xs">
@@ -126,13 +132,13 @@
                                         <h6 class="mb-1">You are assigned new task</h6>
                                         <div class="font-size-12 text-muted">
                                             <!-- <p class="mb-1"> {{ notification.notification }} </p> -->
-                                            {{ notification.notification  | safe }}
+                                            {{ notification.notification | safe }}
                                         </div>
                                     </div>
                                 </div>
                             </div>
                             {% else %}
-                            <div class="text-reset notification-item"  style="background: #ddd0d0">
+                            <div class="text-reset notification-item" style="background: #ddd0d0">
                                 <div class="d-flex">
                                     <div class="flex-shrink-0 me-3">
                                         <div class="avatar-xs">
@@ -145,7 +151,7 @@
                                         <h6 class="mb-1">You are assigned new task</h6>
                                         <div class="font-size-12 text-muted">
                                             <!-- <p class="mb-1"> {{ notification.notification }} </p> -->
-                                            {{ notification.notification  | safe }}
+                                            {{ notification.notification | safe }}
                                         </div>
                                     </div>
                                 </div>
@@ -154,19 +160,12 @@
 
                             {% endfor %}
                         </div>
-                        <!-- <div class="p-2 border-top">
-                            <div class="d-grid">
-                                <a class="btn btn-sm btn-link font-size-14 text-center" href="javascript:void(0)">
-                                    View all
-                                </a>
-                            </div>
-                        </div> -->
                     </div>
                 </div>
 
                 <div class="d-flex">
 
-                    {{ notifications.notification }}
+                    <!-- {{ notifications.notification }} -->
 
 
                     <div class="dropdown d-inline-block">
@@ -338,7 +337,11 @@
                     </div>
                     <!-- end row -->
 
+
+                    {% if request.user.is_superuser %}
                     <div id="map_all_employees" style="height: 400px; width: 100%;"></div>
+                    {% endif %}
+
 
                     {% endblock content %}
 
@@ -402,27 +405,29 @@
     <script src="{% static 'assets/js/app.js' %}"></script>
     <script src="{% static 'assets/js/jquery.dataTables.min.js' %}"></script>
 
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB6dCtBUz9eXILTvh_VbFcwABIKRKYhIGg" ></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB6dCtBUz9eXILTvh_VbFcwABIKRKYhIGg"></script>
 
-<!-- 
+    <!-- 
     <script src="//js.pusher.com/2.2/pusher.min.js"></script> -->
     <script src="https://js.pusher.com/7.0.3/pusher.min.js"></script>
 
-<script>
-    //var pusher = new Pusher('{{ settings.PUSHER_KEY }}');
+    <script>
+        //var pusher = new Pusher('{{ settings.PUSHER_KEY }}');
 
-    var pusher = new Pusher("61de2249dc4b0a22ea49", {
-        cluster: "ap2",
-    });
-    //var channel = pusher.subscribe('one_marchant');
-    var channel = pusher.subscribe("my-channel");
+        var pusher = new Pusher("61de2249dc4b0a22ea49", {
+            cluster: "ap2",
+        });
+        //var channel = pusher.subscribe('one_marchant');
+        var channel = pusher.subscribe("my-channel");
 
-    channel.bind("my-event_{{ request.user.id }}", (data) => {
-        // Method to be dispatched on trigger.
-        console.log("my data ",data.count)
-        $("#notification_count").text(data.count)
+        channel.bind("my-event_{{ request.user.id }}", (data) => {
+            // Method to be dispatched on trigger.
+            console.log("my data ", data)
+            $(".notification_counter").text(data.count)
+            $("#notification_count_inside").text("Notifications "+data.count)
+            
 
-        let notification = `
+            let notification = `
         <div class="text-reset notification-item"  style="">
             <div class="d-flex">
                 <div class="flex-shrink-0 me-3">
@@ -435,51 +440,49 @@
                 <div class="flex-grow-1">
                     <h6 class="mb-1">You are assigned new task</h6>
                     <div class="font-size-12 text-muted">
-                        <!-- <p class="mb-1"> {{ notification.notification }} </p> -->
-                        ${ data.notification }
+                        ${data.notification}
                     </div>
                 </div>
             </div>
         </div>
         `
-
-        
-
+      
 
 
-        $("#notify").appendTo(notification)
 
-        if (!data.count){
+
+            $("#notify").prepend(notification)
+
+            if (!data.count) {
+                iziToast.info({
+                    title: 'TasK status',
+                    message: data.notification,
+                    position: 'topRight',
+                    timeout: false
+                });
+            }
+
+
+            //alert(data.user + " has begun updating this object");
+
+        });
+
+        /*channel.bind('updates', function(data) {
+        alert(data.user + " has begun updating this object");
+        });*/
+
+
+        channel.bind("task_{{ request.user.id }}", (data) => {
+            console.log(data)
             iziToast.info({
                 title: 'TasK status',
-                message: data.notification,
+                message: data.msg,
                 position: 'topRight',
                 timeout: false
             });
-        }
+        })
 
-
-    //alert(data.user + " has begun updating this object");
-
-    });
-
-    /*channel.bind('updates', function(data) {
-    alert(data.user + " has begun updating this object");
-    });*/
-
-
-    channel.bind("task_{{ request.user.id }}", (data) => {
-        console.log(data)
-        iziToast.info({
-            title: 'TasK status',
-            message: data.msg,
-            position: 'topRight',
-            timeout: false
-        });
-    })
-    
-
-</script>
+    </script>
 
 
 
@@ -537,7 +540,7 @@
 
         })
 
-        
+
 
 
         const coardinates = [{ lat: 11.2322, lng: 47.3343 }, { lat: 11.2322, lng: 49.3343 }, { lat: 11.2322, lng: 48.3393 }];
@@ -548,16 +551,16 @@
             center: { lat: 11.2322, lng: 49.3343 },
         });
         // The marker, positioned at Uluru
-       
 
-        coardinates.forEach(el=>{
+
+        coardinates.forEach(el => {
             console.log(el)
             new google.maps.Marker({
                 position: el,
                 map: map,
             });
         })
-        
+
         $.ajax({
             url: '/get_usinfo',
             method: "POST",
@@ -566,9 +569,9 @@
             },
             dataType: "json",
             success: function (resp) {
-                resp.forEach(el=>{
+                resp.forEach(el => {
                     new google.maps.Marker({
-                        position: {lat: parseFloat(el.Latitude), lng: parseFloat(el.Longitude)},
+                        position: { lat: parseFloat(el.Latitude), lng: parseFloat(el.Longitude) },
                         map: map,
                         title: el.name
                     });
@@ -621,36 +624,36 @@
         id = navigator.geolocation.watchPosition(success, error, options);
 
 
-        $(document).on("click", ".update_tasks", function(){
+        $(document).on("click", ".update_tasks", function () {
             $("#pk").val($(this).data("pk"))
             $("#title").val($(this).data("title"))
             $("#start_date").val($(this).data("start_date"))
             $("#end_date").val($(this).data("end_date"))
             $("#assigned_to").val($(this).data("assigned_to"))
             $("#task_status").val($(this).data("status_id"))
-           // $("#start_task").css("display", "block")
+            // $("#start_task").css("display", "block")
             $("#myModalLabel").text($(this).data("title"))
             console.log($(this).data("task_time"))
             $("#time").val($(this).data("task_time"))
 
             console.log($(this).data("notification"))
-            
 
-            pk = $(this).data("pk") 
+
+            pk = $(this).data("pk")
             $.ajax({
                 url: '/get_tasks_status',
                 method: "POST",
-                data : {"task_id": $(this).data("pk")},
+                data: { "task_id": $(this).data("pk") },
                 headers: {
                     "X-CSRFToken": '{{csrf_token}}'
                 },
                 dataType: "json",
                 success: function (resp) {
-                    if(!resp.started){
+                    if (!resp.started) {
                         $.ajax({
                             url: '/start_timer',
                             method: "POST",
-                            data : {"task_id": pk},
+                            data: { "task_id": pk },
                             headers: {
                                 "X-CSRFToken": '{{csrf_token}}'
                             },
@@ -660,27 +663,27 @@
                                 $("#timer").css("display", "block")
                             }
                         })
-                    }else{
+                    } else {
                         $("#timer").css("display", "none")
                     }
                 }
             })
 
-            
-            if($(this).data("task_start_timer") != "None" && $(this).data("task_end_timer") == "None"){
+
+            if ($(this).data("task_start_timer") != "None" && $(this).data("task_end_timer") == "None") {
                 $("#tasksmodel").find(".timer_diplayer").css("display", "block")
                 console.log("the task is currently running")
 
                 //$(".timer").css("display", "block")
             }
-            else{
+            else {
                 console.log("the task finished it is execution")
                 $("#timer").css("display", "none")
             }
             $("#tasksmodel").modal("show")
         })
 
-        
+
     </script>
 
 

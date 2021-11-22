@@ -171,20 +171,17 @@ tasks
                             }
                         })
                     }else{
-                        $("#timer").css("display", "none")
+                       // $("#timer").css("display", "none")
                     }
                 }
             })
 
             
             if($(this).data("task_start_timer") != "None" && $(this).data("task_end_timer") == "None"){
-                $("#tasksmodel").find(".timer_diplayer").css("display", "block")
-                console.log("the task is currently running")
-
-                //$(".timer").css("display", "block")
+                element = $("#tasksmodel").find(".timer_diplayer")
+                $(element).css("display", "block")
             }
             else{
-                console.log("the task finished it is execution")
                 $("#timer").css("display", "none")
             }
             $("#tasksmodel").modal("show")

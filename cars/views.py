@@ -1,11 +1,12 @@
 from django.shortcuts import render
-from .models import Cars
+from .models import Cars, Checklist_car
 from django.http import JsonResponse
 from django.contrib.auth.models import User
 from users.models import memos
 from datetime import date
 from notifications.views import *
 from layout.views import get_all_drivers
+from django.core import serializers
 
 # Create your views here.
 
@@ -25,16 +26,47 @@ def get_cars(request):
 
     for car in all_cars:
         if request.user.is_superuser:
-            car_type = "<a href='#' data-pk="+str(car.id)+" data-cars_type='"+str(car.car_type)+"' data-assigned_to = "+str(car.assigned_to)+" class='update_cars'>"+ str(car.car_type) +"</a>"
+            car_type = "<a href='#' data-pk="+str(car.id)+" data-cars_type='"+str(car.car_type)+"' data-assigned_to = "+str(car.assigned_to)+" class='update_cars' >"+ str(car.car_type) +"</a>"
             action = "<a href='#' data-id='"+str(car.id)+"' class='delete_cars' style='color: red'>  <i class='fas fa-trash-alt'></i> </a>"
             cars_list.append({ "sn": sup_sn, "cars_type":car_type, "assigned_to": User.objects.get(id=car.assigned_to).username, "actions": action})
             sup_sn += 1
         else:
             if request.user.id == car.assigned_to:
-                car_type = car.car_type
+                car_type = "<a href='#' data-pk="+str(car.id)+" data-cars_type='"+str(car.car_type)+"' data-assigned_to = "+str(car.assigned_to)+" class='update_cars'>"+ str(car.car_type) +"</a>"
+                # car_type = car.car_type
                 cars_list.append({ "sn": nor_sn, "cars_type":car_type, "assigned_to": User.objects.get(id=car.assigned_to).username})
                 nor_sn +=1
     return JsonResponse(cars_list, safe=False)
+
+def get_car(request):
+    car_dict = {}
+    checklist_dict = []
+    cars = Cars.objects.filter(id=request.POST["id"])  
+
+
+    for car in cars:
+        car_dict = {
+        "pk": car.id,
+        "car_assigned_to": User.objects.get(id=car.assigned_to).username,
+        "car_type": car.car_type, 
+        "assigned_to": car.assigned_to,
+        "tax_renewed_date": car.tax_renewed_date,
+        "tax_expiration_date": car.tax_expiration_date,
+        "fitness_renewed_date": car.fitness_renewed_date,
+        "fitness_expiration_date": car.fitness_expiration_date,
+        "car_maintanance_date": car.car_maintanance_date,
+        "car_condition": car.car_condition
+        }
+    # car = serializers.serialize('json', car)
+    checklists = Checklist_car.objects.filter(car_id=request.POST["id"])
+    print(checklists)
+    for checklist in checklists:
+        checklist_dict.append({
+            "title": checklist.title,
+            "is_checked": checklist.is_checked
+        })
+    # checklist = serializers.serialize('json', checklist)
+    return JsonResponse({ "car": car_dict, "checklist": checklist_dict})
 
 
 def save_cars(request):
@@ -44,8 +76,48 @@ def save_cars(request):
             car.pk = request.POST["pk"]
         car.car_type = request.POST["car_type"]
         car.assigned_to = request.POST["assigned_to"]
+        if request.POST["car_road_renewed"] and request.POST["car_road_renewed"]  != "":
+            print("the date = ", request.POST["car_road_renewed"])
+            car.tax_renewed_date = request.POST["car_road_renewed"]
+        if request.POST["car_road_expire"] and request.POST["car_road_expire"]  != "":
+            car.tax_expiration_date = request.POST["car_road_expire"]
+        if request.POST["car_fitness_renewed"] and request.POST["car_fitness_renewed"]  != "":
+            car.fitness_expiration_date =request.POST["car_fitness_renewed"]
+        if request.POST["car_fitness_expire"] and request.POST["car_fitness_expire"]  != "":
+            car.fitness_renewed_date =request.POST["car_fitness_expire"]
+        if request.POST["car_maintenance_expire"] and request.POST["car_maintenance_expire"]  != "":
+            car.car_maintanance_date =request.POST["car_maintenance_expire"]
+        car.car_condition =request.POST["car_conditions"]
+
         response = {}
-        if car.save() is None:
+        saved_car = car.save()
+        if saved_car is None:
+            checklist = Checklist_car()
+            checklist.car_id = car.id
+            checklist.title = "Car has road Tax"
+            checklist.save()
+
+            checklist = Checklist_car()
+            checklist.car_id = car.id
+            checklist.title = "Car has Fitness check"
+            checklist.save()
+
+            checklist = Checklist_car()
+            checklist.car_id = car.id
+            checklist.title = "Car has being maintained"
+            checklist.save()
+
+            checklist = Checklist_car()
+            checklist.car_id = car.id
+            checklist.title = "Car has being maintained"
+            checklist.save()
+
+            checklist = Checklist_car()
+            checklist.car_id = car.id
+            checklist.title = "Car is in good conditions"
+            checklist.save()
+
+
             response["success"] = True
             response["msg"] = "Successfully added new car"
         else:
@@ -65,3 +137,38 @@ def del_car(request):
             response["success"] = False  
             response["msg"] = "Cars delete failed"  
         return JsonResponse(response)
+
+
+
+def save_checklist(request):
+
+    checklists = Checklist_car.objects.filter(car_id=request.POST["id"])
+    for checklist in checklists:
+        # print(checklists)
+        if request.POST["checklist_type"] in checklist.title:
+            print(request.POST["checklist_type"] )
+            print(checklist.title)
+            print("we checked the "+ request.POST["checklist_type"] +" checlist")
+            checklist.is_checked = request.POST["checklist"]
+            checklist.save()
+
+
+
+    #     if "Fitness" in checklist.title:
+    #         print(checklist.title)
+    #         print("we checked the Fitness checlist")
+    #         checklist.is_checked = request.POST["car_fitness_checklist"]
+
+    #     if "maintained" in checklist.title:
+    #         print(checklist.title)
+    #         print("we checked the maintained checlist")
+    #         checklist.is_checked = request.POST["car_maintainance_checklist"]
+
+    #     if "conditions" in checklist.title:
+    #         print(checklist.title)
+    #         print("we checked the conditions checlist")
+    #         checklist.is_checked = request.POST["car_conditions_checklist"]
+
+    # checklists.save()
+    return JsonResponse({"success": True})
+

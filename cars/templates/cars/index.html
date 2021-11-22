@@ -30,6 +30,7 @@ cars
 
 
 
+
 <table id="carstable">
     <thead>
         <tr>
@@ -147,15 +148,15 @@ cars
             //Validation for car_type ends here
 
 
-              //Validation for assigned_to begins here
-              if ($("#assigned_to").val() == "") {
-                $("#assigned_to").addClass("is-invalid");
+              //Validation for assigned_to_cars begins here
+            if ($("#assigned_to_cars").val() == "") {
+                $("#assigned_to_cars").addClass("is-invalid");
                 $("#errorforassigned_to").text("Please enter your assigned_to");
                 form_is_invalid = true;
             }
             else {
-                $("#assigned_to").removeClass("is-invalid");
-                $("#assigned_to").addClass("is-valid");
+                $("#assigned_to_cars").removeClass("is-invalid");
+                $("#assigned_to_cars").addClass("is-valid");
                 $("#errorforassigned_to").text("");
             }
             //Validation for assigned_to ends here
@@ -170,6 +171,7 @@ cars
                 e.stopPropagation()
                 return false
             }
+
 
             $("#add_new_car_btn").attr("disabled", true);
             $("#add_new_car_btn").html(`<span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span>`);
@@ -286,17 +288,156 @@ cars
 
 
         $(document).on("click",".update_cars", function(){
-            $("#pk").val($(this).data("pk"))
-            $("#car_type").val($(this).data("cars_type"))
-            $("#assigned_to").val($(this).data("assigned_to"))
-            $("#carsmodel").modal("show")
+            id = $(this).data("pk")
+            console.log(id)
+            
+
+            $.ajax({
+                url: '/get_car',
+                method: "POST",
+                data : {"id": id},
+                headers: {
+                    "X-CSRFToken": '{{csrf_token}}'
+                },
+                dataType: "json",
+                success: function (resp) {
+                    console.log($("#myModalLabel").text())
+
+                    $("#myModalLabel").text(resp.car.car_type)
+
+                    $("#pk_cars").val(resp.car.pk)
+                    $("#car_type").val(resp.car.car_type)
+                    $("#assigned_to_cars").val(resp.car.assigned_to)
+                    $("#car_road_renewed").val(resp.car.tax_renewed_date)
+                    $("#car_road_expire").val(resp.car.tax_expiration_date)
+                    $("#car_fitness_renewed").val(resp.car.fitness_renewed_date)
+                    $("#car_fitness_expire").val(resp.car.fitness_expiration_date)
+                    $("#car_maintenance_expire").val(resp.car.car_maintanance_date)
+                    $("#car_conditions").val(resp.car.car_condition)
+                    resp.checklist.forEach(el=>{
+                        if(el.title.indexOf("road") >= 0){
+                            if(el.is_checked == 1){
+                                $("#car_road_checklist").prop('checked', true);
+                                $("#car_road_checklist").next("span").css("text-decoration", "line-through")
+                            }
+                        }
+                        if(el.title.indexOf("Fitness") >= 0){
+                            if(el.is_checked == 1){
+                                $("#car_fitness_checklist").prop('checked', true);
+                                $("#car_fitness_checklist").next("span").css("text-decoration", "line-through")
+                            }
+                        }
+                        if(el.title.indexOf("maintained") >= 0){
+                            if(el.is_checked == 1){
+                                $("#car_maintainance_checklist").prop('checked', true);
+                                $("#car_maintainance_checklist").next("span").css("text-decoration", "line-through")
+                            }
+                        }
+                        if(el.title.indexOf("conditions") >= 0){
+                            if(el.is_checked == 1){
+                                $("#car_conditions_checklist").prop('checked', true);
+                                $("#car_conditions_checklist").next("span").css("text-decoration", "line-through")
+                            }
+                        }
+                    })
+                    $("#checklists").css("display", "block")
+                    $("#car_road_checklist").val("road")
+                    $("#car_fitness_checklist").val("fitness")
+                    $("#car_maintainance_checklist").val("maintainance")
+                    $("#car_conditions_checklist").val("conditions")
+                    $("#carsmodel").modal("show")
+                }
+            })
+
+            //console.log($(this).data("pk"))
+            //$("#pk_cars").val($(this).data("pk"))
+            //$("#car_type").val($(this).data("cars_type"))
+            //console.log($(this).data("assigned_to"))
+            //$("#assigned_to_cars").val($(this).data("assigned_to"))
+            //$("#carsmodel").modal("show")
+            //$("#show_cars_model").modal("show")
         })
 
         $("#new_cars").on("click",function(){
             $("#carsmodel").find("input, select").val("").removeClass("is-invalid, is-valid")
-
-
         })
+
+        $(document).on("change", ".checklist", function(){
+            let checklist = 0
+            let checklist_type = "" 
+            console.log($(this).val())
+            let element = $(this).next()
+            console.log("the element = ", element)
+            if($(this).is(":checked")){
+                checklist = 1
+                if($(this).val() == "road"){
+                    checklist_type = "road"
+                }
+                if($(this).val() == "fitness"){
+                    checklist_type = "Fitness"
+                }
+                if($(this).val() == "maintainance"){
+                    checklist_type = "maintained"
+                }
+                if($(this).val() == "conditions"){
+                    checklist_type = "conditions"
+                }
+                console.log("We here ", checklist_type);
+
+                $.ajax({
+                    url: '/save_checklist',
+                    method: "POST",
+                    data : {
+                        "checklist": checklist,
+                        "checklist_type": checklist_type,
+                        "id": $("#pk_cars").val()
+                    },
+                    headers: {
+                        "X-CSRFToken": '{{csrf_token}}'
+                    },
+                    dataType: "json",
+                    success: function (resp) {
+                        console.log(resp)
+                    }})
+
+
+                $(element).css("text-decoration", "line-through")
+            }
+            else{
+                checklist = 0
+                if($(this).val() == "road"){
+                    checklist_type = "road"
+                }
+                if($(this).val() == "fitness"){
+                    checklist_type = "Fitness"
+                }
+                if($(this).val() == "maintainance"){
+                    checklist_type = "maintained"
+                }
+                if($(this).val() == "conditions"){
+                    checklist_type = "conditions"
+                }
+                console.log("We here = ", checklist_type);
+
+                $.ajax({
+                    url: '/save_checklist',
+                    method: "POST",
+                    data : {
+                        "checklist": checklist,
+                        "checklist_type": checklist_type,
+                        "id": $("#pk_cars").val()
+                    },
+                    headers: {
+                        "X-CSRFToken": '{{csrf_token}}'
+                    },
+                    dataType: "json",
+                    success: function (resp) {
+                        console.log(resp)
+                    }})
+
+                $(element).css("text-decoration", "")
+            }
+        } )
 
 
     })

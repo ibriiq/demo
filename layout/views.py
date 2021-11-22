@@ -76,7 +76,7 @@ def send_notifications(request, current):
     #         pusher_client.trigger(u'my-channel', u'my-event_'+str(user.id), {"msg": "user didn't open it"})
 
 
-@background(schedule=2)
+@background(schedule=900)
 def check_task_status(id, task_id):
     pusher_client = pusher.Pusher(
         app_id=u'1294975',

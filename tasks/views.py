@@ -108,20 +108,27 @@ def start_timer(request):
     task.save()
     response["success"] = True
     response["msg"] = "T0ask started"
+    admin_users_list = []
+    users = User.objects.filter(is_superuser=True)
+    for user in users:
+        admin_users_list.append(user.id)
+    
+    print("the admins are = ", admin_users_list)
+
     if task.time is None:
-        end_task(request.POST['task_id'], schedule=60)
+        end_task(request.POST['task_id'], admin_users_list, schedule=60)
     else:
         date_time = datetime.datetime.strptime(str(task.time), "%H:%M:%S")
         print(date_time)
         a_timedelta = date_time - datetime.datetime(1900, 1, 1)
         seconds = a_timedelta.total_seconds()
         print(int(seconds))
-        end_task(request.POST['task_id'], schedule=(int(seconds)))
+        end_task(request.POST['task_id'], admin_users_list ,schedule=(int(seconds)))
     return JsonResponse(response)
 
 
 @background(schedule=60)
-def end_task(task_id):
+def end_task(task_id, admin_users_list):
     response = {}
     task = Tasks.objects.get(id=task_id)
     task.end_timer = datetime.datetime.now().time()
@@ -138,4 +145,5 @@ def end_task(task_id):
     response["success"] = True
     response["msg"] = task.title+" has ended"
 
-    pusher_client.trigger(u'my-channel', u'task_'+str(1), response)
+    for admin in admin_users_list: 
+        pusher_client.trigger(u'my-channel', u'task_'+str(admin), response)
