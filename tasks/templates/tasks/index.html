@@ -59,6 +59,9 @@ tasks
 <script>
 
     $(document).ready(function () {
+
+        let timer_interval
+
         $.ajaxSetup({
             headers: {
                 "X-CSRFToken": '{{csrf_token}}'
@@ -136,6 +139,8 @@ tasks
         })
 
         $(document).on("click", ".update_tasks", function(){
+
+
             $("#pk").val($(this).data("pk"))
             $("#title").val($(this).data("title"))
             $("#start_date").val($(this).data("start_date"))
@@ -144,9 +149,19 @@ tasks
             $("#task_status").val($(this).data("status_id"))
            // $("#start_task").css("display", "block")
             $("#myModalLabel").text($(this).data("title"))
-            console.log($(this).data("task_time"))
+            let task_time = $(this).data("task_time")
+            if (task_time == "None"){
+                task_time = "00:20:00"
+            }
+            date = $(this).data("start_date") + " " + $(this).data("task_time")
+            //console.log($(this).data("task_time"))
+            console.log(date)
+            
             $("#time").val($(this).data("task_time"))
             pk = $(this).data("pk") 
+
+            
+
             $.ajax({
                 url: '/get_tasks_status',
                 method: "POST",
@@ -180,6 +195,28 @@ tasks
             if($(this).data("task_start_timer") != "None" && $(this).data("task_end_timer") == "None"){
                 element = $("#tasksmodel").find(".timer_diplayer")
                 $(element).css("display", "block")
+                const eventdata = Date.parse(date)
+                var today = new Date();
+                var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+                timer_interval = setInterval(()=>{
+                let now = new Date().getTime()
+                const diff = eventdata - now
+                const d = Math.floor(eventdata / (1000 * 60 * 60 * 24) - (now / ( 1000 * 60 * 60 *24)) )
+                const h = Math.floor((eventdata / (1000 * 60 * 60) - (now / ( 1000 * 60 * 60 ))) %24 )
+                const m = Math.floor((eventdata / (1000 * 60) - (now / ( 1000 * 60 ))) % 60 )
+                const s = Math.floor((eventdata / (1000) - (now / ( 1000))) % 60 )
+                if(diff > 0){
+                    let div = `
+                    <div class='alert alert-danger' style = 'height: 50px; position: absolute; top: 4px; left: 204px; z-index: 99999; color: black;'>
+                    ${h}:${m}:${s} 
+                    </div>
+                    `
+                    $(element).html(div)
+                }
+                else{
+                    $(element).html("")
+                }
+            }, 1000)
             }
             else{
                 $("#timer").css("display", "none")
@@ -311,10 +348,15 @@ tasks
 
         })
 
+        $('#tasksmodel').on('hidden.bs.modal', function (e) {
+            clearInterval(timer_interval)
+          })
+
 
         
 
         $("#new_tasks").on("click", function () {
+            $("#timer").css("display", "none")
             $("#tasksmodel").find("input, select").val("").removeClass("is-invalid, is-valid")
             $("#myModalLabel").text("Add new task")
            // $("#start_task").css("display", "none")
