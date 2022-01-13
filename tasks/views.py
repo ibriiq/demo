@@ -3,7 +3,7 @@ from .models import Tasks
 from cars.models import Cars
 from django.http import JsonResponse
 from django.contrib.auth.models import User
-from users.models import memos
+from memos.models import memos
 import datetime
 from datetime import date
 from notifications.views import insert_notification
@@ -80,7 +80,6 @@ def save_tasks(request):
         if task.save() is None:
             notif = insert_notification(request.POST["assigned_to"], "you have been assigned new task "+str(request.POST["title"]), 1,  task.id)
             send_notifications(request, request.POST["assigned_to"])
-            print(notif)
             response["success"] = True
             response["msg"] = "Successfully added new task"
         else:
@@ -112,17 +111,12 @@ def start_timer(request):
     users = User.objects.filter(is_superuser=True)
     for user in users:
         admin_users_list.append(user.id)
-    
-    print("the admins are = ", admin_users_list)
-
     if task.time is None:
         end_task(request.POST['task_id'], admin_users_list, schedule=60)
     else:
         date_time = datetime.datetime.strptime(str(task.time), "%H:%M:%S")
-        print(date_time)
         a_timedelta = date_time - datetime.datetime(1900, 1, 1)
         seconds = a_timedelta.total_seconds()
-        print(int(seconds))
         end_task(request.POST['task_id'], admin_users_list ,schedule=(int(seconds)))
     return JsonResponse(response)
 

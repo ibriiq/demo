@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.template import RequestContext
 from users.models import userinfo
 from datetime import date
-from users.models import memos
+from memos.models import memos
 from django.http import JsonResponse
 from notifications.views import get_notifications, get_all_notifications, get_count
 # from pusher import Pusher
@@ -26,8 +26,19 @@ def get_all_drivers():
     all_cars = Cars.objects.all()
     all_users = []
     for car in all_cars:
-        all_users.append(User.objects.get(id = car.assigned_to))
+        if User.objects.get(id = car.assigned_to) is not None:
+            all_users.append(User.objects.get(id = car.assigned_to))
     return all_users
+
+def get_drivers(request):
+    all_cars = Cars.objects.all()
+    all_users = []
+    for car in all_cars:
+        if User.objects.get(id = car.assigned_to) is not None:
+            all_users.append( {"username": User.objects.get(id = car.assigned_to).username, "id": User.objects.get(id = car.assigned_to).id }) 
+    return JsonResponse(all_users, safe=False)
+
+
 
 def dashboard(request):
     if request.user.is_superuser:
@@ -39,15 +50,10 @@ def dashboard(request):
     users = []
     for user in info:
         users.append({"username": user.username, "ip_Address": user.ip_Address, "Longitude": user.Longitude, "Latitude": user.Latitude, "login_time": user.time, "logout_time": user.logout_time  })
-        print(user)
 
     count = memos.objects.filter(created_at__date=date.today()).count()
 
     context ={"users": get_all_drivers(), "userinfo": users, "memos_count": count, "notifications":  get_all_notifications(request.user.id), "notification_count": get_count(request.user.id)}
-
-    print("the count is ", count)
-
-
 
     return render(request, "layout/index.html", context)
 
@@ -67,13 +73,6 @@ def send_notifications(request, current):
     data["count"] = count_notify
     pusher_client.trigger(u'my-channel', u'my-event_'+str(current), data)
     check_task_status(notify["id"], notify["task_id"])
-    # time.sleep(20)
-    # users = User.objects.filter(is_superuser=True)
-    # for user in users:
-    #     print("the admins = ",user.id)
-    #     notification_status = notifications.objects.get(id=notify["id"])
-    #     if notification_status.status == "New":
-    #         pusher_client.trigger(u'my-channel', u'my-event_'+str(user.id), {"msg": "user didn't open it"})
 
 
 @background(schedule=900)
@@ -88,12 +87,10 @@ def check_task_status(id, task_id):
     users = User.objects.filter(is_superuser=True)
     task = Tasks.objects.get(id=task_id)
     for user in users:
-        print("the admins = ",user.id)
         notification_status = notifications.objects.get(id=id)
         if notification_status.status == "New":
             pusher_client.trigger(u'my-channel', u'my-event_'+str(user.id), {"notification": "Task "+task.title+" wasn't Opened by user in 15 minutes"})
-    print("we doing it in the background")
-    
+
 
 
 
@@ -117,8 +114,7 @@ def get_usinfo(request):
             username = user.username
         sn = sn + 1
         users.append({"sn": sn, "name": user.username, "username": username, "ip_Address": user.ip_Address, "Longitude": user.Longitude, "Latitude": user.Latitude, "login_time": str(user.time).split("T")[0].split(".")[0], "logout_time": str(user.logout_time).split("T")[0].split(".")[0] })
-        print(user)
-
+        
     return JsonResponse(users, safe=False)
 
 

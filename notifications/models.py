@@ -7,6 +7,7 @@ class notifications(models.Model):
     notification = models.CharField(max_length=255)
     notification_type = models.IntegerField()
     task_id = models.IntegerField(default=0)
+    time = models.DateTimeField()
     status = models.CharField(max_length=255, default="New")
 
     def __str__(self):

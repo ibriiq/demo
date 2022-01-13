@@ -3,60 +3,69 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="myModalLabel"> Add new car 
+                <h5 class="modal-title" id="myModalLabel"> Add new car
                 </h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form action=" {% url 'save_cars' %}" method = 'post' id="add_new_car_modal">
+                <form action=" {% url 'save_cars' %}" method='post' id="add_new_car_modal">
                     {% csrf_token %}
 
                     <input type="hidden" name="pk" id="pk_cars">
 
                     <div class="form-group">
                         <label class="form-label" for="cartype">cartype</label>
-                        <input type="text" class="form-control" placeholder="Car type" name="car_type" id="car_type" {{ request.user.is_superuser|yesno:",readonly" }}>
+                        <input type="text" class="form-control" placeholder="Car type" name="car_type" id="car_type" {{
+                            request.user.is_superuser|yesno:",readonly" }}>
                     </div>
 
                     <div class="form-group">
                         <label class="form-label" for="assigned_to">Assigned to </label>
-                        <select name="assigned_to" id="assigned_to_cars" class="form-control" {{ request.user.is_superuser|yesno:",disabled" }}>
+                        <select name="assigned_to" id="assigned_to_cars" class="form-control" {{
+                            request.user.is_superuser|yesno:",disabled" }}>
                             <option value=''>Select employee</option>
                             {% for user in all_users %}
-                                <option value={{ user.id }}>{{ user }}</option>
+                            <option value={{ user.id }}>{{ user }}</option>
                             {% endfor %}
                         </select>
                     </div>
 
                     <div class="form-group">
                         <label class="form-label" for="car_road_renewed"> Road tax Renewed date </label>
-                        <input type="date" class="form-control" placeholder="Renewed in" name="car_road_renewed" id="car_road_renewed" {{ request.user.is_superuser|yesno:",readonly" }}>
+                        <input type="date" class="form-control" placeholder="Renewed in" name="car_road_renewed"
+                            id="car_road_renewed" {{ request.user.is_superuser|yesno:",readonly" }}>
                     </div>
 
                     <div class="form-group">
                         <label class="form-label" for="car_road_expire"> Road tax expiration date </label>
-                        <input type="date" class="form-control" placeholder="expires at" name="car_road_expire" id="car_road_expire" {{ request.user.is_superuser|yesno:",readonly" }}>
+                        <input type="date" class="form-control" placeholder="expires at" name="car_road_expire"
+                            id="car_road_expire" {{ request.user.is_superuser|yesno:",readonly" }}>
                     </div>
 
 
                     <div class="form-group">
                         <label class="form-label" for="car_fitness_renewed"> Car fitness Renewed date </label>
-                        <input type="date" class="form-control" placeholder="Renewed in" name="car_fitness_renewed" id="car_fitness_renewed" {{ request.user.is_superuser|yesno:",readonly" }}>
+                        <input type="date" class="form-control" placeholder="Renewed in" name="car_fitness_renewed"
+                            id="car_fitness_renewed" {{ request.user.is_superuser|yesno:",readonly" }}>
                     </div>
 
                     <div class="form-group">
                         <label class="form-label" for="car_fitness_expire"> Car fitness expiration date </label>
-                        <input type="date" class="form-control" placeholder="expires at" name="car_fitness_expire" id="car_fitness_expire" {{ request.user.is_superuser|yesno:",readonly" }}>
+                        <input type="date" class="form-control" placeholder="expires at" name="car_fitness_expire"
+                            id="car_fitness_expire" {{ request.user.is_superuser|yesno:",readonly" }}>
                     </div>
 
                     <div class="form-group">
                         <label class="form-label" for="car_maintenance_expire"> Car maintenance due date </label>
-                        <input type="date" class="form-control" placeholder="Car maintenance due date" name="car_maintenance_expire" id="car_maintenance_expire" {{ request.user.is_superuser|yesno:",readonly" }}>
+                        <input type="date" class="form-control" placeholder="Car maintenance due date"
+                            name="car_maintenance_expire" id="car_maintenance_expire" {{
+                            request.user.is_superuser|yesno:",readonly" }}>
                     </div>
 
                     <div class="form-group">
                         <label class="form-label" for="car_conditions"> car conditions </label>
-                        <select name="car_conditions" id="car_conditions" class="form-control" {{ request.user.is_superuser|yesno:",disabled" }}>
+                        <select name="car_conditions" id="car_conditions" class="form-control" {{
+                            request.user.is_superuser|yesno:",disabled" }}>
                             <option value=''>Select conditions</option>
                             <option> Good </option>
                             <option> Bad </option>
@@ -69,33 +78,43 @@
                             <label class="form-label" for="car_checklist"> Car checklist </label>
                         </div>
                         <div>
-                            <input type="checkbox"  name="car_road_checklist"  class="checklist" id="car_road_checklist" value="road"> <span> Car has raod Tax </span> 
+                            <input type="checkbox" name="car_road_checklist" class="checklist" id="car_road_checklist"
+                                value="road"> <span> Car has raod Tax </span>
                         </div>
                         <div>
-                            <input type="checkbox"  name="car_fitness_checklist" class="checklist" id="car_fitness_checklist" value="fitness"> <span > Car has Fitness check </span> <br>
+                            <input type="checkbox" name="car_fitness_checklist" class="checklist"
+                                id="car_fitness_checklist" value="fitness"> <span> Car has Fitness check </span> <br>
                         </div>
                         <div>
-                            <input type="checkbox"  name="car_maintainance_checklist" class="checklist" id="car_maintainance_checklist" value="maintainance"> <span > Car has being maintained </span> <br>
+                            <input type="checkbox" name="car_maintainance_checklist" class="checklist"
+                                id="car_maintainance_checklist" value="maintainance"> <span> Car has being maintained
+                            </span> <br>
                         </div>
                         <div>
-                            <input type="checkbox"  name="car_conditions_checklist" class="checklist" id="car_conditions_checklist" value="conditions"> <span >  Car is in good conditions</span> <br>
+                            <input type="checkbox" name="car_conditions_checklist" class="checklist"
+                                id="car_conditions_checklist" value="conditions"> <span> Car is in good
+                                conditions</span> <br>
                         </div>
                     </div>
 
-                    {% if request.user.is_superuser %}
+                    
 
-                    <button type="submit" class="btn btn-primary waves-effect" id="add_new_car_btn"> Add</button>
+                    <div style="display: flex; justify-content: flex-end;">
+                        {% if request.user.is_superuser %}
+                        <button type="submit" class="btn btn-success rounded-pill w-md waves-effect waves-light mb-3"
+                            id="add_new_car_btn"> Add</button>
+                            {% endif %}
+                        <button type="button" class="btn btn-secondary rounded-pill w-md waves-effect waves-light mb-3"
+                            data-bs-dismiss="modal">Close</button>
 
-                    {% endif %}
+                    </div>
 
                     
-                        
+
+
+
 
                 </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary waves-effect" data-bs-dismiss="modal">Close</button>
-
             </div>
         </div>
         <!-- /.modal-content -->
@@ -105,4 +124,3 @@
 <!-- /.modal -->
 
 {% endblock modal %}
-

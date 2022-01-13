@@ -1,5 +1,15 @@
 from django.db import models
 # Create your models here.
+from django.contrib.auth.models import User
+from django.db.models.base import Model
+
+
+from django.contrib.auth.models import User
+
+class Employee(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    userlevel = models.CharField(max_length=100)
+
 
 class userinfo(models.Model):
     username = models.TextField()
@@ -19,17 +29,3 @@ class userinfo(models.Model):
         verbose_name_plural = 'userinfos'
 
 
-class memos(models.Model):
-    createdby_id = models.IntegerField()
-    memo = models.CharField(max_length=500)
-    created_at = models.DateTimeField(auto_now=True)
-
-    def __str__(self):
-                return self.memo
-
-
-    class Meta:
-        db_table = ''
-        managed = True
-        verbose_name = 'memos'
-        verbose_name_plural = 'memoss'

@@ -15,41 +15,48 @@ tasks
 
 
 
+<div class="row" style="">
+    <div class="col-xl-12">
+        <div class="card" style="box-shadow: -1px 2px -1px 2px silver;">
+            <div class="card-body">
+                <div style="display: flex; justify-content: space-between; ">
+                    <h2 class="card-title mb-4">Taskt</h2>
+                    <a href="#" class="btn btn-purple rounded-pill w-md waves-effect waves-light mb-3" id="new_tasks"><i
+                            class="mdi mdi-plus"></i>
+                        Add task</a>
 
-{% if request.user.is_superuser %}
-<button class="btn btn-success"  id="new_tasks"> Add new task
-</button>
-{% endif %}
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-hover table-centered table-nowrap mb-0" id="taskstable" style="color: black;">
+                        <thead>
+                            <tr>
+                                <th> SN </th>
+                                <th>Title</th>
+                                <th>Start date</th>
+                                <th>End date</th>
+                                <th> Assigned to </th>
+                                <th> Status </th>
+                                <th> Time </th>
+
+                                {% if request.user.is_superuser %}
+                                <th> Action </th>
+
+                                {% endif %}
+
+                            </tr>
+                        </thead>
+
+                        <tbody></tbody>
+
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 
 
-
-
-
-
-
-
-
-
-<table id="taskstable">
-    <thead>
-        <tr>
-            <th> SN </th>
-            <th>Title</th>
-            <th>Start date</th>
-            <th>End date</th>
-            <th> Assigned to </th>
-            <th> Status </th>
-            <th> Time </th>
-
-            {% if request.user.is_superuser %}
-            <th> Action </th>
-
-            {% endif %}
-
-        </tr>
-    </thead>
-</table>
 
 {% endblock content %}
 
@@ -57,6 +64,27 @@ tasks
 
 {% block script %}
 <script>
+
+    // Add two times in hh:mm:ss format
+function addTimes(times = []) {
+
+    const z = (n) => (n < 10 ? '0' : '') + n;
+
+    let hour = 0
+    let minute = 0
+    let second = 0
+    for (const time of times) {
+        const splited = time.split(':');
+        hour += parseInt(splited[0]);
+        minute += parseInt(splited[1])
+        second += parseInt(splited[2])
+    }
+    const seconds = second % 60
+    const minutes = parseInt(minute % 60) + parseInt(second / 60)
+    const hours = hour + parseInt(minute / 60)
+
+    return z(hours) + ':' + z(minutes) + ':' + z(seconds)
+}
 
     $(document).ready(function () {
 
@@ -138,7 +166,7 @@ tasks
                 });
         })
 
-        $(document).on("click", ".update_tasks", function(){
+        $(document).on("click", ".update_tasks", function () {
 
 
             $("#pk").val($(this).data("pk"))
@@ -147,35 +175,34 @@ tasks
             $("#end_date").val($(this).data("end_date"))
             $("#assigned_to").val($(this).data("assigned_to"))
             $("#task_status").val($(this).data("status_id"))
-           // $("#start_task").css("display", "block")
+            // $("#start_task").css("display", "block")
             $("#myModalLabel").text($(this).data("title"))
             let task_time = $(this).data("task_time")
-            if (task_time == "None"){
+            if (task_time == "None") {
                 task_time = "00:20:00"
             }
-            date = $(this).data("start_date") + " " + $(this).data("task_time")
-            //console.log($(this).data("task_time"))
-            console.log(date)
+            how_long_it_takes = $(this).data("task_time")
             
-            $("#time").val($(this).data("task_time"))
-            pk = $(this).data("pk") 
 
-            
+            $("#time").val($(this).data("task_time"))
+            pk = $(this).data("pk")
+
+
 
             $.ajax({
                 url: '/get_tasks_status',
                 method: "POST",
-                data : {"task_id": $(this).data("pk")},
+                data: { "task_id": $(this).data("pk") },
                 headers: {
                     "X-CSRFToken": '{{csrf_token}}'
                 },
                 dataType: "json",
                 success: function (resp) {
-                    if(!resp.started){
+                    if (!resp.started) {
                         $.ajax({
                             url: '/start_timer',
                             method: "POST",
-                            data : {"task_id": pk},
+                            data: { "task_id": pk },
                             headers: {
                                 "X-CSRFToken": '{{csrf_token}}'
                             },
@@ -185,40 +212,58 @@ tasks
                                 $("#timer").css("display", "block")
                             }
                         })
-                    }else{
-                       // $("#timer").css("display", "none")
+                    } else {
+                        // $("#timer").css("display", "none")
                     }
                 }
             })
 
-            
-            if($(this).data("task_start_timer") != "None" && $(this).data("task_end_timer") == "None"){
+
+            if ($(this).data("task_start_timer") != "None" && $(this).data("task_end_timer") == "None") {
                 element = $("#tasksmodel").find(".timer_diplayer")
                 $(element).css("display", "block")
+
+
+                task_started_at = $(this).data("task_start_timer")
+                console.log("starts at = ", task_started_at, " takes = ", how_long_it_takes)
+                
+
+                long = addTimes([task_started_at, how_long_it_takes])
+
+                console.log(long)
+
+
+                date = $(this).data("start_date") + " " + long
+                console.log(date)
+
+
                 const eventdata = Date.parse(date)
+                
+
+
                 var today = new Date();
                 var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
-                timer_interval = setInterval(()=>{
-                let now = new Date().getTime()
-                const diff = eventdata - now
-                const d = Math.floor(eventdata / (1000 * 60 * 60 * 24) - (now / ( 1000 * 60 * 60 *24)) )
-                const h = Math.floor((eventdata / (1000 * 60 * 60) - (now / ( 1000 * 60 * 60 ))) %24 )
-                const m = Math.floor((eventdata / (1000 * 60) - (now / ( 1000 * 60 ))) % 60 )
-                const s = Math.floor((eventdata / (1000) - (now / ( 1000))) % 60 )
-                if(diff > 0){
-                    let div = `
+                timer_interval = setInterval(() => {
+                    let now = new Date().getTime()
+                    const diff = eventdata - now
+                    const d = Math.floor(eventdata / (1000 * 60 * 60 * 24) - (now / (1000 * 60 * 60 * 24)))
+                    const h = Math.floor((eventdata / (1000 * 60 * 60) - (now / (1000 * 60 * 60))) % 24)
+                    const m = Math.floor((eventdata / (1000 * 60) - (now / (1000 * 60))) % 60)
+                    const s = Math.floor((eventdata / (1000) - (now / (1000))) % 60)
+                    if (diff > 0) {
+                        let div = `
                     <div class='alert alert-danger' style = 'height: 50px; position: absolute; top: 4px; left: 204px; z-index: 99999; color: black;'>
                     ${h}:${m}:${s} 
                     </div>
                     `
-                    $(element).html(div)
-                }
-                else{
-                    $(element).html("")
-                }
-            }, 1000)
+                        $(element).html(div)
+                    }
+                    else {
+                        $(element).html("")
+                    }
+                }, 1000)
             }
-            else{
+            else {
                 $("#timer").css("display", "none")
             }
             $("#tasksmodel").modal("show")
@@ -228,11 +273,7 @@ tasks
 
         $("#add_new_task_modal").on("submit", function (e) {
             e.preventDefault();
-
             form_is_invalid = false;
-
-
-
             //Validation for title begins here
             if ($("#title").val() == "") {
                 $("#title").addClass("is-invalid");
@@ -245,7 +286,6 @@ tasks
                 $("#errorfortitle").text("");
             }
             //Validation for title ends here
-
             //Validation for start_date begins here
             if ($("#start_date").val() == "") {
                 $("#start_date").addClass("is-invalid");
@@ -258,7 +298,6 @@ tasks
                 $("#errorforstart_date").text("");
             }
             //Validation for start_date ends here
-
             //Validation for end_date begins here
             if ($("#end_date").val() == "") {
                 $("#end_date").addClass("is-invalid");
@@ -271,8 +310,6 @@ tasks
                 $("#errorforend_date").text("");
             }
             //Validation for end_date ends here
-
-
             //Validation for assigned_to begins here
             if ($("#assigned_to").val() == "") {
                 $("#assigned_to").addClass("is-invalid");
@@ -285,18 +322,10 @@ tasks
                 $("#errorforassigned_to").text("");
             }
             //Validation for assigned_to ends here
-
-
-
-
-
-
-
             if (form_is_invalid) {
                 e.stopPropagation()
                 return false
             }
-
             $("#add_new_task_btn").attr("disabled", true);
             $("#add_new_task_btn").html(`<span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span>`);
 
@@ -350,16 +379,13 @@ tasks
 
         $('#tasksmodel').on('hidden.bs.modal', function (e) {
             clearInterval(timer_interval)
-          })
-
-
-        
+        })
 
         $("#new_tasks").on("click", function () {
             $("#timer").css("display", "none")
             $("#tasksmodel").find("input, select").val("").removeClass("is-invalid, is-valid")
             $("#myModalLabel").text("Add new task")
-           // $("#start_task").css("display", "none")
+            // $("#start_task").css("display", "none")
             $("#tasksmodel").modal("show")
         })
 

@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 @keyframes fadeOutRightBig {
   from {
     opacity: 1;
@@ -13,19 +12,3 @@
 .fadeOutRightBig {
   animation-name: fadeOutRightBig;
 }
-=======
-@keyframes fadeOutRightBig {
-  from {
-    opacity: 1;
-  }
-
-  to {
-    opacity: 0;
-    transform: translate3d(2000px, 0, 0);
-  }
-}
-
-.fadeOutRightBig {
-  animation-name: fadeOutRightBig;
-}
->>>>>>> b72c5ea86bf6885e302b926b7202718cf917849d

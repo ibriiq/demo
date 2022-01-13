@@ -17,86 +17,37 @@ Registration
 {% block content %}
 
 
+<div class="row">
+    <div class="col-xl-12">
+        <div class="card">
+            <div class="card-body">
+                <div style="display: flex; justify-content: space-between; ">
+                    <h4 class="card-title mb-4">User management</h4>
 
-
-
-<div class="account-pages ">
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-md-5 ">
-                <div class="card overflow-hidden ">
-                    <div class="bg-info">
-                        <div class="text-primary text-center p-4">
-                            <h5 class="text-white font-size-20">User registration</h5>
-                        </div>
-                    </div>
-
-                    <div class="card-body ">
-                        <div>
-                            <form method="post" action="/register" id="registation_form">
-
-                                <div>
-                                    <label class="form-label" for="fname">First name</label>
-                                    <input type="text" class="form-control" height="1000px" name="fname" id="fname"
-                                        placeholder="Enter First name">
-                                    <small id='errorforfname' class="invalid-feedback"></small>
-                                </div>
-
-                                <div class="mb-3">
-                                    <label class="form-label" for="lname">Last name</label>
-                                    <input type="text" class="form-control" name="lname" id="lname"
-                                        placeholder="Enter Last name">
-                                    <small id='errorforlname' class="invalid-feedback"></small>
-                                </div>
-
-                                <div class="mb-3">
-                                    <label class="form-label" for="email">Email</label>
-                                    <input type="email" class="form-control" name="email" id="email"
-                                        placeholder="Enter email">
-                                    <small id='errorforemail' class="invalid-feedback"></small>
-                                </div>
-
-                                <div class="mb-3">
-                                    <label class="form-label" for="username">Username</label>
-                                    <input type="text" class="form-control" name="username" id="username"
-                                        placeholder="Enter username">
-                                    <small id='errorforusername' class="invalid-feedback"></small>
-                                </div>
-
-                                <div class="mb-3">
-                                    <label class="form-label" for="password">Password</label>
-                                    <input type="password" class="form-control" name="password" id="password"
-                                        placeholder="Enter password">
-                                    <small id='errorforpassword' class="invalid-feedback"></small>
-                                </div>
-
-                                <div class="mb-3">
-                                    <label class="form-label" for="usertype">User type</label>
-                                    <select class="form-control" name="usertype" id="usertype">
-                                        <option value="">Select user type</option>
-                                        <option value="True">Super user</option>
-                                        <option value="False">Basic user</option>
-                                    </select>
-                                    <small id='errorforusertype' class="invalid-feedback"></small>
-                                </div>
-
-
-                                <div class="mb-3 row">
-                                    <div class="col-12 text-end">
-                                        <button class="btn btn-primary w-md waves-effect waves-light" type="submit"
-                                            id="register_btn">Register</button>
-                                    </div>
-                                </div>
-
-
-                            </form>
-                        </div>
-                    </div>
+                    <a href="#" class="btn btn-purple rounded-pill w-md waves-effect waves-light mb-3"
+                    data-bs-toggle='modal' data-bs-target='#adduser' id="new_cars"><i class="mdi mdi-plus"></i>
+                    Add new user</a>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-hover table-centered table-nowrap mb-0" id="usrmanagementtable">
+                        <thead>
+                            <tr>
+                                <th>SN</th>
+                                <th>Username</th>
+                                <th>Email</th>
+                                <th>Fullname</th>
+                                <th> action </th>
+                            </tr>
+                        </thead>
+                    </table>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+
+{% include "users/model.html" %}
 
 
 
@@ -107,6 +58,23 @@ Registration
 <script>
 
     $("document").ready(function () {
+
+
+
+        let table = $("#usrmanagementtable").DataTable({
+            ajax: {
+                "url": "/get_employees",
+                "dataSrc": ""
+            },
+            "columns": [
+                { "data": "sn" },
+                { "data": "username" },
+                { "data": "email" },
+                { "data": "fullname" },
+                { "data": "actions" },
+
+            ]
+        });
 
         $.ajaxSetup({
             headers: {
@@ -165,7 +133,7 @@ Registration
                 $("#errorforusername").text("Field is required");
                 form_is_invalid = true;
             }
-            else  if ($("#username").val().split(" ").length >= 2) {
+            else if ($("#username").val().split(" ").length >= 2) {
                 $("#username").addClass("is-invalid");
                 $("#errorforusername").text("USername shouldn't have space");
                 form_is_invalid = true;
@@ -176,22 +144,27 @@ Registration
                 $("#errorforusername").text("");
             }//Validation for username ends here
 
-            //Validation for password begins here
-            if ($("#password").val() == "") {
-                $("#password").addClass("is-invalid");
-                $("#errorforpassword").text("Please enter your password");
-                form_is_invalid = true;
+
+            if ($("#pk").val() != ''){
+                //Validation for password begins here
+                if ($("#password").val() == "") {
+                    $("#password").addClass("is-invalid");
+                    $("#errorforpassword").text("Please enter your password");
+                    form_is_invalid = true;
+                }
+                else {
+                    $("#password").removeClass("is-invalid");
+                    $("#password").addClass("is-valid");
+                    $("#errorforpassword").text("");
+                }
+                //Validation for password ends here
             }
-            else {
-                $("#password").removeClass("is-invalid");
-                $("#password").addClass("is-valid");
-                $("#errorforpassword").text("");
-            }
-            //Validation for password ends here
+
+            
 
 
-              //Validation for usertype begins here
-              if ($("#usertype").val() == "") {
+            //Validation for usertype begins here
+            if ($("#usertype").val() == "") {
                 $("#usertype").addClass("is-invalid");
                 $("#errorforusertype").text("Please enter your usertype");
                 form_is_invalid = true;
@@ -200,24 +173,20 @@ Registration
                 $("#usertype").removeClass("is-invalid");
                 $("#usertype").addClass("is-valid");
                 $("#errorforusertype").text("");
+                form_is_invalid = false;
             }
             //Validation for usertype ends here
-
-            
-
-
-
-
 
             if (form_is_invalid) {
                 e.stopPropagation()
                 return false
             }
 
+
             $("#register_btn").attr("disabled", true);
             $("#register_btn").html(`<span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span>`);
 
-
+            
 
             $.ajax({
                 url: $(this).attr("action"),
@@ -237,6 +206,11 @@ Registration
 
                         //$("#registation_form").find("input").val("")
                         //$("#registation_form").find("input").removeClass("is-valid")
+
+                        $("#usrmanagementtable").DataTable().ajax.reload();
+                        $("#adduser").modal("toggle")
+
+                        $("adduser").find("input, select").val()
 
                         $("#register_btn").attr("disabled", false);
                         $("#register_btn").html(`Register`);
@@ -261,6 +235,62 @@ Registration
 
 
         })
+
+
+    
+
+        $(document).on("click", ".users_model_update", function () {
+            $("#adduser").modal("toggle")
+            $.ajax({
+                url: '/get_employee',
+                method: "POST",
+                data: { "id": $(this).data("id") },
+                dataType: "json",
+                success: function (resp) {
+                    console.log(resp)
+                    console.log("the userlevel = ", resp.username)
+                    $("#fname").val(resp.first_name)
+                    $("#lname").val(resp.last_name)
+                    $("#email").val(resp.email)
+                    $("#username").val(resp.username)
+                    $("#usertype").val(resp.userlevel)
+                    $("#pk").val(resp.id)
+                }
+            })
+
+        })
+
+        
+
+        $(document).on("click", ".delete_user", function(){
+            swal({
+                title: "Are you sure?",
+                text: "Once deleted, you will not be able to recover this user!",
+                icon: "warning",
+                buttons: true,
+                dangerMode: true,
+            })
+                .then((willDelete) => {
+                    if (willDelete) {
+                        $.ajax({
+                            url: '/delete_user',
+                            method: "POST",
+                            data: { "id": $(this).data("id") },
+                            dataType: "json",
+                            success: function (resp) {
+                                swal(resp.msg, {
+                                    icon: "success",
+                                });
+                                $("#usrmanagementtable").DataTable().ajax.reload();
+                            }
+                        })
+                    } else {
+                        swal("This user is safe!");
+                    }
+                });
+
+        })
+
 
     });
 

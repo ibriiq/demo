@@ -2,18 +2,23 @@ from django.shortcuts import render
 from .models import Cars, Checklist_car
 from django.http import JsonResponse
 from django.contrib.auth.models import User
-from users.models import memos
+from memos.models import memos
 from datetime import date
 from notifications.views import *
 from layout.views import get_all_drivers
 from django.core import serializers
+# from users.models import Employee
 
 # Create your views here.
 
 
 def cars(request):
     count = memos.objects.filter(created_at__date=date.today()).count()
-    user = User.objects.all()
+    user = []
+    for u in User.objects.all():
+        if int(u.employee.userlevel) == 1:
+            user.append(u)
+
     context = {"users": get_all_drivers(), "all_users": user, "memos_count": count, "notifications":get_all_notifications(request.user.id),"notification_count": get_count(request.user.id)}
     return render(request,"cars/index.html", context)
 
@@ -59,7 +64,6 @@ def get_car(request):
         }
     # car = serializers.serialize('json', car)
     checklists = Checklist_car.objects.filter(car_id=request.POST["id"])
-    print(checklists)
     for checklist in checklists:
         checklist_dict.append({
             "title": checklist.title,
@@ -77,7 +81,6 @@ def save_cars(request):
         car.car_type = request.POST["car_type"]
         car.assigned_to = request.POST["assigned_to"]
         if request.POST["car_road_renewed"] and request.POST["car_road_renewed"]  != "":
-            print("the date = ", request.POST["car_road_renewed"])
             car.tax_renewed_date = request.POST["car_road_renewed"]
         if request.POST["car_road_expire"] and request.POST["car_road_expire"]  != "":
             car.tax_expiration_date = request.POST["car_road_expire"]
@@ -144,31 +147,9 @@ def save_checklist(request):
 
     checklists = Checklist_car.objects.filter(car_id=request.POST["id"])
     for checklist in checklists:
-        # print(checklists)
         if request.POST["checklist_type"] in checklist.title:
-            print(request.POST["checklist_type"] )
-            print(checklist.title)
-            print("we checked the "+ request.POST["checklist_type"] +" checlist")
             checklist.is_checked = request.POST["checklist"]
             checklist.save()
-
-
-
-    #     if "Fitness" in checklist.title:
-    #         print(checklist.title)
-    #         print("we checked the Fitness checlist")
-    #         checklist.is_checked = request.POST["car_fitness_checklist"]
-
-    #     if "maintained" in checklist.title:
-    #         print(checklist.title)
-    #         print("we checked the maintained checlist")
-    #         checklist.is_checked = request.POST["car_maintainance_checklist"]
-
-    #     if "conditions" in checklist.title:
-    #         print(checklist.title)
-    #         print("we checked the conditions checlist")
-    #         checklist.is_checked = request.POST["car_conditions_checklist"]
-
-    # checklists.save()
+            
     return JsonResponse({"success": True})
 

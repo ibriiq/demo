@@ -1,0 +1,576 @@
+{% extends 'layout/index.html' %}
+
+
+{% block url_level_title %}
+Cars
+{% endblock url_level_title %}
+
+{% block url_level %}
+cars
+{% endblock url_level %}
+
+
+
+{% block content %}
+
+
+
+
+
+
+
+
+
+{% include "car_rides/modal.html" %}
+
+
+
+
+
+
+
+<div class="row" style="">
+    <div class="col-xl-12">
+        <div class="card" style="box-shadow: -1px 2px -1px 2px silver;">
+            <div class="card-body">
+                <div style="display: flex; justify-content: space-between; ">
+                    <h2 class="card-title mb-4">Car request management</h2>
+                    <a href="#" class="btn btn-purple rounded-pill w-md waves-effect waves-light mb-3"
+                        data-bs-toggle='modal' data-bs-target='#car_request_model' id="new_cars"><i
+                            class="mdi mdi-plus"></i>
+                        Request car</a>
+
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-hover table-centered table-nowrap mb-0" id="car_request_table">
+                        <thead>
+                            <tr>
+                                <th> SN </th>
+                                <th> Requested by</th>
+                                <th> Purpose </th>
+                                <th> Description </th>
+                                <th> Time </th>
+                                <th> Status </th>
+                                {% if request.user.is_superuser %}
+                                <th> Actions </th>
+                                {% endif %}
+
+                            </tr>
+                        </thead>
+
+                        <tbody></tbody>
+
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+{% endblock content %}
+
+
+
+{% block script %}
+<script>
+
+    $(document).ready(function () {
+        $.ajaxSetup({
+            headers: {
+                "X-CSRFToken": '{{csrf_token}}'
+            }
+        });
+
+
+
+
+        is_superuser = "{{ request.user.is_superuser }}"
+
+
+
+
+        if (is_superuser == "True") {
+            let table = $("#car_request_table").DataTable({
+                ajax: {
+                    "url": "/get_car_requests",
+                    "dataSrc": ""
+                },
+                "columns": [
+                    { "data": "sn" },
+                    { "data": "requested_by" },
+                    { "data": "purpose" },
+                    { "data": "description" },
+                    { "data": "time" },
+                    { "data": "status" },
+                    { "data": "actions" },
+                ]
+            });
+        }
+        else {
+            let table = $("#car_request_table").DataTable({
+                ajax: {
+                    "url": "/get_car_requests",
+                    "dataSrc": ""
+                },
+                "columns": [
+                    { "data": "sn" },
+                    { "data": "requested_by" },
+                    { "data": "purpose" },
+                    { "data": "description" },
+                    { "data": "time" },
+                    { "data": "status" },
+                ]
+            });
+        }
+
+        let driver = []
+        $.ajax({
+            url: '/get_drivers',
+            method: "POST",
+            dataType: "json",
+            success: function (resp) {
+                let options = {}
+                resp.forEach(el => {
+                    options = { ...options, [el.id]: el.username }
+                })
+                driver.push(options)
+            }
+        })
+
+
+
+        $(document).on("click", ".approve_car_requests", function () {
+            Swal.fire({
+                title: 'Please tell us why you rejected this request? ',
+                input: 'select',
+                inputAttributes: {
+                    id: 'assigned_to_drive',
+                },
+                inputOptions: driver[0],
+                inputPlaceholder: 'select driver to assign to ',
+                showCancelButton: true,
+                confirmButtonText: 'Approve',
+                preConfirm: (value) => {
+                    if (!value) {
+                        Swal.showValidationMessage(`Please enter reason`)
+                    }
+                },
+                showLoaderOnConfirm: true,
+                allowOutsideClick: () => !Swal.isLoading()
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    let data = { "id": $(this).data("id"), "assigned_to": result.value }
+                    $.ajax({
+                        url: '/approve_car_request',
+                        method: "POST",
+                        data: data,
+                        dataType: "json",
+                        success: function (resp) {
+                            Swal.fire("Success", resp.msg,  "success")
+                            $("#car_request_table").DataTable().ajax.reload();
+                        }
+                    })
+                }
+            })
+        })
+
+
+
+
+        $(document).on("click", ".reject_car_requests", function () {
+            Swal.fire({
+                title: 'Please tell us why you rejected this request? ',
+                input: 'text',
+                inputAttributes: {
+                    autocapitalize: 'off',
+                    id: 'reason',
+                },
+                showCancelButton: true,
+                confirmButtonText: 'Reject',
+                preConfirm: () => {
+                    const reason = Swal.getPopup().querySelector('#reason').value
+                    if (!reason) {
+                        Swal.showValidationMessage(`Please enter reason`)
+                    }
+                    return { reason: reason }
+                },
+                showLoaderOnConfirm: true,
+                allowOutsideClick: () => !Swal.isLoading()
+            }).then((result) => {
+                if (result.isConfirmed) {
+
+                    $.ajax({
+                        url: '/reject_car_request',
+                        method: "POST",
+                        data: { "id": $(this).data("id"), "reason": result.value.reason },
+                        dataType: "json",
+                        success: function (resp) {
+                            Swal.fire("Success",resp.msg,  "success")
+                            $("#car_request_table").DataTable().ajax.reload();
+                        }
+                    })
+                }
+            })
+        })
+
+
+
+
+
+
+
+        $(document).on("click", ".delete_car_requests", function () {
+            const swalWithBootstrapButtons = Swal.mixin({
+                customClass: {
+                    confirmButton: 'btn btn-success',
+                    cancelButton: 'btn btn-danger'
+                },
+                buttonsStyling: false
+            })
+
+            swalWithBootstrapButtons.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, delete it!',
+                cancelButtonText: 'No, cancel!',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: '/delete_car_request',
+                        method: "POST",
+                        data: { "id": $(this).data("id") },
+                        dataType: "json",
+                        success: function (resp) {
+                            swal.fire(resp.msg, "Success", "success");
+                            $("#car_request_table").DataTable().ajax.reload();
+                        }
+                    })
+                } else if (
+                    /* Read more about handling dismissals below */
+                    result.dismiss === Swal.DismissReason.cancel
+                ) {
+                    swalWithBootstrapButtons.fire(
+                        'Cancelled',
+                        'Your imaginary file is safe :)',
+                        'error'
+                    )
+                }
+            })
+        })
+
+
+
+        $("#add_new_car_request_modal").on("submit", function (e) {
+            e.preventDefault();
+
+            form_is_invalid = false;
+
+
+
+            //Validation for car_type begins here
+            if ($("#purpose").val() == "") {
+                $("#purpose").addClass("is-invalid");
+                $("#errorforpurpose").text("Please enter your purpose");
+                form_is_invalid = true;
+            }
+            else {
+                $("#purpose").removeClass("is-invalid");
+                $("#purpose").addClass("is-valid");
+                $("#errorforpurpose").text("");
+            }
+            //Validation for purpose ends here
+
+
+            //Validation for description begins here
+            if ($("#description").val() == "") {
+                $("#description").addClass("is-invalid");
+                $("#errorfordescription").text("Please enter description");
+                form_is_invalid = true;
+            }
+            else {
+                $("#description").removeClass("is-invalid");
+                $("#description").addClass("is-valid");
+                $("#errorfordescription").text("");
+            }
+            //Validation for assigned_to ends here
+
+            //Validation for time begins here
+
+            /*  if ($("#time").val() == "") {
+                  $("#time").addClass("is-invalid");
+                  $("#errorfortime").text("Please enter your time");
+                  form_is_invalid = true;
+              }
+              else {
+                  $("#time").removeClass("is-invalid");
+                  $("#time").addClass("is-valid");
+                  $("#errorfortime").text("");
+              } */
+            //Validation for assigned_to ends here
+            alert($("#time").val())
+
+
+
+
+
+
+
+
+            if (form_is_invalid) {
+                e.stopPropagation()
+                return false
+            }
+
+
+            $("#add_new_car_btn").attr("disabled", true);
+            $("#add_new_car_btn").html(`<span class="spinner-grow spinner-grow-sm" role="status" aria-hidden="true"></span>`);
+
+
+
+            $.ajax({
+                url: $(this).attr("action"),
+                method: $(this).attr("method"),
+                data: new FormData(this),
+                dataType: "json",
+                processData: false,
+                contentType: false,
+                success: function (resp) {
+                    console.log(resp);
+                    if (resp.success) {
+                        iziToast.success({
+                            title: 'Add new car',
+                            message: resp.msg,
+                            position: 'topRight',
+                        });
+
+                        //$("#registation_form").find("input").val("")
+                        //$("#registation_form").find("input").removeClass("is-valid")
+                        $("#car_request_model").modal("hide")
+
+                        $("#add_new_car_btn").attr("disabled", false);
+                        $("#add_new_car_btn").html(`Add`);
+
+                        $("#add_new_car_request_modal").find("input").val()
+                        $("#car_request_table").DataTable().ajax.reload();
+
+                    } else {
+                        if (resp.key) {
+                            console.log(resp.key)
+                            $(`#${resp.key}`).addClass("is-invalid").focus()
+                        }
+
+                        iziToast.error({
+                            title: 'Add new car',
+                            message: resp.msg,
+                            position: 'topRight',
+                        });
+
+                        $("#add_new_car_btn").attr("disabled", false);
+                        $("#add_new_car_btn").html(`Add`);
+                    }
+                }
+            });
+
+
+        })
+
+
+
+        $(document).on("click", ".update_tasks", function () {
+            $("#pk").val($(this).data("pk"))
+            $("#title").val($(this).data("title"))
+            $("#start_date").val($(this).data("start_date"))
+            $("#end_date").val($(this).data("end_date"))
+            $("#assigned_to").val($(this).data("assigned_to"))
+            $("#task_status").val($(this).data("status_id"))
+            // $("#start_task").css("display", "block")
+            $("#myModalLabel").text($(this).data("title"))
+            console.log($(this).data("task_time"))
+            $("#time").val($(this).data("task_time"))
+
+            console.log($(this).data("notification"))
+
+
+            pk = $(this).data("pk")
+            $.ajax({
+                url: '/get_tasks_status',
+                method: "POST",
+                data: { "task_id": $(this).data("pk") },
+                headers: {
+                    "X-CSRFToken": '{{csrf_token}}'
+                },
+                dataType: "json",
+                success: function (resp) {
+                    console.log(resp)
+                    if (!resp.started) {
+                        $.ajax({
+                            url: '/start_timer',
+                            method: "POST",
+                            data: { "task_id": pk },
+                            headers: {
+                                "X-CSRFToken": '{{csrf_token}}'
+                            },
+                            dataType: "json",
+                            success: function (resp) {
+                                console.log(resp)
+                                $("#timer").css("display", "block")
+                            }
+                        })
+                    } else {
+                        $("#timer").css("display", "none")
+                    }
+                }
+            })
+
+
+            if ($(this).data("task_start_timer") != "None" && $(this).data("task_end_timer") == "None") {
+                $("#tasksmodel").find(".timer_diplayer").css("display", "block")
+                console.log("the task is currently running")
+
+                //$(".timer").css("display", "block")
+            }
+            else {
+                console.log("the task finished it is execution")
+                $("#timer").css("display", "none")
+            }
+            $("#tasksmodel").modal("show")
+        })
+
+
+
+
+
+
+
+        $(document).on("click", ".update_car_requests", function () {
+            id = $(this).data("pk")
+
+            $("#car_request_info_model").modal("toggle")
+
+            $.ajax({
+                url: '/get_car_request',
+                method: "POST",
+                data: { "id": id },
+                headers: {
+                    "X-CSRFToken": '{{csrf_token}}'
+                },
+                dataType: "json",
+                success: function (resp) {
+                    console.log(resp)
+                    $("#status_id").val(resp.status)
+                    
+                    if (resp.status_id == 0){
+                        $(".rejected").css("display","block")
+                        $("#rejected_by").val(resp.rejected_by)
+                        $("#reason").val(resp.reason)
+                    }
+                    else if(resp.status_id == 1){
+                        $(".approved").css("display","block")
+
+                    }
+                }
+            })
+
+            //console.log($(this).data("pk"))
+            //$("#pk_cars").val($(this).data("pk"))
+            //$("#car_type").val($(this).data("cars_type"))
+            //console.log($(this).data("assigned_to"))
+            //$("#assigned_to_cars").val($(this).data("assigned_to"))
+            //$("#carsmodel").modal("show")
+            //$("#show_cars_model").modal("show")
+        })
+
+        $("#new_cars").on("click", function () {
+            $("#carsmodel").find("input, select").val("").removeClass("is-invalid, is-valid")
+        })
+
+        $(document).on("change", ".checklist", function () {
+            let checklist = 0
+            let checklist_type = ""
+            console.log($(this).val())
+            let element = $(this).next()
+            console.log("the element = ", element)
+            if ($(this).is(":checked")) {
+                checklist = 1
+                if ($(this).val() == "road") {
+                    checklist_type = "road"
+                }
+                if ($(this).val() == "fitness") {
+                    checklist_type = "Fitness"
+                }
+                if ($(this).val() == "maintainance") {
+                    checklist_type = "maintained"
+                }
+                if ($(this).val() == "conditions") {
+                    checklist_type = "conditions"
+                }
+                console.log("We here ", checklist_type);
+
+                $.ajax({
+                    url: '/save_checklist',
+                    method: "POST",
+                    data: {
+                        "checklist": checklist,
+                        "checklist_type": checklist_type,
+                        "id": $("#pk_cars").val()
+                    },
+                    headers: {
+                        "X-CSRFToken": '{{csrf_token}}'
+                    },
+                    dataType: "json",
+                    success: function (resp) {
+                        console.log(resp)
+                    }
+                })
+
+
+                $(element).css("text-decoration", "line-through")
+            }
+            else {
+                checklist = 0
+                if ($(this).val() == "road") {
+                    checklist_type = "road"
+                }
+                if ($(this).val() == "fitness") {
+                    checklist_type = "Fitness"
+                }
+                if ($(this).val() == "maintainance") {
+                    checklist_type = "maintained"
+                }
+                if ($(this).val() == "conditions") {
+                    checklist_type = "conditions"
+                }
+                console.log("We here = ", checklist_type);
+
+                $.ajax({
+                    url: '/save_checklist',
+                    method: "POST",
+                    data: {
+                        "checklist": checklist,
+                        "checklist_type": checklist_type,
+                        "id": $("#pk_cars").val()
+                    },
+                    headers: {
+                        "X-CSRFToken": '{{csrf_token}}'
+                    },
+                    dataType: "json",
+                    success: function (resp) {
+                        console.log(resp)
+                    }
+                })
+
+                $(element).css("text-decoration", "")
+            }
+        })
+
+
+    })
+
+</script>
+{% endblock script %}

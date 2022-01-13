@@ -8,7 +8,7 @@ from .decorators import Already_authenticated_users_arenot_allowed, Only_once_lo
 from django.contrib.auth.models import User
 from django.views.decorators.csrf import csrf_exempt
 
-from .models import userinfo, memos
+from .models import userinfo, Employee
 import json
 from django.utils import timezone
 from datetime import date
@@ -16,16 +16,12 @@ from datetime import date
 import random
 from notifications.views import *
 from layout.views import get_all_drivers
+from django.forms.models import model_to_dict
+
 
 
 @Already_authenticated_users_arenot_allowed
 def demo_login(request):
-    # try:
-    #     del request.session["user"]
-    #     del request.session["facode"]
-    # except KeyError:
-    #     print(KeyError)
-
     if request.method == "GET":
         next = request.GET.get('next')
         context = {}
@@ -37,9 +33,6 @@ def demo_login(request):
             response = {}
             userid = request.POST["username"]
             passw = request.POST["password"]
-
-            print(userid, passw)
-
             user = authenticate(username=userid, password=passw)
 
             if user is not None:
@@ -69,8 +62,6 @@ def demo_logout(request):
 def register(request):
     if request.user.is_superuser:
         if request.method == "GET":
-            print(get_client_ip(request))
-
             return render(request, "users/register.html", { "users": get_all_drivers() ,"notifications":get_all_notifications(request.user.id),"notification_count": get_count(request.user.id)})
         else:
             response = {}
@@ -79,28 +70,89 @@ def register(request):
             user.last_name = request.POST["lname"]
             user.email = request.POST["email"]
             user.username = request.POST["username"]
-            user.set_password(request.POST["password"])
-            user.is_superuser = request.POST["usertype"]
-            # user.password = request.POST["password"]
-
-            if User.objects.filter(email=request.POST["email"]).exists():
-                response["success"] = False
-                response["key"] = "email"
-                response["msg"] = "email already exists in the system please use another email"
-            elif User.objects.filter(username=request.POST["username"]).exists():
-                response["success"] = False
-                response["key"] = "username"
-                response["msg"] = "username already exists in the system please use another username"
-            else:
+            
+            if request.POST["usertype"] == 0:
+                user.is_superuser = True
+            else: 
+                user.is_superuser = False
+            if 'pk' in request.POST and request.POST["pk"] != '':
+                user.id = request.POST['pk']
+                if request.POST["password"] != '':
+                    user.set_password(request.POST["password"])
                 if user.save() is None:
+                    employee = Employee()
+                    employee.user = user
+                    employee.userlevel = request.POST["usertype"]
+                    employee.save()
                     response["success"] = True
                     response["msg"] = "User registred successfully"
                 else:
                     response["success"] = False
                     response["msg"] = "User registration failed"
+            else:
+                user.set_password(request.POST["password"])
+                if User.objects.filter(email=request.POST["email"]).exists():
+                    response["success"] = False
+                    response["key"] = "email"
+                    response["msg"] = "email already exists in the system please use another email"
+                elif User.objects.filter(username=request.POST["username"]).exists():
+                    response["success"] = False
+                    response["key"] = "username"
+                    response["msg"] = "username already exists in the system please use another username"
+                else:
+                    if user.save() is None:
+                        employee = Employee()
+                        employee.user = user
+                        employee.userlevel = request.POST["usertype"]
+                        employee.save()
+                        response["success"] = True
+                        response["msg"] = "User registred successfully"
+                    else:
+                        response["success"] = False
+                        response["msg"] = "User registration failed"
+            
+            
+            
+            # user.Employee.userlevel = "driver"
+            # user.password = request.POST["password"]
+
+            
                 
         return JsonResponse(response)
     return redirect("/")
+
+
+def get_employees(request):
+    users = []
+    sn = 0
+    for user in User.objects.all():
+        sn = sn + 1
+        action = "<a href='#' data-id='"+str(user.id)+"' class='delete_user' style='color: red'>  <i class='fas fa-trash-alt'></i> </a>"
+        users.append({"sn": sn,"username": "<a href='#' class='users_model_update' data-id="+str(user.id)+"> "+str(user.username)+" </a>", "email": user.email, "fullname": user.first_name+" "+user.last_name, "actions": action})
+    return JsonResponse(users, safe=False)
+
+
+def delete_user(request):
+    if request.method == "POST":
+        response = {}
+        if User.objects.get(id=request.POST["id"]).delete():
+            response["success"] = True  
+            response["msg"] = "user successfully deleted"  
+        else:
+            response["success"] = False  
+            response["msg"] = "user delete failed"  
+        return JsonResponse(response)
+
+
+def get_employee(request):
+    theuser = {}
+    u = User.objects.get(id=request.POST["id"])
+    
+    theuser = {"id": u.id,"first_name": u.first_name, "last_name": u.last_name, "email": u.email, "username": u.username, "userlevel": u.employee.userlevel}
+
+    return JsonResponse(theuser, safe =False)
+
+
 
 
 def get_client_ip(request):
@@ -116,7 +168,6 @@ def get_client_ip(request):
 def save_userinfo(request):
     if request.method == "POST":
         info = userinfo()
-        print(User.objects.get(username=request.POST["username"]).id)
         info.username = request.POST["username"]
         info.ip_Address = get_client_ip(request)
         info.Latitude = request.POST["Latitude"]
@@ -158,34 +209,6 @@ def get_userinfo(request):
         
 
 
-
-def get_memos(request):
-    all_memos = memos.objects.all().order_by("-created_at")
-    count = memos.objects.filter(created_at__date=date.today()).count()
-
-    context = {
-        "users": get_all_drivers(),
-        "memos": all_memos,
-        "memos_count": count,
-        "notifications":get_all_notifications(request.user.id),
-        "notification_count": get_count(request.user.id)
-    }
-    return render(request, "users/memos.html", context)
-
-
-def save_memos(request):
-    memo = memos()
-    memo.createdby_id = request.user.id
-    memo.memo = request.POST["memo"]
-    response = {}
-    if memo.save() is None:
-        response["success"] = True
-        response["msg"] = "Memo successfully saved"
-    else:
-        response["success"] = False
-        response["msg"] = "Something went wrong while saving memo"
-
-    return JsonResponse(response)
 
 
 

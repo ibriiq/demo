@@ -1,0 +1,83 @@
+{% block modal %}
+<div id="adduser" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="myModalLabel"> Add new user <span id="username"></span>
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                        
+                <div style="">
+
+
+                        <form method="post" action="/register" id="registation_form">
+                            <input type="hidden" id="pk">
+                            <div class="mb-3">
+                                <label class="form-label" for="fname">First name</label>
+                                <input type="text" class="form-control" height="1000px" name="fname" id="fname"
+                                    placeholder="Enter First name">
+                                <small id='errorforfname' class="invalid-feedback"></small>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label" for="lname">Last name</label>
+                                <input type="text" class="form-control" name="lname" id="lname"
+                                    placeholder="Enter Last name">
+                                <small id='errorforlname' class="invalid-feedback"></small>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label" for="email">Email</label>
+                                <input type="email" class="form-control" name="email" id="email"
+                                    placeholder="Enter email">
+                                <small id='errorforemail' class="invalid-feedback"></small>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label" for="username">Username</label>
+                                <input type="text" class="form-control" name="username" id="username"
+                                    placeholder="Enter username">
+                                <small id='errorforusername' class="invalid-feedback"></small>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label" for="password">Password</label>
+                                <input type="password" class="form-control" name="password" id="password"
+                                    placeholder="Enter password">
+                                <small id='errorforpassword' class="invalid-feedback"></small>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label" for="usertype">User type</label>
+                                <select class="form-control" name="usertype" id="usertype">
+                                    <option value="">Select user type</option>
+                                    <option value="0">Admin</option>
+                                    <option value="1">Driver</option>
+                                    <option value="2">General employees</option>
+                                </select>
+                                <small id='errorforusertype' class="invalid-feedback"></small>
+                            </div>
+
+                            <div style="display: flex; justify-content: flex-end; gap: 15px;">
+                                <button type="submit" class="btn btn-success  w-md waves-effect waves-light mb-3"
+                                    id="add_new_car_btn"> Sign up</button>
+                                <button type="button"  class="btn btn-secondary  w-md waves-effect waves-light mb-3"
+                                    data-bs-dismiss="modal">Close</button>
+        
+                            </div>
+
+                        </form><!-- end card-body -->
+                </div>
+            </div>
+
+          
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+
+{% endblock modal %}

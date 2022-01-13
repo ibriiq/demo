@@ -20,12 +20,21 @@ from . import views
 
 urlpatterns = [
     path("login", views.demo_login, name="demo_login"),
+
     path("register", views.register, name="register"),
-    path("get_memos", views.get_memos, name="get_memos"),
-    path("save_memos", views.save_memos, name="save_memos"),
+    path("get_employees", views.get_employees, name="get_employees"),
+    path("get_employee", views.get_employee, name="get_employee"),
+    path("delete_user", views.delete_user, name="delete_user"),
+
+    
+
+    
     path("save_userinfo", views.save_userinfo, name="save_userinfo"),
     path("get_userinfo", views.get_userinfo, name="get_userinfo"),
     path("update_userinfo", views.update_userinfo, name="update_userinfo"),
     path("logout", views.demo_logout, name="demo_logout"),
+    
+
+
     
 ]

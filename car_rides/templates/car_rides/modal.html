@@ -1,0 +1,98 @@
+{% block modal %}
+<div id="car_request_model" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="myModalLabel"> Add new car request
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form action=" {% url 'save_car_request' %}" method='post' id="add_new_car_request_modal">
+                    {% csrf_token %}
+
+                    <input type="hidden" name="pk" id="pk_cars">
+
+                    <div class="form-group">
+                        <label class="form-label" for="cartype"> Purpose</label>
+                        <input type="text" class="form-control" placeholder="Reason for requesting" name="purpose"
+                            id="purpose">
+                        <small id='errorforpurpose' class="invalid-feedback"></small>
+                    </div>
+
+
+                    <div class="form-group">
+                        <label class="form-label" for="car_road_renewed"> Description </label>
+                        <textarea name="description" id="description" placeholder="Descripe the reason"
+                            class="form-control" cols="30" rows="10"></textarea>
+                        <small id='errorfordescription' class="invalid-feedback"></small>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="car_road_expire"> Time </label>
+                        <input type="date" class="form-control" placeholder="When do you need it" name="time" id="time">
+                        <small id='errorfortime' class="invalid-feedback"></small>
+                    </div>
+
+
+                    <!-- <div class="form-group">
+                        <label class="form-label" for="car_conditions"> Assigned to  </label>
+                        <select name="car_conditions" id="car_conditions" class="form-control" {{
+                            request.user.is_superuser|yesno:",disabled" }}>
+                            <option value=''>Select conditions</option>
+                            <option> Good </option>
+                            <option> Bad </option>
+                        </select>
+                    </div> -->
+
+                    <div style="margin-top: 20px; display: flex; justify-content: flex-end; gap: 15px;">
+                        <button type="submit" class="btn btn-success  w-md waves-effect waves-light mb-3"
+                            id="add_new_car_btn"> Request car</button>
+                        <button type="button" class="btn btn-secondary  w-md waves-effect waves-light mb-3"
+                            data-bs-dismiss="modal">Close</button>
+
+                    </div>
+
+
+                </form>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+
+
+
+
+<div id="car_request_info_model" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="myModalLabel"> Car request info
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Status : <input type="text" class="form-control" id="status_id" readonly>
+                <div style="display: none;" class="approved"> Approved by: <input type="text" class="form-control" id="approved_by" readonly> </div>
+                <div style="display: none;" class="approved"> Assigned_to: <input type="text" class="form-control" name="purpose" id="assigned_to" readonly></div>
+                <div style="display: none;" class="rejected"> Rejected by: <input type="text" class="form-control" name="purpose" id="rejected_by" readonly"></div>
+                <div style="display: none;" class="rejected"> Reason of rejection: <textarea class="form-control" name="" id="reason" cols="30" rows="10" readonly></textarea></div>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+
+
+
+
+
+
+
+{% endblock modal %}

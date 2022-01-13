@@ -47,8 +47,10 @@ INSTALLED_APPS = [
     'users',
     'layout',
     'cars',
+    'car_rides',
     'tasks',
     'notifications',
+    'memos',
     'background_task'
 ]
 
@@ -179,3 +181,6 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = False
+
+
+# AUTH_USER_MODEL = 'users.user_one'

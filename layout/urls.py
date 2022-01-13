@@ -13,7 +13,6 @@ urlpatterns = [
     path('', login_required(views.dashboard), name='dashboard'),
     path('get_usinfo', login_required(views.get_usinfo), name='get_usinfo'),
     path('change_notification_status', login_required(change_notification_status), name='change_notification_status'),
-
-    
+    path('get_drivers', login_required(views.get_drivers), name='get_drivers'),
 ] 
 

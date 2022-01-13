@@ -17,10 +17,7 @@ cars
 
 
 
-{% if request.user.is_superuser %}
-<button class="btn btn-success"  data-bs-toggle='modal' data-bs-target='#carsmodel' id="new_cars"> Add new car </button>
-{% endif %}
-    
+
 
 
 
@@ -31,71 +28,96 @@ cars
 
 
 
-<table id="carstable">
-    <thead>
-        <tr>
-            <th> SN </th>
-            <th>Car type</th>
-            <th> Assigned to </th>
-            
-            {% if request.user.is_superuser %}
-            <th> Actions </th>
-            {% endif %}
-                
-        </tr>
-    </thead>
-</table>
+
+<div class="row" style="">
+    <div class="col-xl-12">
+        <div class="card" style="box-shadow: -1px 2px -1px 2px silver;">
+            <div class="card-body">
+                <div style="display: flex; justify-content: space-between; ">
+                    <h2 class="card-title mb-4">Car management</h2>
+                    {% if request.user.is_superuser %}
+                    <a href="#" class="btn btn-purple rounded-pill w-md waves-effect waves-light mb-3"
+                        data-bs-toggle='modal' data-bs-target='#carsmodel' id="new_cars"><i class="mdi mdi-plus"></i>
+                        Add new car</a>
+                    {% endif %}
+
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-hover table-centered table-nowrap mb-0" id="carstable">
+                        <thead>
+                            <tr>
+                                <th> SN </th>
+                                <th>Car type</th>
+                                <th> Assigned to </th>
+
+                                {% if request.user.is_superuser %}
+                                <th> Actions </th>
+                                {% endif %}
+
+                            </tr>
+                        </thead>
+
+                        <tbody></tbody>
+
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
 
 {% endblock content %}
 
 
 
 {% block script %}
-    <script>
+<script>
 
-        $(document).ready(function(){
-            $.ajaxSetup({
-                headers: {
-                    "X-CSRFToken": '{{csrf_token}}'
-                }
-            });
-
-
-
-        
-    is_superuser = "{{ request.user.is_superuser }}"
+    $(document).ready(function () {
+        $.ajaxSetup({
+            headers: {
+                "X-CSRFToken": '{{csrf_token}}'
+            }
+        });
 
 
-            if(is_superuser == "True")
-            {
-                let table = $("#carstable").DataTable({
-                    ajax:{
-                        "url": "/get_cars",
-                        "dataSrc":""
-                    },
-                    "columns": [
+
+
+        is_superuser = "{{ request.user.is_superuser }}"
+
+
+        if (is_superuser == "True") {
+            let table = $("#carstable").DataTable({
+                ajax: {
+                    "url": "/get_cars",
+                    "dataSrc": ""
+                },
+                "columns": [
                     { "data": "sn" },
                     { "data": "cars_type" },
                     { "data": "assigned_to" },
                     { "data": "actions" },
-                                ]
-                });
-            }
-            else{
-                let table = $("#carstable").DataTable({
-                    ajax:{
-                        "url": "/get_cars",
-                        "dataSrc":""
-                    },
-                    "columns": [
+                ]
+            });
+        }
+        else {
+            let table = $("#carstable").DataTable({
+                ajax: {
+                    "url": "/get_cars",
+                    "dataSrc": ""
+                },
+                "columns": [
                     { "data": "sn" },
                     { "data": "cars_type" },
                     { "data": "assigned_to" },
-                                ]
-                });
-            }
+                ]
+            });
+        }
 
-       
+
 
         $(document).on("click", ".delete_cars", function () {
             swal({
@@ -132,7 +154,7 @@ cars
 
             form_is_invalid = false;
 
-            
+
 
             //Validation for car_type begins here
             if ($("#car_type").val() == "") {
@@ -148,7 +170,7 @@ cars
             //Validation for car_type ends here
 
 
-              //Validation for assigned_to_cars begins here
+            //Validation for assigned_to_cars begins here
             if ($("#assigned_to_cars").val() == "") {
                 $("#assigned_to_cars").addClass("is-invalid");
                 $("#errorforassigned_to").text("Please enter your assigned_to");
@@ -161,7 +183,7 @@ cars
             }
             //Validation for assigned_to ends here
 
-            
+
 
 
 
@@ -226,37 +248,37 @@ cars
 
 
 
-        $(document).on("click", ".update_tasks", function(){
+        $(document).on("click", ".update_tasks", function () {
             $("#pk").val($(this).data("pk"))
             $("#title").val($(this).data("title"))
             $("#start_date").val($(this).data("start_date"))
             $("#end_date").val($(this).data("end_date"))
             $("#assigned_to").val($(this).data("assigned_to"))
             $("#task_status").val($(this).data("status_id"))
-           // $("#start_task").css("display", "block")
+            // $("#start_task").css("display", "block")
             $("#myModalLabel").text($(this).data("title"))
             console.log($(this).data("task_time"))
             $("#time").val($(this).data("task_time"))
 
             console.log($(this).data("notification"))
-            
 
-            pk = $(this).data("pk") 
+
+            pk = $(this).data("pk")
             $.ajax({
                 url: '/get_tasks_status',
                 method: "POST",
-                data : {"task_id": $(this).data("pk")},
+                data: { "task_id": $(this).data("pk") },
                 headers: {
                     "X-CSRFToken": '{{csrf_token}}'
                 },
                 dataType: "json",
                 success: function (resp) {
                     console.log(resp)
-                    if(!resp.started){
+                    if (!resp.started) {
                         $.ajax({
                             url: '/start_timer',
                             method: "POST",
-                            data : {"task_id": pk},
+                            data: { "task_id": pk },
                             headers: {
                                 "X-CSRFToken": '{{csrf_token}}'
                             },
@@ -266,20 +288,20 @@ cars
                                 $("#timer").css("display", "block")
                             }
                         })
-                    }else{
+                    } else {
                         $("#timer").css("display", "none")
                     }
                 }
             })
 
-            
-            if($(this).data("task_start_timer") != "None" && $(this).data("task_end_timer") == "None"){
+
+            if ($(this).data("task_start_timer") != "None" && $(this).data("task_end_timer") == "None") {
                 $("#tasksmodel").find(".timer_diplayer").css("display", "block")
                 console.log("the task is currently running")
 
                 //$(".timer").css("display", "block")
             }
-            else{
+            else {
                 console.log("the task finished it is execution")
                 $("#timer").css("display", "none")
             }
@@ -287,15 +309,15 @@ cars
         })
 
 
-        $(document).on("click",".update_cars", function(){
+        $(document).on("click", ".update_cars", function () {
             id = $(this).data("pk")
             console.log(id)
-            
+
 
             $.ajax({
                 url: '/get_car',
                 method: "POST",
-                data : {"id": id},
+                data: { "id": id },
                 headers: {
                     "X-CSRFToken": '{{csrf_token}}'
                 },
@@ -314,27 +336,27 @@ cars
                     $("#car_fitness_expire").val(resp.car.fitness_expiration_date)
                     $("#car_maintenance_expire").val(resp.car.car_maintanance_date)
                     $("#car_conditions").val(resp.car.car_condition)
-                    resp.checklist.forEach(el=>{
-                        if(el.title.indexOf("road") >= 0){
-                            if(el.is_checked == 1){
+                    resp.checklist.forEach(el => {
+                        if (el.title.indexOf("road") >= 0) {
+                            if (el.is_checked == 1) {
                                 $("#car_road_checklist").prop('checked', true);
                                 $("#car_road_checklist").next("span").css("text-decoration", "line-through")
                             }
                         }
-                        if(el.title.indexOf("Fitness") >= 0){
-                            if(el.is_checked == 1){
+                        if (el.title.indexOf("Fitness") >= 0) {
+                            if (el.is_checked == 1) {
                                 $("#car_fitness_checklist").prop('checked', true);
                                 $("#car_fitness_checklist").next("span").css("text-decoration", "line-through")
                             }
                         }
-                        if(el.title.indexOf("maintained") >= 0){
-                            if(el.is_checked == 1){
+                        if (el.title.indexOf("maintained") >= 0) {
+                            if (el.is_checked == 1) {
                                 $("#car_maintainance_checklist").prop('checked', true);
                                 $("#car_maintainance_checklist").next("span").css("text-decoration", "line-through")
                             }
                         }
-                        if(el.title.indexOf("conditions") >= 0){
-                            if(el.is_checked == 1){
+                        if (el.title.indexOf("conditions") >= 0) {
+                            if (el.is_checked == 1) {
                                 $("#car_conditions_checklist").prop('checked', true);
                                 $("#car_conditions_checklist").next("span").css("text-decoration", "line-through")
                             }
@@ -358,28 +380,28 @@ cars
             //$("#show_cars_model").modal("show")
         })
 
-        $("#new_cars").on("click",function(){
+        $("#new_cars").on("click", function () {
             $("#carsmodel").find("input, select").val("").removeClass("is-invalid, is-valid")
         })
 
-        $(document).on("change", ".checklist", function(){
+        $(document).on("change", ".checklist", function () {
             let checklist = 0
-            let checklist_type = "" 
+            let checklist_type = ""
             console.log($(this).val())
             let element = $(this).next()
             console.log("the element = ", element)
-            if($(this).is(":checked")){
+            if ($(this).is(":checked")) {
                 checklist = 1
-                if($(this).val() == "road"){
+                if ($(this).val() == "road") {
                     checklist_type = "road"
                 }
-                if($(this).val() == "fitness"){
+                if ($(this).val() == "fitness") {
                     checklist_type = "Fitness"
                 }
-                if($(this).val() == "maintainance"){
+                if ($(this).val() == "maintainance") {
                     checklist_type = "maintained"
                 }
-                if($(this).val() == "conditions"){
+                if ($(this).val() == "conditions") {
                     checklist_type = "conditions"
                 }
                 console.log("We here ", checklist_type);
@@ -387,7 +409,7 @@ cars
                 $.ajax({
                     url: '/save_checklist',
                     method: "POST",
-                    data : {
+                    data: {
                         "checklist": checklist,
                         "checklist_type": checklist_type,
                         "id": $("#pk_cars").val()
@@ -398,23 +420,24 @@ cars
                     dataType: "json",
                     success: function (resp) {
                         console.log(resp)
-                    }})
+                    }
+                })
 
 
                 $(element).css("text-decoration", "line-through")
             }
-            else{
+            else {
                 checklist = 0
-                if($(this).val() == "road"){
+                if ($(this).val() == "road") {
                     checklist_type = "road"
                 }
-                if($(this).val() == "fitness"){
+                if ($(this).val() == "fitness") {
                     checklist_type = "Fitness"
                 }
-                if($(this).val() == "maintainance"){
+                if ($(this).val() == "maintainance") {
                     checklist_type = "maintained"
                 }
-                if($(this).val() == "conditions"){
+                if ($(this).val() == "conditions") {
                     checklist_type = "conditions"
                 }
                 console.log("We here = ", checklist_type);
@@ -422,7 +445,7 @@ cars
                 $.ajax({
                     url: '/save_checklist',
                     method: "POST",
-                    data : {
+                    data: {
                         "checklist": checklist,
                         "checklist_type": checklist_type,
                         "id": $("#pk_cars").val()
@@ -433,15 +456,15 @@ cars
                     dataType: "json",
                     success: function (resp) {
                         console.log(resp)
-                    }})
+                    }
+                })
 
                 $(element).css("text-decoration", "")
             }
-        } )
+        })
 
 
     })
 
-    </script>
+</script>
 {% endblock script %}
-    

@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 @keyframes zoomIn {
   from {
     opacity: 0;
@@ -13,19 +12,3 @@
 .zoomIn {
   animation-name: zoomIn;
 }
-=======
-@keyframes zoomIn {
-  from {
-    opacity: 0;
-    transform: scale3d(0.3, 0.3, 0.3);
-  }
-
-  50% {
-    opacity: 1;
-  }
-}
-
-.zoomIn {
-  animation-name: zoomIn;
-}
->>>>>>> b72c5ea86bf6885e302b926b7202718cf917849d

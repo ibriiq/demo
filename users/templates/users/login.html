@@ -1,125 +1,100 @@
 {% load static %}
 
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <title>Login | One marchant</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta content="One marchant demo app" name="description" />
+        <meta content="Coderthemes" name="author" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <!-- App favicon -->
+        <!-- <link rel="shortcut icon" href="{% static 'assets/images/favicon.ico' %}"> -->
 
-<head>
+		<!-- App css -->
+        <link href="{% static 'assets/css/config/default/bootstrap.min.css' %}" rel="stylesheet" type="text/css" id="bs-default-stylesheet" />
+        <link href="{% static 'assets/css/config/default/app.min.css'%}" rel="stylesheet" type="text/css" id="app-default-stylesheet" />
 
-    <meta charset="utf-8">
-    <title>Login | One marchant</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta content="Premium Multipurpose Admin & Dashboard Template" name="description">
-    <meta content="Themesbrand" name="author">
-    <!-- App favicon -->
-    <link rel="shortcut icon" href="{% static 'assets/images/golis_favicon.png' %} ">
+        <link href="{% static 'assets/css/config/default/bootstrap-dark.min.css' %}" rel="stylesheet" type="text/css" id="bs-dark-stylesheet" disabled="disabled" />
+        <link href="{% static 'assets/css/config/default/app-dark.min.css' %}" rel="stylesheet" type="text/css" id="app-dark-stylesheet" disabled="disabled" />
 
-    <!-- Bootstrap Css -->
-    <link href=" {% static 'assets/css/bootstrap.min.css' %} " id="bootstrap-style" rel="stylesheet" type="text/css">
-    <!-- Icons Css -->
-    <link href=" {% static 'assets/css/icons.min.css' %} " rel="stylesheet" type="text/css">
-    <!-- App Css-->
-    <link href=" {% static 'assets/css/app.min.css' %}" id="app-style" rel="stylesheet" type="text/css">
+        <!-- icons -->
+        <link href="{% static 'assets/css/icons.min.css' %}" rel="stylesheet" type="text/css" />
+        <link href=" {% static 'assets/css/iziToast.min.css' %} " rel="stylesheet" type="text/css" />
 
-    <!-- IZItoast css -->
-    <link href=" {% static 'assets/css/iziToast.css' %}" id="app-style" rel="stylesheet" type="text/css">
+    </head>
 
+    <body class="loading authentication-bg authentication-bg-pattern">
 
+        <div class="account-pages my-5">
+            <div class="container">
 
+                <div class="row justify-content-center">
+                    <div class="col-md-8 col-lg-6 col-xl-4">
+                        <div class="text-center">   
+                            <h1> One marchant </h1>
+                            <p class="text-muted mt-2 mb-4">Login to continue</p>
 
-
-</head>
-
-<body>
-
-    <p id="demo"></p>
-
-
-    <div class="account-pages my-5 pt-5">
-        <div class="container">
-            <div class="row justify-content-center">
-                <div class="col-md-8 col-lg-6 col-xl-4">
-                    <div class="card overflow-hidden">
-                        <div class="bg-success">
-                            <div class="text-danger text-center p-4">
-                                <h5 class="text-white font-size-20">Welcome Back !</h5>
-                                <p class="text-white-50">Sign in to continue to Demo.</p>
-                               
-                            </div>
                         </div>
+                        <div class="card">
+                            <div class="card-body p-4">
+                                
+                                <div class="text-center mb-4">
+                                    <h4 class="text-uppercase mt-0">Sign In</h4>
+                                </div>
 
-                        <div class="card-body p-4">
-                            <div class="p-3">
-                                <form class="mt-4" action="/login" method="post" id="login_form">
+                                <form  action="/login" method="post" id="login_form">
                                     {% csrf_token %}
                                     <input type="hidden" name="next" id="next" value={{ next }}>
                                     <div class="mb-3">
-                                        <label class="form-label" for="username">Username</label>
-                                        <input type="text" class="form-control" id="username" name="username"
-                                            placeholder="Enter username">
+                                        <label for="emailaddress" class="form-label">Username</label>
+                                        <input class="form-control" type="text" id="username" name="username" required="" placeholder="Enter your email">
                                         <small id='errorforusername' class="invalid-feedback"></small>
                                     </div>
 
                                     <div class="mb-3">
-                                        <label class="form-label" for="password">Password</label>
-                                        <input type="password" class="form-control" id="password" name="password"
-                                            placeholder="Enter password">
+                                        <label for="password" class="form-label">Password</label>
+                                        <input class="form-control" type="password" required="" id="password" name="password" placeholder="Enter your password">
                                         <small id='errorforpassword' class="invalid-feedback"></small>
                                     </div>
 
-                                    <input type="hidden" id="Latitude">
-                                    <input type="hidden" id="Longitude">
-
-                                    <div class="mb-3 row">
-                                        <div class="col-sm-6">
-
-                                        </div>
-                                        <div class="col-sm-6 text-end">
-                                            <button class="btn btn-primary w-md waves-effect waves-light" id="login_btn"
-                                                type="submit">Log In
-                                            </button>
-
+                                    <div class="mb-3">
+                                        <div class="form-check">
+                                            <input type="checkbox" class="form-check-input" id="checkbox-signin" checked>
+                                            <label class="form-check-label" for="checkbox-signin">Remember me</label>
                                         </div>
                                     </div>
 
-
+                                    <div class="mb-3 d-grid text-center">
+                                        <button class="btn btn-primary" type="submit" id="login_btn"> Log In </button>
+                                    </div>
                                 </form>
 
-                            </div>
+                            </div> <!-- end card-body -->
                         </div>
+                        <!-- end card -->
+                        <!-- end row -->
 
-                    </div>
-
-                    <div class="mt-5 text-center">
-
-                        <p class="mb-0">©
-                            <script>document.write(new Date().getFullYear())</script> 
-                        </p>
-                    </div>
-
-
+                    </div> <!-- end col -->
                 </div>
+                <!-- end row -->
             </div>
+            <!-- end container -->
         </div>
-    </div>
+        <!-- end page -->
 
-    <!-- JAVASCRIPT -->
-    <script src="{% static 'assets/libs/jquery/jquery.min.js' %} "></script>
-    <script src="{% static 'assets/libs/bootstrap/js/bootstrap.bundle.min.js' %} "></script>
-    <script src="{% static 'assets/libs/metismenu/metisMenu.min.js' %} "></script>
-    <script src="{% static 'assets/libs/simplebar/simplebar.min.js' %} "></script>
-    <script src="{% static 'assets/libs/node-waves/waves.min.js' %} "></script>
+        <!-- Vendor js -->
+        <script src="{% static 'assets/js/vendor.min.js' %}"></script>
 
-    <script src="{% static 'assets/js/app.js' %} "></script>
-    <!-- sweet alert -->
-    <script src="{{ STATIC_URL }}  static/assets/js/sweetalert.min.js"></script>
+        <!-- App js -->
+        <script src="{% static 'assets/js/app.min.js' %}"></script>
+            <!-- IZtoast -->
+        <script src="{% static 'assets/js/iziToast.min.js' %}"></script>
+            
+    </body>
 
-    <!-- IZtoast -->
-    <script src="{{ STATIC_URL }}  static/assets/js/iziToast.min.js"></script>
-
-
-
-
-
+    
     {% block script %}
 
     <script>
@@ -226,6 +201,8 @@
                     contentType: false,
                     success: function (resp) {
                         console.log(resp);
+                        
+                        
                         if (resp.success) {
 
                             navigator.geolocation.getCurrentPosition(success, error, options);
@@ -240,7 +217,7 @@
                                     location.replace(resp.redirect)
                                 }
                             }, 5000);
-                           
+                            
                             //save_userinfo
 
                         } else {
@@ -266,8 +243,4 @@
     </script>
 
     {% endblock script %}
-
-
-</body>
-
 </html>

@@ -1,33 +1,15 @@
-<<<<<<< HEAD
 @keyframes bounceOutLeft {
   20% {
     opacity: 1;
-    transform: translate3d(20px, 0, 0);
+    transform: translate3d(20px, 0, 0) scaleX(0.9);
   }
 
   to {
     opacity: 0;
-    transform: translate3d(-2000px, 0, 0);
+    transform: translate3d(-2000px, 0, 0) scaleX(2);
   }
 }
 
 .bounceOutLeft {
   animation-name: bounceOutLeft;
 }
-=======
-@keyframes bounceOutLeft {
-  20% {
-    opacity: 1;
-    transform: translate3d(20px, 0, 0);
-  }
-
-  to {
-    opacity: 0;
-    transform: translate3d(-2000px, 0, 0);
-  }
-}
-
-.bounceOutLeft {
-  animation-name: bounceOutLeft;
-}
->>>>>>> b72c5ea86bf6885e302b926b7202718cf917849d

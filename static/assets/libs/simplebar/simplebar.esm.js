@@ -1,5 +1,5 @@
 /**
- * SimpleBar.js - v4.2.3
+ * SimpleBar.js - v5.3.0
  * Scrollbars, simpler.
  * https://grsmto.github.io/simplebar/
  *
@@ -7,38 +7,103 @@
  * Under MIT License
  */
 
-import 'core-js/modules/es.array.filter';
 import 'core-js/modules/es.array.for-each';
-import 'core-js/modules/es.array.reduce';
-import 'core-js/modules/es.function.name';
-import 'core-js/modules/es.object.assign';
-import 'core-js/modules/es.parse-int';
-import 'core-js/modules/es.regexp.exec';
-import 'core-js/modules/es.string.match';
-import 'core-js/modules/es.string.replace';
 import 'core-js/modules/web.dom-collections.for-each';
+import canUseDOM from 'can-use-dom';
+import 'core-js/modules/es.array.filter';
+import 'core-js/modules/es.array.iterator';
+import 'core-js/modules/es.object.assign';
+import 'core-js/modules/es.object.to-string';
+import 'core-js/modules/es.parse-int';
+import 'core-js/modules/es.string.iterator';
+import 'core-js/modules/es.weak-map';
+import 'core-js/modules/web.dom-collections.iterator';
 import throttle from 'lodash.throttle';
 import debounce from 'lodash.debounce';
 import memoize from 'lodash.memoize';
 import ResizeObserver from 'resize-observer-polyfill';
-import canUseDOM from 'can-use-dom';
+import 'core-js/modules/es.array.reduce';
+import 'core-js/modules/es.function.name';
+import 'core-js/modules/es.regexp.exec';
+import 'core-js/modules/es.string.match';
+import 'core-js/modules/es.string.replace';
+
+var cachedScrollbarWidth = null;
+var cachedDevicePixelRatio = null;
+
+if (canUseDOM) {
+  window.addEventListener('resize', function () {
+    if (cachedDevicePixelRatio !== window.devicePixelRatio) {
+      cachedDevicePixelRatio = window.devicePixelRatio;
+      cachedScrollbarWidth = null;
+    }
+  });
+}
 
 function scrollbarWidth() {
-  if (typeof document === 'undefined') {
-    return 0;
+  if (cachedScrollbarWidth === null) {
+    if (typeof document === 'undefined') {
+      cachedScrollbarWidth = 0;
+      return cachedScrollbarWidth;
+    }
+
+    var body = document.body;
+    var box = document.createElement('div');
+    box.classList.add('simplebar-hide-scrollbar');
+    body.appendChild(box);
+    var width = box.getBoundingClientRect().right;
+    body.removeChild(box);
+    cachedScrollbarWidth = width;
   }
 
-  var body = document.body;
-  var box = document.createElement('div');
-  var boxStyle = box.style;
-  boxStyle.position = 'fixed';
-  boxStyle.left = 0;
-  boxStyle.visibility = 'hidden';
-  boxStyle.overflowY = 'scroll';
-  body.appendChild(box);
-  var width = box.getBoundingClientRect().right;
-  body.removeChild(box);
-  return width;
+  return cachedScrollbarWidth;
+}
+
+// Helper function to retrieve options from element attributes
+var getOptions = function getOptions(obj) {
+  var options = Array.prototype.reduce.call(obj, function (acc, attribute) {
+    var option = attribute.name.match(/data-simplebar-(.+)/);
+
+    if (option) {
+      var key = option[1].replace(/\W+(.)/g, function (x, chr) {
+        return chr.toUpperCase();
+      });
+
+      switch (attribute.value) {
+        case 'true':
+          acc[key] = true;
+          break;
+
+        case 'false':
+          acc[key] = false;
+          break;
+
+        case undefined:
+          acc[key] = true;
+          break;
+
+        default:
+          acc[key] = attribute.value;
+      }
+    }
+
+    return acc;
+  }, {});
+  return options;
+};
+function getElementWindow(element) {
+  if (!element || !element.ownerDocument || !element.ownerDocument.defaultView) {
+    return window;
+  }
+
+  return element.ownerDocument.defaultView;
+}
+function getElementDocument(element) {
+  if (!element || !element.ownerDocument) {
+    return document;
+  }
+
+  return element.ownerDocument;
 }
 
 var SimpleBar =
@@ -48,13 +113,15 @@ function () {
     var _this = this;
 
     this.onScroll = function () {
+      var elWindow = getElementWindow(_this.el);
+
       if (!_this.scrollXTicking) {
-        window.requestAnimationFrame(_this.scrollX);
+        elWindow.requestAnimationFrame(_this.scrollX);
         _this.scrollXTicking = true;
       }
 
       if (!_this.scrollYTicking) {
-        window.requestAnimationFrame(_this.scrollY);
+        elWindow.requestAnimationFrame(_this.scrollY);
         _this.scrollYTicking = true;
       }
     };
@@ -115,7 +182,7 @@ function () {
 
     this.onWindowResize = function () {
       // Recalculate scrollbarWidth in case it's a zoom
-      _this.scrollbarWidth = scrollbarWidth();
+      _this.scrollbarWidth = _this.getScrollbarWidth();
 
       _this.hideNativeScrollbar();
     };
@@ -138,20 +205,20 @@ function () {
     };
 
     this.onPointerEvent = function (e) {
-      var isWithinBoundsY, isWithinBoundsX;
-      _this.axis.x.scrollbar.rect = _this.axis.x.scrollbar.el.getBoundingClientRect();
-      _this.axis.y.scrollbar.rect = _this.axis.y.scrollbar.el.getBoundingClientRect();
+      var isWithinTrackXBounds, isWithinTrackYBounds;
+      _this.axis.x.track.rect = _this.axis.x.track.el.getBoundingClientRect();
+      _this.axis.y.track.rect = _this.axis.y.track.el.getBoundingClientRect();
 
       if (_this.axis.x.isOverflowing || _this.axis.x.forceVisible) {
-        isWithinBoundsX = _this.isWithinBounds(_this.axis.x.scrollbar.rect);
+        isWithinTrackXBounds = _this.isWithinBounds(_this.axis.x.track.rect);
       }
 
       if (_this.axis.y.isOverflowing || _this.axis.y.forceVisible) {
-        isWithinBoundsY = _this.isWithinBounds(_this.axis.y.scrollbar.rect);
+        isWithinTrackYBounds = _this.isWithinBounds(_this.axis.y.track.rect);
       } // If any pointer event is called on the scrollbar
 
 
-      if (isWithinBoundsY || isWithinBoundsX) {
+      if (isWithinTrackXBounds || isWithinTrackYBounds) {
         // Preventing the event's default action stops text being
         // selectable during the drag.
         e.preventDefault(); // Prevent event leaking
@@ -159,12 +226,24 @@ function () {
         e.stopPropagation();
 
         if (e.type === 'mousedown') {
-          if (isWithinBoundsY) {
-            _this.onDragStart(e, 'y');
+          if (isWithinTrackXBounds) {
+            _this.axis.x.scrollbar.rect = _this.axis.x.scrollbar.el.getBoundingClientRect();
+
+            if (_this.isWithinBounds(_this.axis.x.scrollbar.rect)) {
+              _this.onDragStart(e, 'x');
+            } else {
+              _this.onTrackClick(e, 'x');
+            }
           }
 
-          if (isWithinBoundsX) {
-            _this.onDragStart(e, 'x');
+          if (isWithinTrackYBounds) {
+            _this.axis.y.scrollbar.rect = _this.axis.y.scrollbar.el.getBoundingClientRect();
+
+            if (_this.isWithinBounds(_this.axis.y.scrollbar.rect)) {
+              _this.onDragStart(e, 'y');
+            } else {
+              _this.onTrackClick(e, 'y');
+            }
           }
         }
       }
@@ -202,18 +281,20 @@ function () {
     };
 
     this.onEndDrag = function (e) {
+      var elDocument = getElementDocument(_this.el);
+      var elWindow = getElementWindow(_this.el);
       e.preventDefault();
       e.stopPropagation();
 
       _this.el.classList.remove(_this.classNames.dragging);
 
-      document.removeEventListener('mousemove', _this.drag, true);
-      document.removeEventListener('mouseup', _this.onEndDrag, true);
-      _this.removePreventClickId = window.setTimeout(function () {
+      elDocument.removeEventListener('mousemove', _this.drag, true);
+      elDocument.removeEventListener('mouseup', _this.onEndDrag, true);
+      _this.removePreventClickId = elWindow.setTimeout(function () {
         // Remove these asynchronously so we still suppress click events
         // generated simultaneously with mouseup.
-        document.removeEventListener('click', _this.preventClick, true);
-        document.removeEventListener('dblclick', _this.preventClick, true);
+        elDocument.removeEventListener('click', _this.preventClick, true);
+        elDocument.removeEventListener('dblclick', _this.preventClick, true);
         _this.removePreventClickId = null;
       });
     };
@@ -224,24 +305,15 @@ function () {
     };
 
     this.el = element;
-    this.flashTimeout;
-    this.contentEl;
-    this.contentWrapperEl;
-    this.offsetEl;
-    this.maskEl;
-    this.globalObserver;
-    this.mutationObserver;
-    this.resizeObserver;
-    this.scrollbarWidth;
     this.minScrollbarWidth = 20;
-    this.options = Object.assign({}, SimpleBar.defaultOptions, options);
-    this.classNames = Object.assign({}, SimpleBar.defaultOptions.classNames, this.options.classNames);
-    this.isRtl;
+    this.options = Object.assign({}, SimpleBar.defaultOptions, {}, options);
+    this.classNames = Object.assign({}, SimpleBar.defaultOptions.classNames, {}, this.options.classNames);
     this.axis = {
       x: {
         scrollOffsetAttr: 'scrollLeft',
         sizeAttr: 'width',
         scrollSizeAttr: 'scrollWidth',
+        offsetSizeAttr: 'offsetWidth',
         offsetAttr: 'left',
         overflowAttr: 'overflowX',
         dragOffset: 0,
@@ -255,6 +327,7 @@ function () {
         scrollOffsetAttr: 'scrollTop',
         sizeAttr: 'height',
         scrollSizeAttr: 'scrollHeight',
+        offsetSizeAttr: 'offsetHeight',
         offsetAttr: 'top',
         overflowAttr: 'overflowY',
         dragOffset: 0,
@@ -267,7 +340,7 @@ function () {
     };
     this.removePreventClickId = null; // Don't re-instantiate over an existing one
 
-    if (this.el.SimpleBar) {
+    if (SimpleBar.instances.has(this.el)) {
       return;
     }
 
@@ -311,104 +384,13 @@ function () {
     };
   };
 
-  SimpleBar.initHtmlApi = function initHtmlApi() {
-    this.initDOMLoadedElements = this.initDOMLoadedElements.bind(this); // MutationObserver is IE11+
-
-    if (typeof MutationObserver !== 'undefined') {
-      // Mutation observer to observe dynamically added elements
-      this.globalObserver = new MutationObserver(function (mutations) {
-        mutations.forEach(function (mutation) {
-          Array.prototype.forEach.call(mutation.addedNodes, function (addedNode) {
-            if (addedNode.nodeType === 1) {
-              if (addedNode.hasAttribute('data-simplebar')) {
-                !addedNode.SimpleBar && new SimpleBar(addedNode, SimpleBar.getElOptions(addedNode));
-              } else {
-                Array.prototype.forEach.call(addedNode.querySelectorAll('[data-simplebar]'), function (el) {
-                  !el.SimpleBar && new SimpleBar(el, SimpleBar.getElOptions(el));
-                });
-              }
-            }
-          });
-          Array.prototype.forEach.call(mutation.removedNodes, function (removedNode) {
-            if (removedNode.nodeType === 1) {
-              if (removedNode.hasAttribute('data-simplebar')) {
-                removedNode.SimpleBar && removedNode.SimpleBar.unMount();
-              } else {
-                Array.prototype.forEach.call(removedNode.querySelectorAll('[data-simplebar]'), function (el) {
-                  el.SimpleBar && el.SimpleBar.unMount();
-                });
-              }
-            }
-          });
-        });
-      });
-      this.globalObserver.observe(document, {
-        childList: true,
-        subtree: true
-      });
-    } // Taken from jQuery `ready` function
-    // Instantiate elements already present on the page
-
-
-    if (document.readyState === 'complete' || document.readyState !== 'loading' && !document.documentElement.doScroll) {
-      // Handle it asynchronously to allow scripts the opportunity to delay init
-      window.setTimeout(this.initDOMLoadedElements);
-    } else {
-      document.addEventListener('DOMContentLoaded', this.initDOMLoadedElements);
-      window.addEventListener('load', this.initDOMLoadedElements);
-    }
-  } // Helper function to retrieve options from element attributes
-  ;
-
-  SimpleBar.getElOptions = function getElOptions(el) {
-    var options = Array.prototype.reduce.call(el.attributes, function (acc, attribute) {
-      var option = attribute.name.match(/data-simplebar-(.+)/);
-
-      if (option) {
-        var key = option[1].replace(/\W+(.)/g, function (x, chr) {
-          return chr.toUpperCase();
-        });
-
-        switch (attribute.value) {
-          case 'true':
-            acc[key] = true;
-            break;
-
-          case 'false':
-            acc[key] = false;
-            break;
-
-          case undefined:
-            acc[key] = true;
-            break;
-
-          default:
-            acc[key] = attribute.value;
-        }
-      }
-
-      return acc;
-    }, {});
-    return options;
-  };
-
-  SimpleBar.removeObserver = function removeObserver() {
-    this.globalObserver.disconnect();
-  };
-
-  SimpleBar.initDOMLoadedElements = function initDOMLoadedElements() {
-    document.removeEventListener('DOMContentLoaded', this.initDOMLoadedElements);
-    window.removeEventListener('load', this.initDOMLoadedElements);
-    Array.prototype.forEach.call(document.querySelectorAll('[data-simplebar]'), function (el) {
-      if (!el.SimpleBar) new SimpleBar(el, SimpleBar.getElOptions(el));
-    });
-  };
-
   SimpleBar.getOffset = function getOffset(el) {
     var rect = el.getBoundingClientRect();
+    var elDocument = getElementDocument(el);
+    var elWindow = getElementWindow(el);
     return {
-      top: rect.top + (window.pageYOffset || document.documentElement.scrollTop),
-      left: rect.left + (window.pageXOffset || document.documentElement.scrollLeft)
+      top: rect.top + (elWindow.pageYOffset || elDocument.documentElement.scrollTop),
+      left: rect.left + (elWindow.pageXOffset || elDocument.documentElement.scrollLeft)
     };
   };
 
@@ -416,11 +398,11 @@ function () {
 
   _proto.init = function init() {
     // Save a reference to the instance, so we know this DOM node has already been instancied
-    this.el.SimpleBar = this; // We stop here on server-side
+    SimpleBar.instances.set(this.el, this); // We stop here on server-side
 
     if (canUseDOM) {
       this.initDOM();
-      this.scrollbarWidth = scrollbarWidth();
+      this.scrollbarWidth = this.getScrollbarWidth();
       this.recalculate();
       this.initListeners();
     }
@@ -435,11 +417,11 @@ function () {
     }).length) {
       // assume that element has his DOM already initiated
       this.wrapperEl = this.el.querySelector("." + this.classNames.wrapper);
-      this.contentWrapperEl = this.el.querySelector("." + this.classNames.contentWrapper);
+      this.contentWrapperEl = this.options.scrollableNode || this.el.querySelector("." + this.classNames.contentWrapper);
+      this.contentEl = this.options.contentNode || this.el.querySelector("." + this.classNames.contentEl);
       this.offsetEl = this.el.querySelector("." + this.classNames.offset);
       this.maskEl = this.el.querySelector("." + this.classNames.mask);
-      this.contentEl = this.el.querySelector("." + this.classNames.contentEl);
-      this.placeholderEl = this.el.querySelector("." + this.classNames.placeholder);
+      this.placeholderEl = this.findChild(this.wrapperEl, "." + this.classNames.placeholder);
       this.heightAutoObserverWrapperEl = this.el.querySelector("." + this.classNames.heightAutoObserverWrapperEl);
       this.heightAutoObserverEl = this.el.querySelector("." + this.classNames.heightAutoObserverEl);
       this.axis.x.track.el = this.findChild(this.el, "." + this.classNames.track + "." + this.classNames.horizontal);
@@ -505,7 +487,8 @@ function () {
   _proto.initListeners = function initListeners() {
     var _this3 = this;
 
-    // Event listeners
+    var elWindow = getElementWindow(this.el); // Event listeners
+
     if (this.options.autoHide) {
       this.el.addEventListener('mouseenter', this.onMouseEnter);
     }
@@ -523,34 +506,61 @@ function () {
     this.el.addEventListener('mouseleave', this.onMouseLeave);
     this.contentWrapperEl.addEventListener('scroll', this.onScroll); // Browser zoom triggers a window resize
 
-    window.addEventListener('resize', this.onWindowResize);
-    this.resizeObserver = new ResizeObserver(this.recalculate);
+    elWindow.addEventListener('resize', this.onWindowResize); // Hack for https://github.com/WICG/ResizeObserver/issues/38
+
+    var resizeObserverStarted = false;
+    var resizeObserver = elWindow.ResizeObserver || ResizeObserver;
+    this.resizeObserver = new resizeObserver(function () {
+      if (!resizeObserverStarted) return;
+
+      _this3.recalculate();
+    });
     this.resizeObserver.observe(this.el);
     this.resizeObserver.observe(this.contentEl);
+    elWindow.requestAnimationFrame(function () {
+      resizeObserverStarted = true;
+    }); // This is required to detect horizontal scroll. Vertical scroll only needs the resizeObserver.
+
+    this.mutationObserver = new elWindow.MutationObserver(this.recalculate);
+    this.mutationObserver.observe(this.contentEl, {
+      childList: true,
+      subtree: true,
+      characterData: true
+    });
   };
 
   _proto.recalculate = function recalculate() {
+    var elWindow = getElementWindow(this.el);
+    this.elStyles = elWindow.getComputedStyle(this.el);
+    this.isRtl = this.elStyles.direction === 'rtl';
     var isHeightAuto = this.heightAutoObserverEl.offsetHeight <= 1;
     var isWidthAuto = this.heightAutoObserverEl.offsetWidth <= 1;
-    this.elStyles = window.getComputedStyle(this.el);
-    this.isRtl = this.elStyles.direction === 'rtl';
+    var contentElOffsetWidth = this.contentEl.offsetWidth;
+    var contentWrapperElOffsetWidth = this.contentWrapperEl.offsetWidth;
+    var elOverflowX = this.elStyles.overflowX;
+    var elOverflowY = this.elStyles.overflowY;
     this.contentEl.style.padding = this.elStyles.paddingTop + " " + this.elStyles.paddingRight + " " + this.elStyles.paddingBottom + " " + this.elStyles.paddingLeft;
     this.wrapperEl.style.margin = "-" + this.elStyles.paddingTop + " -" + this.elStyles.paddingRight + " -" + this.elStyles.paddingBottom + " -" + this.elStyles.paddingLeft;
+    var contentElScrollHeight = this.contentEl.scrollHeight;
+    var contentElScrollWidth = this.contentEl.scrollWidth;
     this.contentWrapperEl.style.height = isHeightAuto ? 'auto' : '100%'; // Determine placeholder size
 
-    this.placeholderEl.style.width = isWidthAuto ? this.contentEl.offsetWidth + "px" : 'auto';
-    this.placeholderEl.style.height = this.contentEl.scrollHeight + "px"; // Set isOverflowing to false if scrollbar is not necessary (content is shorter than offset)
+    this.placeholderEl.style.width = isWidthAuto ? contentElOffsetWidth + "px" : 'auto';
+    this.placeholderEl.style.height = contentElScrollHeight + "px";
+    var contentWrapperElOffsetHeight = this.contentWrapperEl.offsetHeight;
+    this.axis.x.isOverflowing = contentElScrollWidth > contentElOffsetWidth;
+    this.axis.y.isOverflowing = contentElScrollHeight > contentWrapperElOffsetHeight; // Set isOverflowing to false if user explicitely set hidden overflow
 
-    this.axis.x.isOverflowing = this.contentWrapperEl.scrollWidth > this.contentWrapperEl.offsetWidth;
-    this.axis.y.isOverflowing = this.contentWrapperEl.scrollHeight > this.contentWrapperEl.offsetHeight; // Set isOverflowing to false if user explicitely set hidden overflow
-
-    this.axis.x.isOverflowing = this.elStyles.overflowX === 'hidden' ? false : this.axis.x.isOverflowing;
-    this.axis.y.isOverflowing = this.elStyles.overflowY === 'hidden' ? false : this.axis.y.isOverflowing;
+    this.axis.x.isOverflowing = elOverflowX === 'hidden' ? false : this.axis.x.isOverflowing;
+    this.axis.y.isOverflowing = elOverflowY === 'hidden' ? false : this.axis.y.isOverflowing;
     this.axis.x.forceVisible = this.options.forceVisible === 'x' || this.options.forceVisible === true;
     this.axis.y.forceVisible = this.options.forceVisible === 'y' || this.options.forceVisible === true;
-    this.hideNativeScrollbar();
-    this.axis.x.track.rect = this.axis.x.track.el.getBoundingClientRect();
-    this.axis.y.track.rect = this.axis.y.track.el.getBoundingClientRect();
+    this.hideNativeScrollbar(); // Set isOverflowing to false if scrollbar is not necessary (content is shorter than offset)
+
+    var offsetForXScrollbar = this.axis.x.isOverflowing ? this.scrollbarWidth : 0;
+    var offsetForYScrollbar = this.axis.y.isOverflowing ? this.scrollbarWidth : 0;
+    this.axis.x.isOverflowing = this.axis.x.isOverflowing && contentElScrollWidth > contentWrapperElOffsetWidth - offsetForYScrollbar;
+    this.axis.y.isOverflowing = this.axis.y.isOverflowing && contentElScrollHeight > contentWrapperElOffsetHeight - offsetForXScrollbar;
     this.axis.x.scrollbar.size = this.getScrollbarSize('x');
     this.axis.y.scrollbar.size = this.getScrollbarSize('y');
     this.axis.x.scrollbar.el.style.width = this.axis.x.scrollbar.size + "px";
@@ -570,14 +580,13 @@ function () {
       axis = 'y';
     }
 
-    var contentSize = this.scrollbarWidth ? this.contentWrapperEl[this.axis[axis].scrollSizeAttr] : this.contentWrapperEl[this.axis[axis].scrollSizeAttr] - this.minScrollbarWidth;
-    var trackSize = this.axis[axis].track.rect[this.axis[axis].sizeAttr];
-    var scrollbarSize;
-
     if (!this.axis[axis].isOverflowing) {
-      return;
+      return 0;
     }
 
+    var contentSize = this.contentEl[this.axis[axis].scrollSizeAttr];
+    var trackSize = this.axis[axis].track.el[this.axis[axis].offsetSizeAttr];
+    var scrollbarSize;
     var scrollbarRatio = trackSize / contentSize; // Calculate new height/position of drag handle.
 
     scrollbarSize = Math.max(~~(scrollbarRatio * trackSize), this.options.scrollbarMinSize);
@@ -594,8 +603,12 @@ function () {
       axis = 'y';
     }
 
+    if (!this.axis[axis].isOverflowing) {
+      return;
+    }
+
     var contentSize = this.contentWrapperEl[this.axis[axis].scrollSizeAttr];
-    var trackSize = this.axis[axis].track.rect[this.axis[axis].sizeAttr];
+    var trackSize = this.axis[axis].track.el[this.axis[axis].offsetSizeAttr];
     var hostSize = parseInt(this.elStyles[this.axis[axis].sizeAttr], 10);
     var scrollbar = this.axis[axis].scrollbar;
     var scrollOffset = this.contentWrapperEl[this.axis[axis].scrollOffsetAttr];
@@ -631,14 +644,8 @@ function () {
   };
 
   _proto.hideNativeScrollbar = function hideNativeScrollbar() {
-    this.offsetEl.style[this.isRtl ? 'left' : 'right'] = this.axis.y.isOverflowing || this.axis.y.forceVisible ? "-" + (this.scrollbarWidth || this.minScrollbarWidth) + "px" : 0;
-    this.offsetEl.style.bottom = this.axis.x.isOverflowing || this.axis.x.forceVisible ? "-" + (this.scrollbarWidth || this.minScrollbarWidth) + "px" : 0; // If floating scrollbar
-
-    if (!this.scrollbarWidth) {
-      var paddingDirection = [this.isRtl ? 'paddingLeft' : 'paddingRight'];
-      this.contentWrapperEl.style[paddingDirection] = this.axis.y.isOverflowing || this.axis.y.forceVisible ? this.minScrollbarWidth + "px" : 0;
-      this.contentWrapperEl.style.paddingBottom = this.axis.x.isOverflowing || this.axis.x.forceVisible ? this.minScrollbarWidth + "px" : 0;
-    }
+    this.offsetEl.style[this.isRtl ? 'left' : 'right'] = this.axis.y.isOverflowing || this.axis.y.forceVisible ? "-" + this.scrollbarWidth + "px" : 0;
+    this.offsetEl.style.bottom = this.axis.x.isOverflowing || this.axis.x.forceVisible ? "-" + this.scrollbarWidth + "px" : 0;
   }
   /**
    * On scroll event handling
@@ -709,20 +716,22 @@ function () {
       axis = 'y';
     }
 
-    var scrollbar = this.axis[axis].scrollbar.el; // Measure how far the user's mouse is from the top of the scrollbar drag handle.
+    var elDocument = getElementDocument(this.el);
+    var elWindow = getElementWindow(this.el);
+    var scrollbar = this.axis[axis].scrollbar; // Measure how far the user's mouse is from the top of the scrollbar drag handle.
 
     var eventOffset = axis === 'y' ? e.pageY : e.pageX;
-    this.axis[axis].dragOffset = eventOffset - scrollbar.getBoundingClientRect()[this.axis[axis].offsetAttr];
+    this.axis[axis].dragOffset = eventOffset - scrollbar.rect[this.axis[axis].offsetAttr];
     this.draggedAxis = axis;
     this.el.classList.add(this.classNames.dragging);
-    document.addEventListener('mousemove', this.drag, true);
-    document.addEventListener('mouseup', this.onEndDrag, true);
+    elDocument.addEventListener('mousemove', this.drag, true);
+    elDocument.addEventListener('mouseup', this.onEndDrag, true);
 
     if (this.removePreventClickId === null) {
-      document.addEventListener('click', this.preventClick, true);
-      document.addEventListener('dblclick', this.preventClick, true);
+      elDocument.addEventListener('click', this.preventClick, true);
+      elDocument.addEventListener('dblclick', this.preventClick, true);
     } else {
-      window.clearTimeout(this.removePreventClickId);
+      elWindow.clearTimeout(this.removePreventClickId);
       this.removePreventClickId = null;
     }
   }
@@ -731,9 +740,55 @@ function () {
    */
   ;
 
+  _proto.onTrackClick = function onTrackClick(e, axis) {
+    var _this4 = this;
+
+    if (axis === void 0) {
+      axis = 'y';
+    }
+
+    if (!this.options.clickOnTrack) return;
+    var elWindow = getElementWindow(this.el);
+    this.axis[axis].scrollbar.rect = this.axis[axis].scrollbar.el.getBoundingClientRect();
+    var scrollbar = this.axis[axis].scrollbar;
+    var scrollbarOffset = scrollbar.rect[this.axis[axis].offsetAttr];
+    var hostSize = parseInt(this.elStyles[this.axis[axis].sizeAttr], 10);
+    var scrolled = this.contentWrapperEl[this.axis[axis].scrollOffsetAttr];
+    var t = axis === 'y' ? this.mouseY - scrollbarOffset : this.mouseX - scrollbarOffset;
+    var dir = t < 0 ? -1 : 1;
+    var scrollSize = dir === -1 ? scrolled - hostSize : scrolled + hostSize;
+
+    var scrollTo = function scrollTo() {
+      if (dir === -1) {
+        if (scrolled > scrollSize) {
+          var _this4$contentWrapper;
+
+          scrolled -= _this4.options.clickOnTrackSpeed;
+
+          _this4.contentWrapperEl.scrollTo((_this4$contentWrapper = {}, _this4$contentWrapper[_this4.axis[axis].offsetAttr] = scrolled, _this4$contentWrapper));
+
+          elWindow.requestAnimationFrame(scrollTo);
+        }
+      } else {
+        if (scrolled < scrollSize) {
+          var _this4$contentWrapper2;
+
+          scrolled += _this4.options.clickOnTrackSpeed;
+
+          _this4.contentWrapperEl.scrollTo((_this4$contentWrapper2 = {}, _this4$contentWrapper2[_this4.axis[axis].offsetAttr] = scrolled, _this4$contentWrapper2));
+
+          elWindow.requestAnimationFrame(scrollTo);
+        }
+      }
+    };
+
+    scrollTo();
+  }
   /**
    * Getter for content element
    */
+  ;
+
   _proto.getContentElement = function getContentElement() {
     return this.contentEl;
   }
@@ -746,29 +801,55 @@ function () {
     return this.contentWrapperEl;
   };
 
-  _proto.removeListeners = function removeListeners() {
-    var _this4 = this;
+  _proto.getScrollbarWidth = function getScrollbarWidth() {
+    // Try/catch for FF 56 throwing on undefined computedStyles
+    try {
+      // Detect browsers supporting CSS scrollbar styling and do not calculate
+      if (getComputedStyle(this.contentWrapperEl, '::-webkit-scrollbar').display === 'none' || 'scrollbarWidth' in document.documentElement.style || '-ms-overflow-style' in document.documentElement.style) {
+        return 0;
+      } else {
+        return scrollbarWidth();
+      }
+    } catch (e) {
+      return scrollbarWidth();
+    }
+  };
 
-    // Event listeners
+  _proto.removeListeners = function removeListeners() {
+    var _this5 = this;
+
+    var elWindow = getElementWindow(this.el); // Event listeners
+
     if (this.options.autoHide) {
       this.el.removeEventListener('mouseenter', this.onMouseEnter);
     }
 
     ['mousedown', 'click', 'dblclick'].forEach(function (e) {
-      _this4.el.removeEventListener(e, _this4.onPointerEvent, true);
+      _this5.el.removeEventListener(e, _this5.onPointerEvent, true);
     });
     ['touchstart', 'touchend', 'touchmove'].forEach(function (e) {
-      _this4.el.removeEventListener(e, _this4.onPointerEvent, {
+      _this5.el.removeEventListener(e, _this5.onPointerEvent, {
         capture: true,
         passive: true
       });
     });
     this.el.removeEventListener('mousemove', this.onMouseMove);
     this.el.removeEventListener('mouseleave', this.onMouseLeave);
-    this.contentWrapperEl.removeEventListener('scroll', this.onScroll);
-    window.removeEventListener('resize', this.onWindowResize);
-    this.mutationObserver && this.mutationObserver.disconnect();
-    this.resizeObserver.disconnect(); // Cancel all debounced functions
+
+    if (this.contentWrapperEl) {
+      this.contentWrapperEl.removeEventListener('scroll', this.onScroll);
+    }
+
+    elWindow.removeEventListener('resize', this.onWindowResize);
+
+    if (this.mutationObserver) {
+      this.mutationObserver.disconnect();
+    }
+
+    if (this.resizeObserver) {
+      this.resizeObserver.disconnect();
+    } // Cancel all debounced functions
+
 
     this.recalculate.cancel();
     this.onMouseMove.cancel();
@@ -782,17 +863,7 @@ function () {
 
   _proto.unMount = function unMount() {
     this.removeListeners();
-    this.el.SimpleBar = null;
-  }
-  /**
-   * Recursively walks up the parent nodes looking for this.el
-   */
-  ;
-
-  _proto.isChildNode = function isChildNode(el) {
-    if (el === null) return false;
-    if (el === this.el) return true;
-    return this.isChildNode(el.parentNode);
+    SimpleBar.instances.delete(this.el);
   }
   /**
    * Check if mouse is within bounds
@@ -816,15 +887,12 @@ function () {
 
   return SimpleBar;
 }();
-/**
- * HTML API
- * Called only in a browser env.
- */
-
 
 SimpleBar.defaultOptions = {
   autoHide: true,
   forceVisible: false,
+  clickOnTrack: true,
+  clickOnTrackSpeed: 40,
   classNames: {
     contentEl: 'simplebar-content',
     contentWrapper: 'simplebar-content-wrapper',
@@ -846,6 +914,75 @@ SimpleBar.defaultOptions = {
   scrollbarMaxSize: 0,
   timeout: 1000
 };
+SimpleBar.instances = new WeakMap();
+
+SimpleBar.initDOMLoadedElements = function () {
+  document.removeEventListener('DOMContentLoaded', this.initDOMLoadedElements);
+  window.removeEventListener('load', this.initDOMLoadedElements);
+  Array.prototype.forEach.call(document.querySelectorAll('[data-simplebar]'), function (el) {
+    if (el.getAttribute('data-simplebar') !== 'init' && !SimpleBar.instances.has(el)) new SimpleBar(el, getOptions(el.attributes));
+  });
+};
+
+SimpleBar.removeObserver = function () {
+  this.globalObserver.disconnect();
+};
+
+SimpleBar.initHtmlApi = function () {
+  this.initDOMLoadedElements = this.initDOMLoadedElements.bind(this); // MutationObserver is IE11+
+
+  if (typeof MutationObserver !== 'undefined') {
+    // Mutation observer to observe dynamically added elements
+    this.globalObserver = new MutationObserver(SimpleBar.handleMutations);
+    this.globalObserver.observe(document, {
+      childList: true,
+      subtree: true
+    });
+  } // Taken from jQuery `ready` function
+  // Instantiate elements already present on the page
+
+
+  if (document.readyState === 'complete' || document.readyState !== 'loading' && !document.documentElement.doScroll) {
+    // Handle it asynchronously to allow scripts the opportunity to delay init
+    window.setTimeout(this.initDOMLoadedElements);
+  } else {
+    document.addEventListener('DOMContentLoaded', this.initDOMLoadedElements);
+    window.addEventListener('load', this.initDOMLoadedElements);
+  }
+};
+
+SimpleBar.handleMutations = function (mutations) {
+  mutations.forEach(function (mutation) {
+    Array.prototype.forEach.call(mutation.addedNodes, function (addedNode) {
+      if (addedNode.nodeType === 1) {
+        if (addedNode.hasAttribute('data-simplebar')) {
+          !SimpleBar.instances.has(addedNode) && new SimpleBar(addedNode, getOptions(addedNode.attributes));
+        } else {
+          Array.prototype.forEach.call(addedNode.querySelectorAll('[data-simplebar]'), function (el) {
+            if (el.getAttribute('data-simplebar') !== 'init' && !SimpleBar.instances.has(el)) new SimpleBar(el, getOptions(el.attributes));
+          });
+        }
+      }
+    });
+    Array.prototype.forEach.call(mutation.removedNodes, function (removedNode) {
+      if (removedNode.nodeType === 1) {
+        if (removedNode.hasAttribute('[data-simplebar="init"]')) {
+          SimpleBar.instances.has(removedNode) && SimpleBar.instances.get(removedNode).unMount();
+        } else {
+          Array.prototype.forEach.call(removedNode.querySelectorAll('[data-simplebar="init"]'), function (el) {
+            SimpleBar.instances.has(el) && SimpleBar.instances.get(el).unMount();
+          });
+        }
+      }
+    });
+  });
+};
+
+SimpleBar.getOptions = getOptions;
+/**
+ * HTML API
+ * Called only in a browser env.
+ */
 
 if (canUseDOM) {
   SimpleBar.initHtmlApi();

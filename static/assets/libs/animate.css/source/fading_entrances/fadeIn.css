@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -12,18 +11,3 @@
 .fadeIn {
   animation-name: fadeIn;
 }
-=======
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-
-  to {
-    opacity: 1;
-  }
-}
-
-.fadeIn {
-  animation-name: fadeIn;
-}
->>>>>>> b72c5ea86bf6885e302b926b7202718cf917849d

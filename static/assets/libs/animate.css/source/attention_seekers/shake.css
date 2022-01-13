@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 @keyframes shake {
   from,
   to {
@@ -24,30 +23,3 @@
 .shake {
   animation-name: shake;
 }
-=======
-@keyframes shake {
-  from,
-  to {
-    transform: translate3d(0, 0, 0);
-  }
-
-  10%,
-  30%,
-  50%,
-  70%,
-  90% {
-    transform: translate3d(-10px, 0, 0);
-  }
-
-  20%,
-  40%,
-  60%,
-  80% {
-    transform: translate3d(10px, 0, 0);
-  }
-}
-
-.shake {
-  animation-name: shake;
-}
->>>>>>> b72c5ea86bf6885e302b926b7202718cf917849d

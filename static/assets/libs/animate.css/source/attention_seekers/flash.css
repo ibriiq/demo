@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 @keyframes flash {
   from,
   50%,
@@ -15,21 +14,3 @@
 .flash {
   animation-name: flash;
 }
-=======
-@keyframes flash {
-  from,
-  50%,
-  to {
-    opacity: 1;
-  }
-
-  25%,
-  75% {
-    opacity: 0;
-  }
-}
-
-.flash {
-  animation-name: flash;
-}
->>>>>>> b72c5ea86bf6885e302b926b7202718cf917849d
