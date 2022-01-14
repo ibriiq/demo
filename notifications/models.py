@@ -17,4 +17,4 @@ class notifications(models.Model):
         db_table = ''
         managed = True
         verbose_name = 'notifications'
-        verbose_name_plural = 'notificationss'
+        verbose_name_plural = 'notifications'

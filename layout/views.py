@@ -122,7 +122,7 @@ def get_usinfo(request):
 def handle_400(request,exception,template_name='layout/handle_errors/handle-400.html'):
     return render(request,template_name)
 
-def handle_404(request,exception,template_name='layout/handle_errors/handle-404.html'):
+def handle_404(request,exception,template_name='layout/handle_errors/handle-400.html'):
     return render(request,template_name)
 
 def handle_500(request,exception,template_name='layout/handle_errors/handle-500.html'):

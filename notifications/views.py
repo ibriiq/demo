@@ -47,6 +47,7 @@ def get_all_notifications(user_id):
 
     data = []
     for notification in notification:
+        print("the notifcations = ", notification.notification_type)
         try:
             if notification.notification_type == 0:
                 task = Tasks.objects.get(id=notification.task_id)  
@@ -66,6 +67,7 @@ def get_all_notifications(user_id):
                                                         <small class="text-muted">' + str( datetime.now() - (notification.time))  + ' ago </small>\
                                                     </p>\
                                                 </a>'
+                data.append({"notification": request_notificaiton})
             elif notification.notification_type == 2:
                 task = Car_request.objects.get(id=notification.task_id)  
                 if notification.status == "New":
@@ -87,6 +89,8 @@ def get_all_notifications(user_id):
                 data.append({"notification": request_notificaiton})
         except:
             pass
+
+    print(data)
 
     return data
 
