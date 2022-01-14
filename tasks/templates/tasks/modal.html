@@ -101,18 +101,19 @@
                         
 
                     
-                    {% if request.user.is_superuser %}
-                    <button type="submit" class="btn btn-primary waves-effect" id="add_new_car_btn"> Add</button>
-                    {% endif %}
+                    <div class="modal-footer" style="display: flex; justify-content: flex-end; gap: 10px;">
+                        {% if request.user.is_superuser %}
+                        <button type="submit" class="btn btn-primary waves-effect" id="add_new_car_btn"> Add</button>
+                        {% endif %}
+                        <button type="button" class="btn btn-secondary waves-effect" data-bs-dismiss="modal">Close</button>
+                    </div>
+
+
                         
 
 
 
                 </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary waves-effect" data-bs-dismiss="modal">Close</button>
-
             </div>
         </div>
         <!-- /.modal-content -->

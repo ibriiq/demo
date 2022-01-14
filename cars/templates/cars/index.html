@@ -126,31 +126,46 @@ cars
 
 
         $(document).on("click", ".delete_cars", function () {
-            swal({
-                title: "Are you sure?",
-                text: "Once deleted, you will not be able to recover this car!",
-                icon: "warning",
-                buttons: true,
-                dangerMode: true,
+
+            const swalWithBootstrapButtons = Swal.mixin({
+                customClass: {
+                    confirmButton: 'btn btn-success',
+                    cancelButton: 'btn btn-danger'
+                },
+                buttonsStyling: false
             })
-                .then((willDelete) => {
-                    if (willDelete) {
-                        $.ajax({
-                            url: '/del_car',
-                            method: "POST",
-                            data: { "id": $(this).data("id") },
-                            dataType: "json",
-                            success: function (resp) {
-                                swal(resp.msg, {
-                                    icon: "success",
-                                });
-                                $("#carstable").DataTable().ajax.reload();
-                            }
-                        })
-                    } else {
-                        swal("This car is safe!");
-                    }
-                });
+
+            swalWithBootstrapButtons.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, delete it!',
+                cancelButtonText: 'No, cancel!',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: '/del_car',
+                        method: "POST",
+                        data: { "id": $(this).data("id") },
+                        dataType: "json",
+                        success: function (resp) {
+                            swal.fire("Success", resp.msg, "success");
+                            $("#carstable").DataTable().ajax.reload();
+                        }
+                    })
+                } else if (
+                    /* Read more about handling dismissals below */
+                    result.dismiss === Swal.DismissReason.cancel
+                ) {
+                    swalWithBootstrapButtons.fire(
+                        'Cancelled',
+                        'The car is not deleted :)',
+                        'error'
+                    )
+                }
+            })
         })
 
 

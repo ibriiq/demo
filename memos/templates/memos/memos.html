@@ -224,42 +224,55 @@ Memo
 
         $(".delete_memo").on("click", function () {
 
-            swal({
-                title: "Are you sure?",
-                text: "Once deleted, you will not be able to recover this Memo!",
-                icon: "warning",
-                buttons: true,
-                dangerMode: true,
+            const swalWithBootstrapButtons = Swal.mixin({
+                customClass: {
+                    confirmButton: 'btn btn-success',
+                    cancelButton: 'btn btn-danger'
+                },
+                buttonsStyling: false
             })
-                .then((willDelete) => {
-                    if (willDelete) {
-                        $.ajax({
-                            url: '/delete_memo',
-                            method: "POST",
-                            data: { "id": $(this).data("pk") },
-                            headers: {
-                                "X-CSRFToken": '{{csrf_token}}'
-                            },
-                            dataType: "json",
-                            success: function (resp) {
-                                console.log(resp)
-                                if (resp.success) {
-                                    swal(resp.msg, {
-                                        icon: "success",
-                                    });
-                                    location.reload()
-                                }
-                                else {
-                                    swal(resp.msg, {
-                                        icon: "error",
-                                    });
-                                }
+
+            swalWithBootstrapButtons.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, delete it!',
+                cancelButtonText: 'No, cancel!',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: '/delete_memo',
+                        method: "POST",
+                        data: { "id": $(this).data("pk") },
+                        headers: {
+                            "X-CSRFToken": '{{csrf_token}}'
+                        },
+                        dataType: "json",
+                        success: function (resp) {
+                            console.log(resp)
+                            if (resp.success) {
+                                swal.fire("success", resp.msg, "success")
+                                location.reload()
                             }
-                        })
-                    } else {
-                        swal("This memo is safe!");
-                    }
-                });
+                            else {
+                                swal.fire("error", resp.msg, "error")
+                            }
+                        }
+                    })
+                } else if (
+                    /* Read more about handling dismissals below */
+                    result.dismiss === Swal.DismissReason.cancel
+                ) {
+                    swalWithBootstrapButtons.fire(
+                        'Cancelled',
+                        'The memo is safe :)',
+                        'error'
+                    )
+                }
+            })
+
 
         })
 
