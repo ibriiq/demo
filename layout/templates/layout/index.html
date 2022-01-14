@@ -3,41 +3,63 @@
 <html lang="en">
 
 <head>
+
     <meta charset="utf-8" />
-    <title>Dashboard | One marchant  </title>
+    <title>
+        
+        {% block title %}
+        Dashboard
+        {% endblock title %} | One Marchant
+    
+    </title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta content="Demo" name="description" />
-    <meta content="Ibrahim Muse" name="author" />
+    <meta content="A fully featured admin theme which can be used to build CRM, CMS, etc." name="description" />
+    <meta content="Coderthemes" name="author" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <!-- App favicon -->
+    <link rel="shortcut icon" href="../assets/images/favicon.ico">
+
     <!-- App css -->
     <link href="{% static 'assets/css/config/default/bootstrap.min.css' %}" rel="stylesheet" type="text/css"
         id="bs-default-stylesheet" />
     <link href="{% static 'assets/css/config/default/app.min.css' %}" rel="stylesheet" type="text/css"
         id="app-default-stylesheet" />
+
     <link href="{% static 'assets/css/config/default/bootstrap-dark.min.css' %}" rel="stylesheet" type="text/css"
         id="bs-dark-stylesheet" disabled="disabled" />
     <link href="{% static 'assets/css/config/default/app-dark.min.css' %}" rel="stylesheet" type="text/css"
         id="app-dark-stylesheet" disabled="disabled" />
+
     <!-- icons -->
-    <link href="{% static 'assets/css/icons.min.css' %}" rel="stylesheet" type="text/css" />
+    <link href=" {% static 'assets/css/icons.min.css' %} " rel="stylesheet" type="text/css" />
+
     <!-- <link href="{% static 'assets/css/jquery.dataTables.min.css' %}" rel="stylesheet" type="text/css" /> -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.3.1/semantic.min.css" rel="stylesheet"
-        type="text/css" />
     <link href="https://cdn.datatables.net/1.11.3/css/dataTables.semanticui.min.css" rel="stylesheet" type="text/css" />
     <link href=" {% static 'assets/css/iziToast.min.css' %} " rel="stylesheet" type="text/css" />
     <script src="//cdn.ckeditor.com/4.17.1/standard/ckeditor.js"></script>
+
+    <style>
+        table {
+            color: black;
+        }
+    </style>
+
 </head>
+
 <!-- body start -->
 
 <body class="loading"
-    data-layout='{"mode": "light", "width": "fluid", "menuPosition": "fixed", "sidebar": { "color": "gradient", "size": "default", "showuser": true}, "topbar": {"color": "light"}, "showRightSidebarOnPageLoad": true}'>
+    data-layout='{"mode": "light", "width": "fluid", "menuPosition": "fixed", "sidebar": { "color": "gradient", "size": "default", "showuser": true}, "topbar": {"color": "light"}, "showRightSidebarOnPageLoad": false}'>
 
     <!-- Begin page -->
     <div id="wrapper">
+
+
         <!-- Topbar Start -->
         <div class="navbar-custom">
             <ul class="list-unstyled topnav-menu float-end mb-0">
+
+
                 <li class="dropdown d-inline-block d-lg-none">
                     <a class="nav-link dropdown-toggle arrow-none waves-effect waves-light" data-bs-toggle="dropdown"
                         href="#" role="button" aria-haspopup="false" aria-expanded="false">
@@ -56,385 +78,339 @@
 
 
 
-    <a class="nav-link dropdown-toggle waves-effect waves-light" data-bs-toggle="dropdown" href="#" role="button"
-        aria-haspopup="false" aria-expanded="false" >
-        <i class="fe-bell noti-icon"></i>
-        {% if notification_count > 0 %}
-        <span class="badge bg-danger rounded-circle noti-icon-badge" id="count_notifications">{{ notification_count }}</span>
-        {% else %}
-        <span class="badge bg-danger rounded-circle noti-icon-badge" id="count_notifications">  </span>
-        {% endif %}
-    </a>
-
-    <div class="dropdown-menu dropdown-menu-end dropdown-lg">
-
-        <!-- item-->
-        <div class="dropdown-item noti-title">
-            <h5 class="m-0">
-                <span class="float-end">
-                    <a href="" class="text-dark">
-                        <small>Clear All</small>
+                    <a class="nav-link dropdown-toggle waves-effect waves-light" data-bs-toggle="dropdown" href="#"
+                        role="button" aria-haspopup="false" aria-expanded="false">
+                        <i class="fe-bell noti-icon"></i>
+                        {% if notification_count > 0 %}
+                        <span class="badge bg-danger rounded-circle noti-icon-badge" id="count_notifications">
+                            {{ notification_count }}</span>
+                        {% else %}
+                        <span class="badge bg-danger rounded-circle noti-icon-badge" id="count_notifications"> </span>
+                        {% endif %}
                     </a>
-                </span>Notification
-            </h5>
-        </div>
 
-        <div class="noti-scroll" id="notify" data-simplebar>
-
-            {% for notification in notifications %}
-                {{ notification.notification | safe }}
-            {% endfor %}
-
-        </div>
-
-        <!-- All-->
-        <a href="javascript:void(0);" class="dropdown-item text-center text-primary notify-item notify-all">
-            View all
-            <i class="fe-arrow-right"></i>
-        </a>
-
-    </div>
-    </li>
-
-    <li class="dropdown notification-list topbar-dropdown">
-        <a class="nav-link dropdown-toggle nav-user me-0 waves-effect waves-light" data-bs-toggle="dropdown" href="#"
-            role="button" aria-haspopup="false" aria-expanded="false">
-
-            <img src="{% static 'assets/images/users/user-1.jpg' %} " alt="user-image" class="rounded-circle">
-            <span class="pro-user-name ms-1">
-                {{ request.user.get_full_name }} <i class="mdi mdi-chevron-down"></i>
-            </span>
-        </a>
-        <div class="dropdown-menu dropdown-menu-end profile-dropdown ">
-            <!-- item-->
-            <div class="dropdown-header noti-title">
-                <h6 class="text-overflow m-0">Welcome !</h6>
-            </div>
-
-            <!-- item-->
-            <a href="contacts-profile.html" class="dropdown-item notify-item">
-                <i class="fe-user"></i>
-                <span>My Account</span>
-            </a>
-
-            <!-- item-->
-            <a href="auth-lock-screen.html" class="dropdown-item notify-item">
-                <i class="fe-lock"></i>
-                <span>Lock Screen</span>
-            </a>
-
-            <div class="dropdown-divider"></div>
-
-            {% if request.user.is_superuser %}
-            <a class="dropdown-item" href="/register"><i
-                    class="mdi mdi-lock-open-outline font-size-17 align-middle me-1"></i> Register
-                user</a>
-            {% endif %}
-
-            <div class="dropdown-divider"></div>
-
-            <!-- item-->
-            <a href="{% url 'demo_logout' %}" class="dropdown-item notify-item">
-                <i class="fe-log-out"></i>
-                <span>Logout</span>
-            </a>
-
-        </div>
-    </li>
-
-
-    </ul>
-
-    <!-- LOGO -->
-    <div class="logo-box">
-    </div>
-
-    <ul class="list-unstyled topnav-menu topnav-menu-left mb-0">
-        <li>
-            <button class="button-menu-mobile disable-btn waves-effect">
-                <i class="fe-menu"></i>
-            </button>
-        </li>
-
-        <li>
-            <h4 class="page-title-main">Dashboard</h4>
-        </li>
-
-    </ul>
-
-    <div class="clearfix"></div>
-
-    </div>
-    <!-- end Topbar -->
-
-    <!-- ========== Left Sidebar Start ========== -->
-    <div class="left-side-menu">
-
-        <div class="h-100" data-simplebar>
-
-            <!-- User box -->
-            <div class="user-box text-center">
-
-                <img src=" {% static 'assets/images/users/user-1.jpg'%}" alt="user-img" title="Mat Helme"
-                    class="rounded-circle img-thumbnail avatar-md">
-                <div class="dropdown">
-                    <a href="#" class="user-name dropdown-toggle h5 mt-2 mb-1 d-block" data-bs-toggle="dropdown"
-                        aria-expanded="false">{{ request.user.get_full_name }}</a>
-                    <div class="dropdown-menu user-pro-dropdown">
+                    <div class="dropdown-menu dropdown-menu-end dropdown-lg">
 
                         <!-- item-->
-                        <a href="javascript:void(0);" class="dropdown-item notify-item">
-                            <i class="fe-user me-1"></i>
-                            <span>My Account</span>
+                        <div class="dropdown-item noti-title">
+                            <h5 class="m-0">
+                                <span class="float-end">
+                                    <a href="" class="text-dark">
+                                        <small>Clear All</small>
+                                    </a>
+                                </span>Notification
+                            </h5>
+                        </div>
+
+                        <div class="noti-scroll" id="notify" data-simplebar>
+
+                            {% for notification in notifications %}
+                            {{ notification.notification | safe }}
+                            {% endfor %}
+
+                        </div>
+
+                        <!-- All-->
+                        <a href="javascript:void(0);"
+                            class="dropdown-item text-center text-primary notify-item notify-all">
+                            View all
+                            <i class="fe-arrow-right"></i>
                         </a>
 
+                    </div>
+                </li>
+
+
+
+
+
+                <li class="dropdown notification-list topbar-dropdown">
+                    <a class="nav-link dropdown-toggle nav-user me-0 waves-effect waves-light" data-bs-toggle="dropdown"
+                        href="#" role="button" aria-haspopup="false" aria-expanded="false">
+                        <img src=" {% static 'assets/images/users/user-1.jpg' %} " alt="user-image"
+                            class="rounded-circle">
+                        <span class="pro-user-name ms-1">
+                            {{ request.user.username }}
+                            <i class="mdi mdi-chevron-down"></i>
+                        </span>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-end profile-dropdown ">
                         <!-- item-->
-                        <a href="javascript:void(0);" class="dropdown-item notify-item">
-                            <i class="fe-settings me-1"></i>
-                            <span>Settings</span>
-                        </a>
+                        <div class="dropdown-header noti-title">
+                            <h6 class="text-overflow m-0">Welcome !</h6>
+                        </div>
+
+                        <div class="dropdown-divider"></div>
+
+                        {% if request.user.is_superuser %}
+                        <a class="dropdown-item" href="/register"><i
+                                class="mdi mdi-lock-open-outline font-size-17 align-middle me-1"></i> Register
+                            user</a>
+                        {% endif %}
+
+                        <div class="dropdown-divider"></div>
 
                         <!-- item-->
-                        <a href="javascript:void(0);" class="dropdown-item notify-item">
-                            <i class="fe-lock me-1"></i>
-                            <span>Lock Screen</span>
-                        </a>
-
-                        <!-- item-->
-                        <a href="javascript:void(0);" class="dropdown-item notify-item">
-                            <i class="fe-log-out me-1"></i>
+                        <a href=" {% url 'demo_logout' %} " class="dropdown-item notify-item">
+                            <i class="fe-log-out"></i>
                             <span>Logout</span>
                         </a>
 
                     </div>
-                </div>
+                </li>
 
-                <p class="text-muted left-user-info"></p>
 
-                <ul class="list-inline">
-                    <li class="list-inline-item">
-                        <a href="#" class="text-muted left-user-info">
-                            <i class="mdi mdi-cog"></i>
-                        </a>
-                    </li>
+            </ul>
 
-                    <li class="list-inline-item">
-                        <a href="#">
-                            <i class="mdi mdi-power"></i>
-                        </a>
-                    </li>
-                </ul>
+            <!-- LOGO -->
+            <div class="logo-box">
+                <a href="index.html" class="logo logo-light text-center">
+                    <span class="logo-sm">
+                        <img src="../assets/images/logo-sm.png" alt="" height="22">
+                    </span>
+                    <span class="logo-lg">
+                        <img src="../assets/images/logo-light.png" alt="" height="16">
+                    </span>
+                </a>
+                <a href="index.html" class="logo logo-dark text-center">
+                    <span class="logo-sm">
+                        <img src="../assets/images/logo-sm.png" alt="" height="22">
+                    </span>
+                    <span class="logo-lg">
+                        <img src="../assets/images/logo-dark.png" alt="" height="16">
+                    </span>
+                </a>
             </div>
 
-            <!--- Sidemenu -->
-            <div id="sidebar-menu">
+            <ul class="list-unstyled topnav-menu topnav-menu-left mb-0">
+                <li>
+                    <button class="button-menu-mobile disable-btn waves-effect">
+                        <i class="fe-menu"></i>
+                    </button>
+                </li>
 
-                <ul id="side-menu">
+                <li>
+                    <h4 class="page-title-main"> {% block url_level_title %}
+                        Dashboard
+                    {% endblock url_level_title %} </h4>
+                </li>
 
-                    <li class="menu-title">Navigation</li>
-
-
-
-                    <li>
-                        <a href=" {% url 'dashboard' %} ">
-                            <i class="mdi mdi-view-dashboard"></i>
-                            <span> Dashboard </span>
-                        </a>
-                    </li>
-
-
-                    <li>
-                        <a href="{% url 'get_memos' %}">
-                            <i class="mdi mdi-calendar"></i>
-                            <span> Memos <span class="badge bg-primary"> {{ memos_count }} </span> </span>
-                        </a>
-                    </li>
-
-                    <li>
-                        <a href="{% url 'cars' %}">
-                            <i class="mdi mdi-car"></i>
-                            <span> Cars </span>
-                        </a>
-                    </li>
-
-                    <li>
-                        <a href="{% url 'tasks' %}">
-                            <i class="mdi mdi-ticket"></i>
-                            <span> Tasks </span>
-                        </a>
-                    </li>
-
-                    <li>
-                        <a href="{% url 'car_rides' %}">
-                            <i class="mdi mdi-ticket"></i>
-                            <span> Request car ride </span>
-                        </a>
-                    </li>
-
-                </ul>
-
-            </div>
-            <!-- End Sidebar -->
+            </ul>
 
             <div class="clearfix"></div>
 
         </div>
-        <!-- Sidebar -left -->
+        <!-- end Topbar -->
 
-    </div>
-    <!-- Left Sidebar End -->
+        <!-- ========== Left Sidebar Start ========== -->
+        <div class="left-side-menu">
 
-    <!-- ============================================================== -->
-    <!-- Start Page Content here -->
-    <!-- ============================================================== -->
-    
-    <div class="content-page">
-        <div class="content">
+            <div class="h-100" data-simplebar>
 
-            <!-- Start Content-->
-            <div class="container-fluid">
+                <!-- User box -->
+                <div class="user-box text-center">
 
-                <!-- start page title -->
-                <div class="row">
-                <div class="page-title-box">
-                    <div class="row align-items-center">
-                        <div class="col-md-8">
-                            <h6 class="page-title">
-                                {% block url_level_title %}
-                                Dashboard
-                                {% endblock url_level_title %}
-                            </h6>
-                            <ol class="breadcrumb m-0">
-                                <li class="breadcrumb-item"><a href=" {% url 'dashboard' %} ">One Marchant</a></li>
-                                <li class="breadcrumb-item"><a href=" {% url 'dashboard' %} ">One Marchant</a></li>
-                                <li class="breadcrumb-item active" aria-current="page">
+                    <img src=" {% static 'assets/images/users/user-1.jpg' %}" alt="user-img" title="Mat Helme"
+                        class="rounded-circle img-thumbnail avatar-md">
+                    <div class="dropdown">
+                        <a href="#" class="user-name dropdown-toggle h5 mt-2 mb-1 d-block" aria-expanded="false"> 
+                            {{ request.user.get_full_name }} </a>
+                        <div class="dropdown-menu user-pro-dropdown">
 
-                                    {% block url_level %}
-                                    Dashboard
-                                    {% endblock url_level %}
 
-                                </li>
-                            </ol>
                         </div>
                     </div>
+
+                    <!-- <p class="text-muted left-user-info">Admin Head</p> -->
+
+                    <ul class="list-inline">
+                        <li class="list-inline-item">
+                            <a href=" {% url 'demo_logout' %} ">
+                                <i class="mdi mdi-power"></i>
+                            </a>
+                        </li>
+                    </ul>
                 </div>
+
+                <!--- Sidemenu -->
+                <div id="sidebar-menu">
+
+                    <ul id="side-menu">
+
+                        <li class="menu-title">Navigation</li>
+
+                        <li>
+                            <a href="{% url 'dashboard' %} ">
+                                <i class="mdi mdi-view-dashboard"></i>
+                                <span> Dashboard </span>
+                            </a>
+                        </li>
+
+
+                        <li>
+                            <a href="{% url 'get_memos' %}">
+                                <i class="mdi mdi-calendar"></i>
+                                <span> Memos <span class="badge bg-primary"> {{ memos_count }} </span> </span>
+                            </a>
+                        </li>
+
+                        <li>
+                            <a href="{% url 'cars' %}">
+                                <i class="mdi mdi-forum"></i>
+                                <span> Cars </span>
+                            </a>
+                        </li>
+
+                        <li>
+                            <a href="{% url 'tasks' %}">
+                                <i class="mdi mdi-clipboard"></i>
+                                <span> Task </span>
+                            </a>
+                        </li>
+
+                        <li>
+                            <a href="{% url 'car_rides' %}">
+                                <i class="mdi mdi-forum"></i>
+                                <span> Request car ride </span>
+                            </a>
+                        </li>
+                    </ul>
+
+                </div>
+
+                <div class="clearfix"></div>
+
             </div>
-                <!-- end page title -->
-                {% include "tasks/modal.html" %}
+            <!-- Sidebar -left -->
 
-                
+        </div>
+        <!-- Left Sidebar End -->
 
-                {% block content %}
+        <!-- ============================================================== -->
+        <!-- Start Page Content here -->
+        <!-- ============================================================== -->
 
-                
+        <div class="content-page">
+            <div class="content">
 
+                <!-- Start Content-->
+                <div class="container-fluid">
 
-                <!-- end row -->
-
-
-                <!-- end row -->
-
-
-                <!-- end row -->
-
-
-
-
-
-                {% include "layout/model.html" %}
-
-
-
-                <div class="row">
-                    <div class="col-xl-12">
-                        <div class="card">
-                            <div class="card-body">
-                                <h4 class="card-title mb-4">User Activest</h4>
-                                <div class="table-responsive">
-                                    <table class="table table-hover table-centered table-nowrap mb-0" id="userstable">
-                                        <thead>
-                                            <tr>
-                                                <th scope="col">(#) Id</th>
-                                                <th scope="col">Username</th>
-                                                <th scope="col">Ip address</th>
-                                                <th scope="col">Longitude</th>
-                                                <th scope="col">Latitude</th>
-                                                <th scope="col">Time</th>
-                                                <th scope="col">Logout time</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                        </tbody>
-                                    </table>
+                        <div class="page-title-box">
+                            <div class="row align-items-center">
+                                <div class="col-md-8">
+                                    <ol class="breadcrumb m-0">
+                                        <li class="breadcrumb-item"><a href=" {% url 'dashboard' %} ">One Marchant</a></li>
+                                        <li class="breadcrumb-item"><a href=" {% url 'dashboard' %} ">One Marchant</a></li>
+                                        <li class="breadcrumb-item active" aria-current="page">
+        
+                                            {% block url_level %}
+                                            Dashboard
+                                            {% endblock url_level %}
+        
+                                        </li>
+                                    </ol>
+                                </div>
+                            </div>
+                        </div>
+                        <br>
+        
+                    
+                    {% include "tasks/modal.html" %}
+                    {% block content %}
+                    {% include "layout/model.html" %}
+                    <div class="row">
+                        <div class="col-xl-12">
+                            <div class="card" style="box-shadow: 2px 2px 2px 2px silver;">
+                                <div class="card-body">
+                                    <h4 class="card-title mb-4">User Activest</h4>
+                                    <div class="table-responsive">
+                                        <table class="table table-hover table-centered table-nowrap mb-0"
+                                            id="userstable" style="color: black;">
+                                            <thead>
+                                                <tr>
+                                                    <th scope="col">(#) Id</th>
+                                                    <th scope="col">Username</th>
+                                                    <th scope="col">Ip address</th>
+                                                    <th scope="col">Longitude</th>
+                                                    <th scope="col">Latitude</th>
+                                                    <th scope="col">Time</th>
+                                                    <th scope="col">Logout time</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
+                    <!-- end row -->
 
-                </div>
-                <!-- end row -->
+                    <div class="row">
+                        {% if request.user.is_superuser %}
+                        <div id="map_all_employees" style="height: 400px; width: 100%;"></div>
 
+                        {% endif %}
 
-                {% if request.user.is_superuser %}
-                <div id="map_all_employees" style="height: 400px; width: 100%;"></div>
-
-                {% endif %}
-
-
-                {% endblock content %}
-
-            </div> <!-- container-fluid -->
-
-        </div> <!-- content -->
-
-        <!-- Footer Start -->
-        <footer class="footer">
-            <div class="container-fluid">
-                <div class="row">
-                    <div class="col-md-6">
-                        <script>document.write(new Date().getFullYear())</script> &copy; 
                     </div>
-                    <div class="col-md-6">
-                        <div class="text-md-end footer-links d-none d-sm-block">
-                            <a href="javascript:void(0);">About Us</a>
-                            <a href="javascript:void(0);">Help</a>
-                            <a href="javascript:void(0);">Contact Us</a>
+
+                    {% endblock content %}
+                    <!-- end row -->
+
+                </div> <!-- container-fluid -->
+
+            </div> <!-- content -->
+
+            <!-- Footer Start -->
+            <footer class="footer">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <script>document.write(new Date().getFullYear())</script> &copy; Adminto theme by <a
+                                href="">Coderthemes</a>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="text-md-end footer-links d-none d-sm-block">
+                                <a href="javascript:void(0);">About Us</a>
+                                <a href="javascript:void(0);">Help</a>
+                                <a href="javascript:void(0);">Contact Us</a>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </footer>
-        <!-- end Footer -->
+            </footer>
+            <!-- end Footer -->
 
-    </div>
-    <!-- ============================================================== -->
-    <!-- End Page content -->
-    <!-- ============================================================== -->
+        </div>
+        <!-- ============================================================== -->
+        <!-- End Page content -->
+        <!-- ============================================================== -->
 
 
     </div>
     <!-- END wrapper -->
 
-    <!-- Right Sidebar -->
-    
-    <!-- /Right-bar -->
-
     <!-- Right bar overlay-->
     <div class="rightbar-overlay"></div>
 
     <!-- Vendor js -->
-    <script src="{% static 'assets/js/vendor.min.js' %}"></script>
+    <script src=" {% static 'assets/js/vendor.min.js' %} /"></script>
 
     <!-- knob plugin -->
-    <script src="{% static 'assets/libs/jquery-knob/jquery.knob.min.js' %}"></script>
+    <script src=" {% static 'assets/libs/jquery-knob/jquery.knob.min.js' %} "></script>
 
+    <!--Morris Chart-->
+    <script src="{% static 'assets/libs/morris.js06/morris.min.js' %}"></script>
     <script src="{% static 'assets/libs/raphael/raphael.min.js' %}"></script>
 
     <!-- Dashboar init js-->
-    <script src="{% static 'assets/js/pages/dashboard.init.js' %}"></script>
+    <script src=" {% static 'assets/js/pages/dashboard.init.js' %} "></script>
 
     <!-- App js-->
-    <script src="{% static 'assets/js/app.min.js' %}"></script>
+    <script src=" {% static 'assets/js/app.min.js' %}  "></script>
+
 
     <!-- sweet alert -->
     <script src="{% static 'assets/js/sweetalert.min.js' %}"></script>
@@ -454,6 +430,9 @@
     <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 
+
+
+
     <script>
         //var pusher = new Pusher('{{ settings.PUSHER_KEY }}');
 
@@ -467,11 +446,11 @@
             console.log("my data ", data)
 
 
-            let notification =  '<a href="javascript:void(0);" data-notification_id= '+data.notification.id+' class="notification_item dropdown-item notify-item">\
+            let notification = '<a href="javascript:void(0);" data-notification_id= ' + data.notification.id + ' class="notification_item dropdown-item notify-item">\
                 <div class="notify-icon bg-warning">\
                     <i class="mdi mdi-account-plus"></i>\
                 </div>\
-                <p class="notify-details">'+data.notification.notification+'\
+                <p class="notify-details">'+ data.notification.notification + '\
                     <small class="text-muted"> 5 hours ago </small>\
                 </p>\
             </a>'
@@ -479,7 +458,7 @@
             $("#notify").append(notification)
             $("#count_notifications").text(data.count)
             $("#car_request_table").DataTable().ajax.reload();
-            
+
 
             //$(".notification_counter").text(data.count)
             //$("#notification_count_inside").text("Notifications " + data.count)

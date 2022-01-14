@@ -5,7 +5,7 @@ from django.db import models
 
 class memos(models.Model):
     createdby_id = models.IntegerField()
-    memo = models.CharField(max_length=500)
+    memo = models.TextField()
     created_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):

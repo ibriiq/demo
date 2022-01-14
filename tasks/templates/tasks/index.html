@@ -1,6 +1,13 @@
 {% extends 'layout/index.html' %}
 
 
+{% block title %}
+
+Tasks
+
+{% endblock title %}
+
+
 {% block url_level_title %}
 tasks
 {% endblock url_level_title %}
@@ -17,10 +24,10 @@ tasks
 
 <div class="row" style="">
     <div class="col-xl-12">
-        <div class="card" style="box-shadow: -1px 2px -1px 2px silver;">
+        <div class="card" style="box-shadow: 2px 2px 2px 2px silver;">
             <div class="card-body">
                 <div style="display: flex; justify-content: space-between; ">
-                    <h2 class="card-title mb-4">Taskt</h2>
+                    <h2 class="card-title mb-4">Tasks</h2>
                     <a href="#" class="btn btn-purple rounded-pill w-md waves-effect waves-light mb-3" id="new_tasks"><i
                             class="mdi mdi-plus"></i>
                         Add task</a>
