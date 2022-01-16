@@ -87,6 +87,7 @@ def get_car_request(request):
         car.rejected_by = User.objects.get(id=car.rejected_by).get_full_name()
     if car.approved_by:
         car.approved_by = User.objects.get(id=car.approved_by).get_full_name()
+        car.assigned_to = User.objects.get(id=car.assigned_to).get_full_name()
     car.status_id = car.status
     if car.status == 0:
         car.status = "Rejected"

@@ -456,6 +456,11 @@ car requests
 
 
         $(document).on("click", ".update_car_requests", function () {
+            $("#status_id").val("")
+            $("#rejected_by").val("")
+            $("#reason").val("")
+            $("#approved_by").val("")
+            $("#assigned_to_driver").val("")
             id = $(this).data("pk")
 
             $("#car_request_info_model").modal("toggle")
@@ -470,6 +475,7 @@ car requests
                 dataType: "json",
                 success: function (resp) {
                     console.log(resp)
+                    console.log(resp.assigned_to)
                     $("#status_id").val(resp.status)
                     
                     if (resp.status_id == 0){
@@ -479,6 +485,8 @@ car requests
                     }
                     else if(resp.status_id == 1){
                         $(".approved").css("display","block")
+                        $("#approved_by").val(resp.approved_by)
+                        $("#assigned_to_driver").val(resp.assigned_to)
 
                     }
                 }
